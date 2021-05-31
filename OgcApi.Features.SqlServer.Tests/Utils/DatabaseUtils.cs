@@ -9,9 +9,11 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
     {
         public const string DatabaseName = "OgcApiTests";
 
-        private const string DbConnectionString = @"Server=localhost,1433; Database={0}; Trusted_Connection=True;";
+        private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
 
-        private const string MasterConnectionString = @"Server=localhost,1433; Database=master; Trusted_Connection=True;";        
+        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
+        
+        private const string MasterConnectionString = @"Server=localhost; Database=master; Trusted_Connection=True;";        
 
         public static void RecreateDatabase()
         {            
@@ -41,7 +43,10 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
 
         public static string GetConnectionString()
         {
-            return string.Format(DbConnectionString, DatabaseName);
+            var connectionStringTemplate =
+                Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;            
+
+            return string.Format(connectionStringTemplate, DatabaseName);
         }
     }
 }
