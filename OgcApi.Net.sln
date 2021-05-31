@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Features", "OgcApi.Net.Features\OgcApi.Net.Features.csproj", "{7F106F45-79CF-4293-BDAE-DC032C5E9777}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{462A8C0D-5CC8-4A03-8A04-F494E06EB922}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Features.SqlServer", "OgcApi.Net.Features.SqlServer\OgcApi.Net.Features.SqlServer.csproj", "{656A879F-2D07-4E5A-8D2C-65A31A515B84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Features.SqlServer.Tests", "OgcApi.Features.SqlServer.Tests\OgcApi.Features.SqlServer.Tests.csproj", "{8DC0179F-88AE-4974-A0F0-00B5C64966FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{656A879F-2D07-4E5A-8D2C-65A31A515B84} = {656A879F-2D07-4E5A-8D2C-65A31A515B84}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F106F45-79CF-4293-BDAE-DC032C5E9777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F106F45-79CF-4293-BDAE-DC032C5E9777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F106F45-79CF-4293-BDAE-DC032C5E9777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F106F45-79CF-4293-BDAE-DC032C5E9777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{656A879F-2D07-4E5A-8D2C-65A31A515B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{656A879F-2D07-4E5A-8D2C-65A31A515B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{656A879F-2D07-4E5A-8D2C-65A31A515B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{656A879F-2D07-4E5A-8D2C-65A31A515B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8DC0179F-88AE-4974-A0F0-00B5C64966FA} = {3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08E94841-4EB6-46AC-A9E2-F2D6AF5C249B}
+	EndGlobalSection
+EndGlobal
