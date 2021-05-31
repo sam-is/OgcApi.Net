@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      CONNECTION_STRING_TEMPLATE: Server=0.0.0.0:1433;Database={0};User Id=sa;Password=1
+      CONNECTION_STRING_TEMPLATE: Server=sql;Database={0};User Id=sa;Password=1
     
     services:
       sql:        
@@ -23,8 +23,7 @@ jobs:
         ports:
           - "1433:1433"
 
-    steps:
-    - uses: hmarr/debug-action@v2
+    steps:    
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
