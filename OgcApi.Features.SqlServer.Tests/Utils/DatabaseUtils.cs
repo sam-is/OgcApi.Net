@@ -41,10 +41,12 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
 
         private static string GetConnectionStringTemplate()
         {
-            var connectionStringTemplate =
-                Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;            
+            return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
+        }
 
-            return string.Format(connectionStringTemplate, DatabaseName);
+        public static string GetConnectionString()
+        {            
+            return string.Format(GetConnectionStringTemplate(), DatabaseName);
         }
     }
 }
