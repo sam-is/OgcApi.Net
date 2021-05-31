@@ -11,13 +11,11 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
 
         private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
 
-        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
-        
-        private const string MasterConnectionString = @"Server=localhost; Database=master; Trusted_Connection=True;";        
+        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";        
 
         public static void RecreateDatabase()
         {            
-            using var sqlConnection = new SqlConnection(MasterConnectionString);
+            using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
             sqlConnection.Open();
 
             using var createDatabaseCommand = new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
@@ -41,7 +39,7 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
             return streamReader.ReadToEnd();            
         }
 
-        public static string GetConnectionString()
+        private static string GetConnectionStringTemplate()
         {
             var connectionStringTemplate =
                 Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;            
