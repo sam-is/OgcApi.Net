@@ -11,12 +11,15 @@ jobs:
 
     runs-on: ubuntu-latest
     
+    env:
+      CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=1
+    
     services:
       sql:        
         image: mcr.microsoft.com/mssql/server:2019-latest
         env:
           SA_PASSWORD: 1
-          ACCEPT_EULA: Y
+          ACCEPT_EULA: Y          
         ports:
           - "1433:1433"
 
