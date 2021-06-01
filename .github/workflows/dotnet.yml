@@ -37,11 +37,13 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish OgcApi.Net.Features
       uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-          PROJECT_FILE_PATH: OgcApi.Net.Features/OgcApi.Net.Features.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      with:        
+        PROJECT_FILE_PATH: OgcApi.Net.Features/OgcApi.Net.Features.csproj
+        VERSION_FILE_PATH: Directory.Build.props
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
     - name: Publish OgcApi.Net.Features.SqlServer
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
-          PROJECT_FILE_PATH: OgcApi.Net.Features.SqlServer/OgcApi.Net.Features.SqlServer.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        PROJECT_FILE_PATH: OgcApi.Net.Features.SqlServer/OgcApi.Net.Features.SqlServer.csproj
+        VERSION_FILE_PATH: Directory.Build.props
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
