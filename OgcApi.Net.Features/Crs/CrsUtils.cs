@@ -6,6 +6,7 @@ using ProjNet.CoordinateSystems.Transformations;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace OgcApi.Net.Features.Crs
 {
@@ -22,7 +23,9 @@ namespace OgcApi.Net.Features.Crs
                 throw new ArgumentException($"'{nameof(srid)}' cannot be null or whitespace.", nameof(srid));
             }
 
-            var sridFile = File.Exists(SridFileName) ? SridFileName : Path.Combine("Crs", SridFileName);
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var sridFile = File.Exists(Path.Combine(assemblyPath, SridFileName)) ? Path.Combine(assemblyPath, SridFileName) : Path.Combine(assemblyPath, "Crs", SridFileName);
 
             var sridInFile = srid + ";";
             return File.ReadAllLines(sridFile).SkipWhile(line => !line.StartsWith(sridInFile)).Skip(1).First().Split(';').Last();
