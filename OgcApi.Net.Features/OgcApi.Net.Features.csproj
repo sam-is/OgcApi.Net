@@ -1,20 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+	<TargetFramework>net5.0</TargetFramework>
+    <Description>OGC API Features Standard implementation</Description>    
+  </PropertyGroup>  
+	
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\kolyanch.MMOI\source\repos\OGCAPI.NET\OGCAPI.NET\OgcApi.Net.Features.xml</DocumentationFile>
-  </PropertyGroup>
+	
+  <ItemGroup>	
+	<Content Include="Crs\SRID.csv">	  
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  <PackageFlatten>true</PackageFlatten>
+	</Content>
+	<Content Include="OgcApi.Net.Features.xml">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  <PackageFlatten>true</PackageFlatten>
+	</Content>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />    
     <PackageReference Include="NetTopologySuite" Version="2.2.0" />
     <PackageReference Include="NetTopologySuite.Features" Version="2.1.0" />
     <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="2.1.1" />
@@ -22,10 +35,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Crs\SRID.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(ProjectDir)&quot; /y /q" />
+  </Target>
 
 </Project>

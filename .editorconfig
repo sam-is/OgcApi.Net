@@ -1,4 +1,6 @@
 ﻿[*.cs]
-
+dotnet_diagnostic.MVC1004.severity = none
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
+# AD0001: Analyzer Failure
+dotnet_diagnostic.AD0001.severity = none

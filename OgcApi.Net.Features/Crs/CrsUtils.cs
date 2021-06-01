@@ -13,6 +13,8 @@ namespace OgcApi.Net.Features.Crs
     {
         public static readonly Uri DefaultCrs = new("http://www.opengis.net/def/crs/OGC/1.3/CRS84");
 
+        public const string SridFileName = "SRID.csv";
+
         public static string GetWktBySrid(string srid)
         {
             if (string.IsNullOrWhiteSpace(srid))
@@ -20,8 +22,10 @@ namespace OgcApi.Net.Features.Crs
                 throw new ArgumentException($"'{nameof(srid)}' cannot be null or whitespace.", nameof(srid));
             }
 
+            var sridFile = File.Exists(SridFileName) ? SridFileName : Path.Combine("Crs", SridFileName);
+
             var sridInFile = srid + ";";
-            return File.ReadAllLines("SRID.csv").SkipWhile(line => !line.StartsWith(sridInFile)).Skip(1).First().Split(';').Last();
+            return File.ReadAllLines(sridFile).SkipWhile(line => !line.StartsWith(sridInFile)).Skip(1).First().Split(';').Last();
         }
 
         public static CoordinateSystem GetCoordinateSystemBySrid(string srid)
