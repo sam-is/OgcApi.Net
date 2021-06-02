@@ -8,7 +8,8 @@
 	 <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	 <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	 <Version>$(MajorVersion).$(MinorVersion).$(PatchVersion)</Version>
-	 <Authors>Nikolay Chusphev</Authors>
+	 <Authors>Nikolay Chupshev</Authors>
+	 <Owners>Samara-Informsputnik</Owners>
 	 <Company>Samara-Informsputnik</Company>
 	 <Copyright>Copyright © 2021 Samara-Informsputnik</Copyright>
 	 <PackageLicenseExpression>MIT</PackageLicenseExpression>
