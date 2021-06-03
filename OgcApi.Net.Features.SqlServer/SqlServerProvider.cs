@@ -198,7 +198,9 @@ namespace OgcApi.Net.Features.SqlServer
                     .ComposeWhereClause()
                     .AddLimit(offset, limit)
                     .BuildCommand(connection);
-                
+
+                _logger.LogTrace($"Query: {selectFeaturesCommand.CommandText}");                
+
                 using var reader = selectFeaturesCommand.ExecuteReader();
                 var featureCollection = new OgcFeatureCollection();
                 while (reader.Read())
