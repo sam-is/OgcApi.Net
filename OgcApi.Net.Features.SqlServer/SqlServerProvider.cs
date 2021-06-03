@@ -198,7 +198,7 @@ namespace OgcApi.Net.Features.SqlServer
                     .ComposeWhereClause()
                     .AddLimit(offset, limit)
                     .BuildCommand(connection);
-
+                
                 using var reader = selectFeaturesCommand.ExecuteReader();
                 var featureCollection = new OgcFeatureCollection();
                 while (reader.Read())
@@ -206,7 +206,10 @@ namespace OgcApi.Net.Features.SqlServer
                     {
                         var geometryBytes = reader.GetSqlBytes(1);
                         var geometryReader = new SqlServerBytesReader
-                        { RepairRings = true, IsGeography = collectionOptions.GeometryDataType == "geography" };
+                        { 
+                            RepairRings = true, 
+                            IsGeography = collectionOptions.GeometryDataType == "geography" 
+                        };
                         var geometry = geometryReader.Read(geometryBytes.Value);
 
                         var feature = new OgcFeature

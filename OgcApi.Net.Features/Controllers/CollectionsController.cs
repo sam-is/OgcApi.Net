@@ -198,11 +198,11 @@ namespace OgcApi.Net.Features.Controllers
             var validParams = new List<string>() {
                 nameof(limit),
                 nameof(offset),
-                nameof(bbox),
-                nameof(bboxCrs),
-                nameof(dateTime),
+                nameof(bbox),               
                 nameof(crs),
-                nameof(apiKey)
+                nameof(apiKey),
+                "bbox-crs",
+                "datetime",
             };
             foreach (var param in Request.Query)
             {
