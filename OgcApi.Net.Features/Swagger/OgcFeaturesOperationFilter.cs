@@ -27,7 +27,7 @@ namespace OgcApi.Net.Features.Swagger
                     }
 
                     if (parameter.Name == "bbox")
-                    {
+                    {                        
                         parameter.Style = ParameterStyle.Form;
                         parameter.Explode = false;
                         parameter.Schema = new OpenApiSchema()

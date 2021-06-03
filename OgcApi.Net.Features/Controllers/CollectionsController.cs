@@ -11,6 +11,8 @@ using OgcApi.Net.Features.Resources;
 using OgcApi.Net.Features.Temporal;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Web;
 
 namespace OgcApi.Net.Features.Controllers
@@ -184,7 +186,7 @@ namespace OgcApi.Net.Features.Controllers
             string collectionId,
             [FromQuery] int limit = 10,
             [FromQuery] int offset = 0,
-            [FromQuery] List<double> bbox = null,
+            [FromQuery] string bbox = null,
             [FromQuery(Name = "bbox-crs")] Uri bboxCrs = null,
             [FromQuery(Name = "datetime")] string dateTime = null,
             [FromQuery] Uri crs = null,
@@ -214,7 +216,7 @@ namespace OgcApi.Net.Features.Controllers
             
             CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
-            {                
+            {
                 IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (bboxCrs == null)
@@ -222,19 +224,17 @@ namespace OgcApi.Net.Features.Controllers
                     bboxCrs = CrsUtils.DefaultCrs;
                 }
 
-                Envelope envelope = null;
-                if (bbox is {Count: > 0})
+                Envelope envelope = null;                
+                List<double> bboxCoords = ParseBbox(bbox);                
+                if (bboxCoords.Count == 4)
                 {
-                    if (bbox.Count == 4)
-                    {                        
-                        envelope = new Envelope(bbox[0], bbox[1], bbox[2], bbox[3]);
-                    }
-                    else
-                    {
-                        _logger.LogError("Invalid bounding box");
-                        return BadRequest("Invalid bounding box");
-                    }
+                    envelope = new Envelope(bboxCoords[0], bboxCoords[1], bboxCoords[2], bboxCoords[3]);
                     envelope.Transform(bboxCrs, collectionOptions.StorageCrs);
+                }
+                else
+                {
+                    _logger.LogError("Invalid bounding box");
+                    return BadRequest("Invalid bounding box");
                 }
 
                 if (crs != null)
@@ -307,6 +307,20 @@ namespace OgcApi.Net.Features.Controllers
                 _logger.LogError($"Cannot find options for specified collection {collectionId}");
                 return NotFound();
             }
+        }
+
+        private static List<double> ParseBbox(string bbox)
+        {
+            var result = new List<double>();
+            string[] tokens = bbox.Split(',');
+            foreach (string token in tokens)
+            {                
+                if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coord))
+                {
+                    result.Add(coord);
+                }                
+            }
+            return result;            
         }
 
         [HttpGet("{collectionId}/items/{featureId}")]
