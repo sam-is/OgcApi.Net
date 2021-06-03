@@ -15,7 +15,7 @@ namespace OgcApi.Net.Features.Features
         }
 
         public List<Link> Links { get; set; }
-        
+
         public int TotalMatched { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -23,7 +23,7 @@ namespace OgcApi.Net.Features.Features
             info.AddValue("links", Links);
             info.AddValue("timeStamp", DateTime.Now);
             info.AddValue("numberMatched", Items.Count);
-            info.AddValue("features", Items);            
+            info.AddValue("features", Items);
         }
     }
 }

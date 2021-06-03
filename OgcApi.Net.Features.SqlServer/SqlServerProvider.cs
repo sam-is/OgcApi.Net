@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
@@ -8,6 +7,7 @@ using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.SqlServer.Options;
+using System;
 
 namespace OgcApi.Net.Features.SqlServer
 {
@@ -72,7 +72,7 @@ namespace OgcApi.Net.Features.SqlServer
                     return null;
 
                 var geometryReader = new SqlServerBytesReader
-                { 
+                {
                     RepairRings = true,
                     IsGeography = collectionOptions.GeometryDataType == "geography"
                 };
@@ -122,7 +122,7 @@ namespace OgcApi.Net.Features.SqlServer
                         {
                             var geometryBytes = reader.GetSqlBytes(1);
                             var geometryReader = new SqlServerBytesReader
-                                {RepairRings = true, IsGeography = collectionOptions.GeometryDataType == "geography"};
+                            { RepairRings = true, IsGeography = collectionOptions.GeometryDataType == "geography" };
                             var geometry = geometryReader.Read(geometryBytes.Value);
 
                             var feature = new OgcFeature
@@ -206,7 +206,7 @@ namespace OgcApi.Net.Features.SqlServer
                     {
                         var geometryBytes = reader.GetSqlBytes(1);
                         var geometryReader = new SqlServerBytesReader
-                            {RepairRings = true, IsGeography = collectionOptions.GeometryDataType == "geography"};
+                        { RepairRings = true, IsGeography = collectionOptions.GeometryDataType == "geography" };
                         var geometry = geometryReader.Read(geometryBytes.Value);
 
                         var feature = new OgcFeature
@@ -262,7 +262,7 @@ namespace OgcApi.Net.Features.SqlServer
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
-                var featuresCount = (int) selectFeaturesCommand.ExecuteScalar();
+                var featuresCount = (int)selectFeaturesCommand.ExecuteScalar();
                 selectFeaturesCommand.Dispose();
 
                 return featuresCount;

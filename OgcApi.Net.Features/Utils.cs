@@ -9,7 +9,7 @@ namespace OgcApi.Net.Features
     public static class Utils
     {
         public static Uri GetBaseUrl(HttpRequest request)
-        {            
+        {
             return new($"{request.Scheme}://{request.Host}{request.Path}/");
         }
 

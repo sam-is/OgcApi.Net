@@ -12,7 +12,6 @@ using OgcApi.Net.Features.Temporal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Web;
 
 namespace OgcApi.Net.Features.Controllers
@@ -101,7 +100,7 @@ namespace OgcApi.Net.Features.Controllers
         {
             IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
-            Extent extent = collectionOptions.Extent;            
+            Extent extent = collectionOptions.Extent;
             if (extent == null)
             {
                 Envelope envelope = dataProvider.GetBbox(collectionOptions.Id);
@@ -181,7 +180,7 @@ namespace OgcApi.Net.Features.Controllers
         [Produces("application/geo+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]           
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetItems(
             string collectionId,
             [FromQuery] int limit = 10,
@@ -213,7 +212,7 @@ namespace OgcApi.Net.Features.Controllers
                     return BadRequest($"Unknown parameter {param.Key}");
                 }
             }
-            
+
             CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
@@ -224,8 +223,8 @@ namespace OgcApi.Net.Features.Controllers
                     bboxCrs = CrsUtils.DefaultCrs;
                 }
 
-                Envelope envelope = null;                
-                List<double> bboxCoords = ParseBbox(bbox);                
+                Envelope envelope = null;
+                List<double> bboxCoords = ParseBbox(bbox);
                 if (bboxCoords.Count == 4)
                 {
                     envelope = new Envelope(bboxCoords[0], bboxCoords[1], bboxCoords[2], bboxCoords[3]);
@@ -251,7 +250,7 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 DateTimeInterval dateTimeInterval = DateTimeInterval.Parse(dateTime);
-                
+
                 OgcFeatureCollection features = dataProvider.GetFeatures(
                     collectionOptions.Id,
                     limit,
@@ -262,9 +261,9 @@ namespace OgcApi.Net.Features.Controllers
                     apiKey: apiKey);
                 features.Transform(collectionOptions.StorageCrs, crs);
 
-                features.Links = new List<Link>() 
+                features.Links = new List<Link>()
                 {
-                    new() 
+                    new()
                     {
                         Href = baseUri,
                         Rel = "self",
@@ -314,20 +313,20 @@ namespace OgcApi.Net.Features.Controllers
             var result = new List<double>();
             string[] tokens = bbox.Split(',');
             foreach (string token in tokens)
-            {                
+            {
                 if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coord))
                 {
                     result.Add(coord);
-                }                
+                }
             }
-            return result;            
+            return result;
         }
 
         [HttpGet("{collectionId}/items/{featureId}")]
         [Produces("application/geo+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]        
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetFeature(
             string collectionId,
             string featureId,
@@ -341,7 +340,7 @@ namespace OgcApi.Net.Features.Controllers
             CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);                
+                IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -359,9 +358,9 @@ namespace OgcApi.Net.Features.Controllers
                 OgcFeature feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey: apiKey);
                 feature.Transform(collectionOptions.StorageCrs, crs);
 
-                feature.Links = new List<Link>() 
+                feature.Links = new List<Link>()
                 {
-                    new() 
+                    new()
                     {
                         Href = new Uri(baseUri, $"{collectionOptions.Id}/items/{featureId}"),
                         Rel = "self",

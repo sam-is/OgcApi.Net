@@ -13,7 +13,7 @@ namespace OgcApi.Net.Features
 
             return mvcBuilder.AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new OgcGeoJsonConverterFactory());                
+                options.JsonSerializerOptions.Converters.Add(new OgcGeoJsonConverterFactory());
             }).AddApplicationPart(typeof(OgcFeaturesApiMvcBuilderExtensions).Assembly);
         }
     }

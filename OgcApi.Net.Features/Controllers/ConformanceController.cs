@@ -45,8 +45,8 @@ namespace OgcApi.Net.Features.Controllers
         {
             _logger.LogTrace($"Get conformance with parameters {Request.QueryString}");
 
-            if (_apiOptions == null || 
-                _apiOptions.ConformsTo == null || 
+            if (_apiOptions == null ||
+                _apiOptions.ConformsTo == null ||
                 _apiOptions.ConformsTo.Count == 0)
             {
                 return new Conformance()

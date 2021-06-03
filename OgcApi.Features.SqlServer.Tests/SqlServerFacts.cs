@@ -25,7 +25,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var databaseId = sqlCommand.ExecuteScalar();
             Assert.IsNotType<DBNull>(databaseId);
         }
-        
+
         [Fact]
         public void ConstructorValid()
         {
@@ -71,7 +71,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
         [Fact]
         public void GetFeatureTableNotExists()
-        {            
+        {
             Assert.Throws<SqlException>(() => TestProviders.GetProviderWithErrors().GetFeature("Test", "1"));
         }
 
@@ -83,7 +83,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
         [Fact]
         public void GetFeatureIdDoesNotExists()
-        {            
+        {
             Assert.Null(TestProviders.GetDefaultProvider().GetFeature("Polygons", "0"));
         }
 
@@ -96,7 +96,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
         [Fact]
         public void GetBboxEmptyTable()
-        {            
+        {
             Assert.Null(TestProviders.GetDefaultProvider().GetBbox("Empty"));
         }
 
@@ -114,7 +114,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
         [Fact]
         public void GetFeaturesDefaultParameters()
-        {            
+        {
             var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons");
 
             Assert.Equal(4, features.Count);
@@ -131,7 +131,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
             Assert.Equal(2, features.Count);
             Assert.Equal("LINESTRING (4000000 0, 4000000 1000000)", features[0].Geometry.ToString());
-            Assert.Equal("MULTILINESTRING ((4000000 2000000, 4000000 3000000), (5000000 2000000, 5000000 3000000))", features[1].Geometry.ToString());            
+            Assert.Equal("MULTILINESTRING ((4000000 2000000, 4000000 3000000), (5000000 2000000, 5000000 3000000))", features[1].Geometry.ToString());
         }
 
         [Fact]
@@ -167,7 +167,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesBbox()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000) );
+            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000));
 
             Assert.Equal(2, features.Count);
             Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
@@ -192,18 +192,18 @@ namespace OgcApi.Features.SqlServer.Tests
             Assert.Equal(3, features.Count);
             Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
             Assert.Equal("Polygon with hole", features[1].Attributes["Name"]);
-            Assert.Equal("MiltiPolygon with two parts", features[2].Attributes["Name"]);            
+            Assert.Equal("MiltiPolygon with two parts", features[2].Attributes["Name"]);
         }
 
         [Fact]
         public void GetFeaturesStartAndEndDate()
         {
             var features = TestProviders.GetDefaultProvider().GetFeatures(
-                "Polygons", 
+                "Polygons",
                 startDateTime: new DateTime(2021, 1, 1),
                 endDateTime: new DateTime(2022, 1, 1));
 
-            Assert.Equal(2, features.Count);            
+            Assert.Equal(2, features.Count);
             Assert.Equal("Polygon with hole", features[0].Attributes["Name"]);
             Assert.Equal("MiltiPolygon with two parts", features[1].Attributes["Name"]);
         }
@@ -211,7 +211,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesWrongLimit()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => TestProviders.GetDefaultProvider().GetFeatures("Polygons", limit: 0));                
+            Assert.Throws<ArgumentOutOfRangeException>(() => TestProviders.GetDefaultProvider().GetFeatures("Polygons", limit: 0));
         }
 
         [Fact]
@@ -245,14 +245,14 @@ namespace OgcApi.Features.SqlServer.Tests
 
         [Fact]
         public void GetFeaturesCount()
-        {            
+        {
             Assert.Equal(4, TestProviders.GetDefaultProvider().GetFeaturesCount("Polygons"));
         }
 
         [Fact]
         public void GetFeaturesCountEmptyTable()
         {
-            Assert.Equal(0, TestProviders.GetDefaultProvider().GetFeaturesCount("Empty"));            
+            Assert.Equal(0, TestProviders.GetDefaultProvider().GetFeaturesCount("Empty"));
         }
 
         [Fact]

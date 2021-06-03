@@ -6,7 +6,7 @@ namespace OgcApi.Net.Features.Resources
     public class Link
     {
         public Uri Href { get; set; }
-        
+
         public string Rel { get; set; }
 
         public string Type { get; set; }

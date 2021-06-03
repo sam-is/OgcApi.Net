@@ -12,13 +12,13 @@ namespace OgcApi.Net.Features.Features
         }
 
         public override void Write(Utf8JsonWriter writer, OgcFeatureCollection value, JsonSerializerOptions options)
-        {            
+        {
             writer.WriteStartObject();
             writer.WriteString("type", "FeatureCollection");
 
             writer.WriteString("timeStamp", DateTime.Now);
             writer.WriteString("numberMatched", value.TotalMatched.ToString());
-            writer.WriteString("numberReturned", value.Count.ToString());            
+            writer.WriteString("numberReturned", value.Count.ToString());
 
             if (value.Links != null)
             {
@@ -28,7 +28,7 @@ namespace OgcApi.Net.Features.Features
                     JsonSerializer.Serialize(writer, link, options);
                 }
                 writer.WriteEndArray();
-            }            
+            }
 
             writer.WriteStartArray("features");
             foreach (var feature in value)

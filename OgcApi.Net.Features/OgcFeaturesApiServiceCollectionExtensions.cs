@@ -8,7 +8,7 @@ namespace OgcApi.Net.Features
     {
         public static IServiceCollection AddOgcApi(
            this IServiceCollection services, Action<OgcApiOptions> configOptions)
-        {            
+        {
             return services.Configure(configOptions);
         }
     }

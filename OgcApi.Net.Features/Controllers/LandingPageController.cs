@@ -48,7 +48,7 @@ namespace OgcApi.Net.Features.Controllers
             _logger.LogTrace($"Get landing page with parameters {Request.QueryString}");
 
             List<Link> links;
-            if (_apiOptions.Links == null || 
+            if (_apiOptions.Links == null ||
                 _apiOptions.Links.Count == 0)
             {
                 links = new List<Link>()
@@ -98,7 +98,7 @@ namespace OgcApi.Net.Features.Controllers
             else
             {
                 links = _apiOptions.Links;
-            }            
+            }
 
             return new LandingPage()
             {

@@ -7,9 +7,9 @@ namespace OgcApi.Net.Features.Features
 {
     public class OgcFeature : IFeature, IUnique
     {
-        private readonly Feature _implementation = new();      
-        
-        public object Id { get; set; }        
+        private readonly Feature _implementation = new();
+
+        public object Id { get; set; }
 
         public Geometry Geometry
         {

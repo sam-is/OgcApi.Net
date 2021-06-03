@@ -32,13 +32,13 @@ namespace OgcApi.Net.Features.SqlServer
 
         public FeaturesSqlQueryBuilder AddCount()
         {
-            _query += "SELECT COUNT(*)";            
+            _query += "SELECT COUNT(*)";
             return this;
         }
 
         public FeaturesSqlQueryBuilder AddLimit(int offset, int limit)
         {
-            _query += 
+            _query +=
                 $" ORDER BY {_collectionOptions.IdentifierColumn} " +
                 $"OFFSET {offset} ROWS " +
                 $"FETCH NEXT {limit} ROWS ONLY ";
@@ -47,14 +47,14 @@ namespace OgcApi.Net.Features.SqlServer
 
         public FeaturesSqlQueryBuilder AddFrom()
         {
-            _query += $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ";            
+            _query += $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ";
             return this;
         }
 
         public FeaturesSqlQueryBuilder AddWhere(Envelope bbox)
         {
             if (bbox != null)
-            {                
+            {
                 _predicateConditions.Add($"{_collectionOptions.GeometryColumn}.STIntersects({_collectionOptions.GeometryDataType}::STGeomFromText(@Bbox, @GeometrySRID)) = 1");
                 _sqlParameters.Add(new SqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
                 _sqlParameters.Add(new SqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
@@ -81,7 +81,7 @@ namespace OgcApi.Net.Features.SqlServer
         }
 
         public FeaturesSqlQueryBuilder AddWhere(string featureIdColumn)
-        {            
+        {
             _predicateConditions.Add($"{_collectionOptions.IdentifierColumn} = @FeatureId");
             _sqlParameters.Add(new SqlParameter("@FeatureId", featureIdColumn));
             return this;
@@ -105,10 +105,10 @@ namespace OgcApi.Net.Features.SqlServer
                 _query += "WHERE " + string.Join(" AND ", _predicateConditions);
             }
             return this;
-        }        
+        }
 
         public SqlCommand BuildCommand(SqlConnection connection)
-        {            
+        {
             var sqlCommand = new SqlCommand(_query, connection);
             sqlCommand.Parameters.AddRange(_sqlParameters.ToArray());
 

@@ -11,7 +11,7 @@ namespace OgcApi.Net.Features.Options
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             LandingPageOptions landingPageOptions = options.LandingPage;
-            if (landingPageOptions == null || 
+            if (landingPageOptions == null ||
                 (landingPageOptions.ApiDescriptionPage == null && landingPageOptions.ApiDocumentPage == null))
             {
                 throw new OptionsValidationException(
@@ -21,7 +21,7 @@ namespace OgcApi.Net.Features.Options
             }
 
             CollectionsOptions collectionsOptions = options.Collections;
-            if (options.Collections == null || 
+            if (options.Collections == null ||
                 options.Collections.Items == null ||
                 options.Collections.Items.Count == 0)
             {

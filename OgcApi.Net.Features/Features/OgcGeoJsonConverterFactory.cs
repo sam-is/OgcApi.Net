@@ -13,7 +13,7 @@ namespace OgcApi.Net.Features.Features
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-        {            
+        {
             if (typeToConvert == typeof(OgcFeatureCollection))
                 return new OgcFeatureCollectionConverter();
             if (typeToConvert == typeof(OgcFeature))

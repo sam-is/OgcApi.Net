@@ -8,7 +8,7 @@ namespace OgcApi.Net.Features.Swagger
         public const string BasePath = "/api/ogc";
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
-        {            
+        {
             swaggerDoc.Servers.Add(new OpenApiServer() { Url = BasePath });
 
             var paths = new OpenApiPaths();

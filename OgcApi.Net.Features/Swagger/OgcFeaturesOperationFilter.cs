@@ -10,7 +10,7 @@ namespace OgcApi.Net.Features.Swagger
         {
             if (context.DocumentName == "ogc")
             {
-                OpenApiParameter apiKeyParameter = null;                
+                OpenApiParameter apiKeyParameter = null;
                 foreach (var parameter in operation.Parameters)
                 {
                     if (parameter.Name == "limit")
@@ -27,7 +27,7 @@ namespace OgcApi.Net.Features.Swagger
                     }
 
                     if (parameter.Name == "bbox")
-                    {                        
+                    {
                         parameter.Style = ParameterStyle.Form;
                         parameter.Explode = false;
                         parameter.Schema = new OpenApiSchema()

@@ -10,7 +10,7 @@ namespace OgcApi.Net.Features.Swagger
     public static class OgcFeaturesApiSwaggerServiceCollectionExtensions
     {
         public static IServiceCollection AddOgcApiSwaggerGen(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             bool useApiKeySecuritySchema = false,
             Action<SwaggerGenOptions> setupAction = null)
         {
@@ -23,7 +23,7 @@ namespace OgcApi.Net.Features.Swagger
                 options.OperationFilter<OgcFeaturesOperationFilter>();
                 options.DocumentFilter<OgcServersDocumentFilter>();
                 options.IncludeXmlComments(xmlPath);
-                
+
                 if (useApiKeySecuritySchema)
                 {
                     options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme()
@@ -35,11 +35,11 @@ namespace OgcApi.Net.Features.Swagger
                     });
 
                     options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                    {                         
+                    {
                         {
                             new OpenApiSecurityScheme
                             {
-                                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }                                
+                                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
                             },
                             Array.Empty<string>()
                         }

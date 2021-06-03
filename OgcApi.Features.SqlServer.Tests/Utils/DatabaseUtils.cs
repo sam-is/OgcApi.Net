@@ -11,15 +11,15 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
 
         private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
 
-        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";        
+        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
 
         public static void RecreateDatabase()
-        {            
+        {
             using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
             sqlConnection.Open();
 
             using var createDatabaseCommand = new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
-            createDatabaseCommand.ExecuteNonQuery();            
+            createDatabaseCommand.ExecuteNonQuery();
 
             using var installDatabaseCommand = new SqlCommand(string.Format(GetInstallSqlScript("DatabaseInstall"), DatabaseName), sqlConnection);
             installDatabaseCommand.ExecuteNonQuery();
@@ -36,7 +36,7 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
             }
 
             using var streamReader = new StreamReader(stream);
-            return streamReader.ReadToEnd();            
+            return streamReader.ReadToEnd();
         }
 
         private static string GetConnectionStringTemplate()
@@ -45,7 +45,7 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
         }
 
         public static string GetConnectionString()
-        {            
+        {
             return string.Format(GetConnectionStringTemplate(), DatabaseName);
         }
     }
