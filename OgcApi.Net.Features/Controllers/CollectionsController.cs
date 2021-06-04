@@ -227,7 +227,7 @@ namespace OgcApi.Net.Features.Controllers
                 List<double> bboxCoords = ParseBbox(bbox);
                 if (bboxCoords.Count == 4)
                 {
-                    envelope = new Envelope(bboxCoords[0], bboxCoords[1], bboxCoords[2], bboxCoords[3]);
+                    envelope = new Envelope(bboxCoords[0], bboxCoords[2], bboxCoords[1], bboxCoords[3]);
                     envelope.Transform(bboxCrs, collectionOptions.StorageCrs);
                 }
                 else
