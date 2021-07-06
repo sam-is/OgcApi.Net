@@ -23,8 +23,8 @@ This project uses:
 NuGet packages:
 Package | Description | Link
 --- | --- | ---
-OgcApi.Net.Features | OGC API - Features implementation without specific implementations of the data providers | ![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features)
-OgcApi.Net.Features.SqlServer | Sql Server data provider implementation | ![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features.SqlServer)
+OgcApi.Net.Features | OGC API - Features implementation without specific implementations of the data providers | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features)](https://www.nuget.org/packages/OgcApi.Net.Features/)
+OgcApi.Net.Features.SqlServer | Sql Server data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features.SqlServer)](https://www.nuget.org/packages/OgcApi.Net.Features.SqlServer/)
 
 ## Features API
 
