@@ -54,7 +54,7 @@ namespace OgcApi.Net.Features.PostGis
             }
 
             var bboxQueryTemplate =
-                $"SELECT ST_Extent({collectionOptions.GeometryColumn}) FROM \"{collectionOptions.Schema}\".\"{collectionOptions.Table}\"";
+                $"SELECT ST_Envelope({collectionOptions.GeometryColumn}) FROM \"{collectionOptions.Schema}\".\"{collectionOptions.Table}\"";
 
             _logger.LogTrace($"GetBbox database query: {bboxQueryTemplate}");
 
