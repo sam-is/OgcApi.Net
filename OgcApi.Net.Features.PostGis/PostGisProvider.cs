@@ -211,7 +211,7 @@ namespace OgcApi.Net.Features.PostGis
                         {
                             RepairRings = true
                         };
-                        var geometryStream = reader.GetStream(0);
+                        var geometryStream = reader.GetStream(1);
                         var geometry = geometryReader.Read(geometryStream);
 
                         var feature = new OgcFeature
@@ -267,10 +267,10 @@ namespace OgcApi.Net.Features.PostGis
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
-                var featuresCount = (int)selectFeaturesCommand.ExecuteScalar();
+                var featuresCount = (long)selectFeaturesCommand.ExecuteScalar();
                 selectFeaturesCommand.Dispose();
 
-                return featuresCount;
+                return (int)featuresCount;
             }
             catch (Exception ex)
             {

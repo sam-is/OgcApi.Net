@@ -47,7 +47,7 @@ namespace OgcApi.Net.Features.PostGis
 
         public FeaturesSqlQueryBuilder AddFrom()
         {
-            _query += $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ";
+            _query += $"FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ";
             return this;
         }
 
