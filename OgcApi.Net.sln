@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Features.SqlServer.T
 		{656A879F-2D07-4E5A-8D2C-65A31A515B84} = {656A879F-2D07-4E5A-8D2C-65A31A515B84}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.Features.PostGis", "OgcApi.Net.Features.PostGis\OgcApi.Net.Features.PostGis.csproj", "{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DC0179F-88AE-4974-A0F0-00B5C64966FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,28 +1,28 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using Npgsql;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Features;
-using OgcApi.Net.Features.SqlServer.Options;
+using OgcApi.Net.Features.PostGis.Options;
 using System;
 
-namespace OgcApi.Net.Features.SqlServer
+namespace OgcApi.Net.Features.PostGis
 {
-    public class SqlServerProvider : IDataProvider
+    public class PostGisProvider : IDataProvider
     {
         public const int FeaturesMinimumLimit = 1;
 
         public const int FeaturesMaximumLimit = 10000;
 
-        private readonly SqlServerCollectionSourcesOptions _collectionsOptions;
+        private readonly PostGisCollectionSourcesOptions _collectionsOptions;
 
         private readonly ILogger _logger;
 
-        public SqlServerProvider(IOptionsMonitor<SqlServerCollectionSourcesOptions> sqlServerCollectionSourcesOptions,
-            ILogger<SqlServerProvider> logger)
+        public PostGisProvider(IOptionsMonitor<PostGisCollectionSourcesOptions> sqlServerCollectionSourcesOptions,
+            ILogger<PostGisProvider> logger)
         {
             if (sqlServerCollectionSourcesOptions == null)
                 throw new ArgumentNullException(nameof(sqlServerCollectionSourcesOptions));
@@ -32,7 +32,7 @@ namespace OgcApi.Net.Features.SqlServer
             try
             {
                 _collectionsOptions = sqlServerCollectionSourcesOptions.CurrentValue;
-                SqlServerCollectionSourcesOptionsValidator.Validate(_collectionsOptions);
+                PostGisCollectionSourcesOptionsValidator.Validate(_collectionsOptions);
             }
             catch (OptionsValidationException ex)
             {
@@ -41,7 +41,7 @@ namespace OgcApi.Net.Features.SqlServer
             }
         }
 
-        public string SourceType { get; } = "SqlServer";
+        public string SourceType { get; } = "PostGis";
 
         public Envelope GetBbox(string collectionId, string apiKey = null)
         {
@@ -49,21 +49,21 @@ namespace OgcApi.Net.Features.SqlServer
             if (collectionOptions == null)
             {
                 _logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided Sql Server options");
+                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
             var bboxQueryTemplate =
-                $"SELECT {collectionOptions.GeometryDataType}::EnvelopeAggregate({collectionOptions.GeometryColumn}) FROM [{collectionOptions.Schema}].[{collectionOptions.Table}]";
+                $"SELECT ST_Extent({collectionOptions.GeometryColumn}) FROM \"{collectionOptions.Schema}\".\"{collectionOptions.Table}\"";
 
             _logger.LogTrace($"GetBbox database query: {bboxQueryTemplate}");
 
             try
             {
-                using var connection = new SqlConnection(collectionOptions.ConnectionString);
+                using var connection = new NpgsqlConnection(collectionOptions.ConnectionString);
                 connection.Open();
 
-                using var selectBboxCommand = new SqlCommand(bboxQueryTemplate, connection);
+                using var selectBboxCommand = new NpgsqlCommand(bboxQueryTemplate, connection);
 
                 using var reader = selectBboxCommand.ExecuteReader();
                 reader.Read();
@@ -71,16 +71,15 @@ namespace OgcApi.Net.Features.SqlServer
                 if (reader.IsDBNull(0))
                     return null;
 
-                var geometryReader = new SqlServerBytesReader
+                var geometryReader = new PostGisReader()
                 {
-                    RepairRings = true,
-                    IsGeography = collectionOptions.GeometryDataType == "geography"
+                    RepairRings = true
                 };
-                var geometryBytes = reader.GetSqlBytes(0);
+                var geometryStream = reader.GetStream(0);
 
                 _logger.LogTrace("GetBbox database query completed successfully");
 
-                return geometryReader.Read(geometryBytes.Value).EnvelopeInternal;
+                return geometryReader.Read(geometryStream).EnvelopeInternal;
             }
             catch (Exception ex)
             {
@@ -101,7 +100,7 @@ namespace OgcApi.Net.Features.SqlServer
 
             try
             {
-                using var connection = new SqlConnection(collectionOptions.ConnectionString);
+                using var connection = new NpgsqlConnection(collectionOptions.ConnectionString);
                 connection.Open();
 
                 var featuresQueryBuilder = new FeaturesSqlQueryBuilder(collectionOptions);
@@ -120,13 +119,12 @@ namespace OgcApi.Net.Features.SqlServer
                     if (reader.Read())
                         if (!reader.IsDBNull(1))
                         {
-                            var geometryBytes = reader.GetSqlBytes(1);
-                            var geometryReader = new SqlServerBytesReader 
-                            { 
-                                RepairRings = true, 
-                                IsGeography = collectionOptions.GeometryDataType == "geography" 
+                            var geometryReader = new PostGisReader()
+                            {
+                                RepairRings = true
                             };
-                            var geometry = geometryReader.Read(geometryBytes.Value);
+                            var geometryStream = reader.GetStream(0);
+                            var geometry = geometryReader.Read(geometryStream);
 
                             var feature = new OgcFeature
                             {
@@ -188,7 +186,7 @@ namespace OgcApi.Net.Features.SqlServer
 
             try
             {
-                using var connection = new SqlConnection(collectionOptions.ConnectionString);
+                using var connection = new NpgsqlConnection(collectionOptions.ConnectionString);
                 connection.Open();
 
                 var featuresQueryBuilder = new FeaturesSqlQueryBuilder(collectionOptions);
@@ -209,13 +207,12 @@ namespace OgcApi.Net.Features.SqlServer
                 while (reader.Read())
                     if (!reader.IsDBNull(1))
                     {
-                        var geometryBytes = reader.GetSqlBytes(1);
-                        var geometryReader = new SqlServerBytesReader
-                        { 
-                            RepairRings = true, 
-                            IsGeography = collectionOptions.GeometryDataType == "geography" 
+                        var geometryReader = new PostGisReader()
+                        {
+                            RepairRings = true
                         };
-                        var geometry = geometryReader.Read(geometryBytes.Value);
+                        var geometryStream = reader.GetStream(0);
+                        var geometry = geometryReader.Read(geometryStream);
 
                         var feature = new OgcFeature
                         {
@@ -257,7 +254,7 @@ namespace OgcApi.Net.Features.SqlServer
 
             try
             {
-                using var connection = new SqlConnection(collectionOptions.ConnectionString);
+                using var connection = new NpgsqlConnection(collectionOptions.ConnectionString);
                 connection.Open();
 
                 var featuresQueryBuilder = new FeaturesSqlQueryBuilder(collectionOptions);
