@@ -225,15 +225,18 @@ namespace OgcApi.Net.Features.Controllers
 
                 Envelope envelope = null;
                 List<double> bboxCoords = ParseBbox(bbox);
-                if (bboxCoords.Count == 4)
+                if (bboxCoords.Count != 0)
                 {
-                    envelope = new Envelope(bboxCoords[0], bboxCoords[2], bboxCoords[1], bboxCoords[3]);
-                    envelope.Transform(bboxCrs, collectionOptions.StorageCrs);
-                }
-                else
-                {
-                    _logger.LogError("Invalid bounding box");
-                    return BadRequest("Invalid bounding box");
+                    if (bboxCoords.Count == 4)
+                    {
+                        envelope = new Envelope(bboxCoords[0], bboxCoords[2], bboxCoords[1], bboxCoords[3]);
+                        envelope.Transform(bboxCrs, collectionOptions.StorageCrs);
+                    }
+                    else
+                    {
+                        _logger.LogError("Invalid bounding box");
+                        return BadRequest("Invalid bounding box");
+                    }
                 }
 
                 if (crs != null)
@@ -311,14 +314,17 @@ namespace OgcApi.Net.Features.Controllers
         private static List<double> ParseBbox(string bbox)
         {
             var result = new List<double>();
-            string[] tokens = bbox.Split(',');
-            foreach (string token in tokens)
+            if (!string.IsNullOrWhiteSpace(bbox))
             {
-                if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coord))
+                string[] tokens = bbox.Split(',');
+                foreach (string token in tokens)
                 {
-                    result.Add(coord);
+                    if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coord))
+                    {
+                        result.Add(coord);
+                    }
                 }
-            }
+            }            
             return result;
         }
 
