@@ -47,3 +47,9 @@ jobs:
         PROJECT_FILE_PATH: OgcApi.Net.Features.SqlServer/OgcApi.Net.Features.SqlServer.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+    - name: Publish OgcApi.Net.Features.PostGis
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        PROJECT_FILE_PATH: OgcApi.Net.Features.PostGis/OgcApi.Net.Features.PostGis.csproj
+        VERSION_FILE_PATH: Directory.Build.props
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
