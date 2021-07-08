@@ -4,7 +4,7 @@ using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Features.PostGis.Options;
 using System;
 
-namespace OgcApi.Net.Features.SqlServer
+namespace OgcApi.Net.Features.PostGis
 {
     public static class OgcApiServiceCollectionExtensions
     {

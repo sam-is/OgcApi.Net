@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Description>PostgreSQL/PostGis provider for the OGC API Features Standard implementation</Description>
   </PropertyGroup>
 
   <ItemGroup>

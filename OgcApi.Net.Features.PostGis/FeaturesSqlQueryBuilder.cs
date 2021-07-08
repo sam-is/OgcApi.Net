@@ -55,7 +55,7 @@ namespace OgcApi.Net.Features.PostGis
         {
             if (bbox != null)
             {
-                _predicateConditions.Add($"ST_Intersects({_collectionOptions.GeometryColumn}, ST_GeomFromText(@Bbox, @GeometrySRID)) = 1");
+                _predicateConditions.Add($"ST_Intersects({_collectionOptions.GeometryColumn}, ST_GeomFromText(@Bbox, @GeometrySRID))");
                 _sqlParameters.Add(new NpgsqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
                 _sqlParameters.Add(new NpgsqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
             }
