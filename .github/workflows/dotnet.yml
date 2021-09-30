@@ -26,6 +26,8 @@ jobs:
         image: postgis/postgis
         env:
           POSTGRES_PASSWORD: password 
+        ports:          
+          - 5432:5432
 
     steps:    
     - uses: actions/checkout@v2
