@@ -55,12 +55,12 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Collections Get()
         {
-            Uri baseUri = Utils.GetBaseUrl(Request);
+            var baseUri = Utils.GetBaseUrl(Request);
 
             _logger.LogTrace($"Get collections with parameters {Request.QueryString}");
 
             var collections = new List<Collection>();
-            foreach (CollectionOptions collectionOptions in _apiOptions.Collections.Items)
+            foreach (var collectionOptions in _apiOptions.Collections.Items)
             {
                 collections.Add(GetCollectionMetadata(new Uri(baseUri, $"{collectionOptions.Id}/items"), collectionOptions));
             }
@@ -98,12 +98,12 @@ namespace OgcApi.Net.Features.Controllers
 
         private Collection GetCollectionMetadata(Uri uri, CollectionOptions collectionOptions)
         {
-            IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+            var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
-            Extent extent = collectionOptions.Extent;
+            var extent = collectionOptions.Extent;
             if (extent == null)
             {
-                Envelope envelope = dataProvider.GetBbox(collectionOptions.Id);
+                var envelope = dataProvider.GetBbox(collectionOptions.Id);
                 envelope.Transform(collectionOptions.StorageCrs, CrsUtils.DefaultCrs);
 
                 extent = new Extent()
@@ -161,11 +161,11 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Collection> Get(string collectionId)
         {
-            Uri baseUri = Utils.GetBaseUrl(Request);
+            var baseUri = Utils.GetBaseUrl(Request);
 
             _logger.LogTrace($"Get collection with parameters {Request.QueryString}");
 
-            CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
                 return Ok(GetCollectionMetadata(new Uri(baseUri, "items"), collectionOptions));
@@ -191,7 +191,7 @@ namespace OgcApi.Net.Features.Controllers
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
-            Uri baseUri = Utils.GetBaseUrl(Request);
+            var baseUri = Utils.GetBaseUrl(Request);
 
             _logger.LogTrace($"Get collection items with parameters {Request.QueryString}");
 
@@ -206,17 +206,15 @@ namespace OgcApi.Net.Features.Controllers
             };
             foreach (var param in Request.Query)
             {
-                if (!validParams.Contains(param.Key))
-                {
-                    _logger.LogError($"Unknown parameter {param.Key}");
-                    return BadRequest($"Unknown parameter {param.Key}");
-                }
+                if (validParams.Contains(param.Key)) continue;
+                _logger.LogError($"Unknown parameter {param.Key}");
+                return BadRequest($"Unknown parameter {param.Key}");
             }
 
-            CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (bboxCrs == null)
                 {
@@ -224,7 +222,7 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 Envelope envelope = null;
-                List<double> bboxCoords = ParseBbox(bbox);
+                var bboxCoords = ParseBbox(bbox);
                 if (bboxCoords.Count != 0)
                 {
                     if (bboxCoords.Count == 4)
@@ -252,16 +250,16 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                DateTimeInterval dateTimeInterval = DateTimeInterval.Parse(dateTime);
+                var dateTimeInterval = DateTimeInterval.Parse(dateTime);
 
-                OgcFeatureCollection features = dataProvider.GetFeatures(
+                var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
                     limit,
                     offset,
                     envelope,
-                    startDateTime: dateTimeInterval.Start,
-                    endDateTime: dateTimeInterval.End,
-                    apiKey: apiKey);
+                    dateTimeInterval.Start,
+                    dateTimeInterval.End,
+                    apiKey);
                 features.Transform(collectionOptions.StorageCrs, crs);
 
                 features.Links = new List<Link>()
@@ -283,9 +281,9 @@ namespace OgcApi.Net.Features.Controllers
                 features.TotalMatched = dataProvider.GetFeaturesCount(
                     collectionOptions.Id,
                     envelope,
-                    startDateTime: dateTimeInterval.Start,
-                    endDateTime: dateTimeInterval.End,
-                    apiKey: apiKey);
+                    dateTimeInterval.Start,
+                    dateTimeInterval.End,
+                    apiKey);
 
                 if (offset + limit < features.TotalMatched)
                 {
@@ -304,27 +302,23 @@ namespace OgcApi.Net.Features.Controllers
 
                 return Ok(features);
             }
-            else
-            {
-                _logger.LogError($"Cannot find options for specified collection {collectionId}");
-                return NotFound();
-            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
         }
 
         private static List<double> ParseBbox(string bbox)
         {
             var result = new List<double>();
-            if (!string.IsNullOrWhiteSpace(bbox))
+            if (string.IsNullOrWhiteSpace(bbox)) return result;
+            var tokens = bbox.Split(',');
+            foreach (var token in tokens)
             {
-                string[] tokens = bbox.Split(',');
-                foreach (string token in tokens)
+                if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out var coord))
                 {
-                    if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coord))
-                    {
-                        result.Add(coord);
-                    }
+                    result.Add(coord);
                 }
-            }            
+            }
             return result;
         }
 
@@ -339,14 +333,14 @@ namespace OgcApi.Net.Features.Controllers
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
-            Uri baseUri = Utils.GetBaseUrl(Request);
+            var baseUri = Utils.GetBaseUrl(Request);
 
             _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
 
-            CollectionOptions collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                IDataProvider dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -361,7 +355,7 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                OgcFeature feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey: apiKey);
+                var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
                 feature.Transform(collectionOptions.StorageCrs, crs);
 
                 feature.Links = new List<Link>()
@@ -388,11 +382,182 @@ namespace OgcApi.Net.Features.Controllers
 
                 return Ok(feature);
             }
-            else
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpPost("{collectionId}/items")]
+        [Produces("text/plain")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult CreateFeature(
+            string collectionId,
+            [FromBody] OgcFeature feature,
+            [FromQuery] Uri crs = null,
+            [FromQuery] string apiKey = null)
+        {
+            var baseUri = Utils.GetBaseUrl(Request);
+
+            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
             {
-                _logger.LogError($"Cannot find options for specified collection {collectionId}");
-                return NotFound();
+                if (!collectionOptions.AllowCreate)
+                {
+                    return Unauthorized();
+                }
+
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+
+                if (crs != null)
+                {
+                    if (!collectionOptions.Crs.Contains(crs))
+                    {
+                        _logger.LogError("Invalid parameter crs");
+                        return BadRequest("Invalid parameter crs");
+                    }
+                }
+                else
+                {
+                    crs = CrsUtils.DefaultCrs;
+                }
+
+                feature.Transform(crs, collectionOptions.StorageCrs);
+
+                var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
+                return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
             }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpPut("{collectionId}/items/{featureId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult ReplaceFeature(
+            string collectionId,
+            string featureId,
+            [FromBody] OgcFeature feature,
+            [FromQuery] Uri crs = null,
+            [FromQuery] string apiKey = null)
+        {
+            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
+            {
+                if (!collectionOptions.AllowReplace)
+                {
+                    return Unauthorized();
+                }
+
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+
+                if (crs != null)
+                {
+                    if (!collectionOptions.Crs.Contains(crs))
+                    {
+                        _logger.LogError("Invalid parameter crs");
+                        return BadRequest("Invalid parameter crs");
+                    }
+                }
+                else
+                {
+                    crs = CrsUtils.DefaultCrs;
+                }
+
+                feature.Transform(crs, collectionOptions.StorageCrs);
+
+                dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
+                return Ok();
+            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpDelete("{collectionId}/items/{featureId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult DeleteFeature(
+            string collectionId,
+            string featureId,
+            [FromQuery] string apiKey = null)
+        {
+            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
+            {
+                if (!collectionOptions.AllowDelete)
+                {
+                    return Unauthorized();
+                }
+
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+
+                dataProvider.DeleteFeature(collectionId, featureId, apiKey);
+                return Ok();
+            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpPatch("{collectionId}/items/{featureId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult UpdateFeature(
+            string collectionId,
+            string featureId,
+            [FromBody] OgcFeature feature,
+            [FromQuery] Uri crs = null,
+            [FromQuery] string apiKey = null)
+        {
+            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
+            {
+                if (!collectionOptions.AllowUpdate)
+                {
+                    return Unauthorized();
+                }
+
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+
+                if (crs != null)
+                {
+                    if (!collectionOptions.Crs.Contains(crs))
+                    {
+                        _logger.LogError("Invalid parameter crs");
+                        return BadRequest("Invalid parameter crs");
+                    }
+                }
+                else
+                {
+                    crs = CrsUtils.DefaultCrs;
+                }
+
+                feature.Transform(crs, collectionOptions.StorageCrs);
+
+                dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
+                return Ok();
+            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
         }
     }
 }

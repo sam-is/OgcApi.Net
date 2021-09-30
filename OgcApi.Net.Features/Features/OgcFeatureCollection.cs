@@ -16,7 +16,7 @@ namespace OgcApi.Net.Features.Features
 
         public List<Link> Links { get; set; }
 
-        public int TotalMatched { get; set; }
+        public long TotalMatched { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

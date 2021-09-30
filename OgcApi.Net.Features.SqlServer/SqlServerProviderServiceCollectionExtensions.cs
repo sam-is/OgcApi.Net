@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.SqlServer.Options;
 using System;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features.SqlServer
 {
     public static class OgcApiServiceCollectionExtensions
     {
         public static IServiceCollection AddOgcApiSqlServerProvider(
-            this IServiceCollection services, Action<SqlServerCollectionSourcesOptions> configureOptions)
+            this IServiceCollection services, Action<SqlCollectionSourcesOptions> configureOptions)
         {
             services.Configure(configureOptions);
 
