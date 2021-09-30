@@ -215,7 +215,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public int GetFeaturesCount(
+        public long GetFeaturesCount(
             string collectionId,
             Envelope bbox = null,
             DateTime? startDateTime = null,
@@ -245,10 +245,10 @@ namespace OgcApi.Net.Features.DataProviders
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
-                var featuresCount = (int)selectFeaturesCommand.ExecuteScalar()!;
+                var featuresCount = Convert.ToInt64(selectFeaturesCommand.ExecuteScalar());
                 selectFeaturesCommand.Dispose();
 
-                return (int)featuresCount;
+                return featuresCount;
             }
             catch (Exception ex)
             {

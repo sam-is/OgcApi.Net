@@ -1,6 +1,6 @@
-﻿using OgcApi.Features.SqlServer.Tests.Utils;
+﻿using OgcApi.Features.PostGis.Tests.Utils;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.Features.Postgis.Tests
 {
     public class DatabaseFixture
     {

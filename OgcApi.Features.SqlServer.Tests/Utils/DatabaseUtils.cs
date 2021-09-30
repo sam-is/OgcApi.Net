@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace OgcApi.Features.SqlServer.Tests.Utils
 {
@@ -18,16 +17,18 @@ namespace OgcApi.Features.SqlServer.Tests.Utils
             using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
             sqlConnection.Open();
 
-            using var createDatabaseCommand = new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
+            using var createDatabaseCommand =
+                new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
             createDatabaseCommand.ExecuteNonQuery();
 
-            using var installDatabaseCommand = new SqlCommand(string.Format(GetInstallSqlScript("DatabaseInstall"), DatabaseName), sqlConnection);
+            using var installDatabaseCommand =
+                new SqlCommand(string.Format(GetInstallSqlScript("DatabaseInstall"), DatabaseName), sqlConnection);
             installDatabaseCommand.ExecuteNonQuery();
         }
 
         private static string GetInstallSqlScript(string scriptName)
         {
-            Assembly assembly = typeof(DatabaseUtils).Assembly;
+            var assembly = typeof(DatabaseUtils).Assembly;
             using var stream = assembly.GetManifestResourceStream($"OgcApi.Features.SqlServer.Tests.Utils.{scriptName}.sql");
 
             if (stream == null)

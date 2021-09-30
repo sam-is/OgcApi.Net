@@ -28,7 +28,7 @@ namespace OgcApi.Net.Features.PostGis
 
         public IFeaturesSqlQueryBuilder AddSelectBbox()
         {
-            _query += $"SELECT ST_Envelope({_collectionOptions.GeometryColumn}) FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\"";
+            _query += $"SELECT ST_Envelope(ST_Union(ST_Envelope({_collectionOptions.GeometryColumn}))) FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\"";
             return this;
         }
 
@@ -82,6 +82,8 @@ namespace OgcApi.Net.Features.PostGis
             {
                 NpgsqlDbType = NpgsqlDbType.Bytea
             });
+
+            _query += " ";
 
             return this;
         }
@@ -179,7 +181,7 @@ namespace OgcApi.Net.Features.PostGis
 
         public IFeaturesSqlQueryBuilder AddWhere(string featureId)
         {
-            _predicateConditions.Add($"{_collectionOptions.IdentifierColumn} = @FeatureId");
+            _predicateConditions.Add($"CAST({_collectionOptions.IdentifierColumn} AS text) = @FeatureId");
             _sqlParameters.Add(new NpgsqlParameter("@FeatureId", featureId));
             return this;
         }

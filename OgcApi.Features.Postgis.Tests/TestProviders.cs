@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using OgcApi.Features.SqlServer.Tests.Utils;
+using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.SqlServer;
+using OgcApi.Net.Features.PostGis;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.Features.PostGis.Tests
 {
     public static class TestProviders
     {
@@ -20,85 +20,85 @@ namespace OgcApi.Features.SqlServer.Tests
                     {
                         Id = "Polygons",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Polygons",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "polygons",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        DateTimeColumn = "Date",
+                        DateTimeColumn = "date",
                         Properties = new List<string>()
                         {
-                            "Name",
-                            "Number",
-                            "S",
-                            "Date"
+                            "name",
+                            "num",
+                            "s",
+                            "date"
                         }
                     },
                     new()
                     {
                         Id = "LineStrings",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "LineStrings",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "linestrings",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         Properties = new List<string>()
                         {
-                            "Name"
+                            "name"
                         }
                     },
                     new()
                     {
                         Id = "Points",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Points",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "points",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         Properties = new List<string>()
                         {
-                            "Name"
+                            "name"
                         }
                     },
                     new()
                     {
                         Id = "Empty",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "EmptyTable",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "empty_table",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         Properties = new List<string>()
                         {
-                            "Name"
+                            "name"
                         }
                     },
                     new()
                     {
                         Id = "PolygonsForInsert",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "PolygonsForInsert",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "polygons_for_insert",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        DateTimeColumn = "Date",
+                        DateTimeColumn = "date",
                         Properties = new List<string>()
                         {
-                            "Name",
-                            "Number",
-                            "S",
-                            "Date"
+                            "name",
+                            "num",
+                            "s",
+                            "date"
                         }
-                    },
+                    }
                 }
             };
         }
@@ -113,10 +113,10 @@ namespace OgcApi.Features.SqlServer.Tests
                     {
                         Id = "Test",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Test",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "test",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857
                     }
@@ -134,41 +134,41 @@ namespace OgcApi.Features.SqlServer.Tests
                     {
                         Id = "PointsWithApiKey",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "PointsWithApiKey",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
+                        Schema = "public",
+                        Table = "points_with_api_key",
+                        IdentifierColumn = "id",
+                        GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         Properties = new List<string>()
                         {
                             "Name"
                         },
-                        ApiKeyPredicateForGet = "[Key] = @ApiKey"
+                        ApiKeyPredicateForGet = "key = @ApiKey"
                     }
                 }
             };
         }
 
-        public static SqlServerProvider GetDefaultProvider()
+        public static PostGisProvider GetDefaultProvider()
         {
             SqlCollectionSourcesOptions options = GetDefaultOptions();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
 
-        public static SqlServerProvider GetProviderWithErrors()
+        public static PostGisProvider GetProviderWithErrors()
         {
             SqlCollectionSourcesOptions options = GetOptionsWithUnknownTable();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
 
-        public static SqlServerProvider GetProviderWithApiKey()
+        public static PostGisProvider GetProviderWithApiKey()
         {
             SqlCollectionSourcesOptions options = GetOptionsWithApiKey();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
     }
 }

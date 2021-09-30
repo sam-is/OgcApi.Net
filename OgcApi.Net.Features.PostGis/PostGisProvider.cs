@@ -40,7 +40,7 @@ namespace OgcApi.Net.Features.PostGis
         {
             var geometryReader = new PostGisReader()
             {
-                RepairRings = true
+                RepairRings = false
             };
             var geometryStream = dataReader.GetStream(ordinal);
             return geometryReader.Read(geometryStream);

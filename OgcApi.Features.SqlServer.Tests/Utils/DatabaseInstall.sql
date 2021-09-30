@@ -1,7 +1,7 @@
 ﻿SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
-USE [OgcApiTests];
+USE [{0}];
 
 CREATE TABLE [dbo].[Polygons] (
 	[Id] [int] NOT NULL IDENTITY(1,1),
@@ -10,7 +10,7 @@ CREATE TABLE [dbo].[Polygons] (
 	[Number] [int] NULL,
 	[S] [float] NULL,
 	[Date] [datetime] NULL
-	CONSTRAINT [PK_Table1] PRIMARY KEY CLUSTERED ([Id] ASC)
+	CONSTRAINT [PK_Polygons] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 INSERT INTO [dbo].[Polygons] ([Geom], [Name], [Number], [S], [Date])
@@ -61,3 +61,13 @@ VALUES (geometry::STGeomFromText('POINT(500000 500000)', 3857), 'Point 1', '1'),
        (geometry::STGeomFromText('POINT(500000 2500000)', 3857), 'Point 2', '2'),
 	   (geometry::STGeomFromText('POINT(2500000 500000)', 3857), 'Point 3', '2'),
 	   (geometry::STGeomFromText('POINT(2500000 2500000)', 3857), 'Point 4', '2');	   
+
+CREATE TABLE [dbo].[PolygonsForInsert] (
+	[Id] [int] NOT NULL IDENTITY(1,1),
+	[Geom] [geometry] NULL,
+	[Name] [nvarchar](255) NULL,
+	[Number] [int] NULL,
+	[S] [float] NULL,
+	[Date] [datetime] NULL
+	CONSTRAINT [PK_PolygonsForInsert] PRIMARY KEY CLUSTERED ([Id] ASC)
+);

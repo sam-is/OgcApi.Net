@@ -1,30 +1,31 @@
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Features.SqlServer.Tests.Utils;
+using Npgsql;
+using OgcApi.Features.Postgis.Tests;
+using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.SqlServer;
+using OgcApi.Net.Features.PostGis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.Features.PostGis.Tests
 {
-    public class SqlServerFacts : IClassFixture<DatabaseFixture>
+    public class PostGisFacts : IClassFixture<DatabaseFixture>
     {
         [Fact]
         public void DatabaseCreation()
         {
-            using var sqlConnection = new SqlConnection(DatabaseUtils.GetConnectionString());
+            using var sqlConnection = new NpgsqlConnection(DatabaseUtils.GetConnectionString());
             sqlConnection.Open();
 
-            using var sqlCommand = new SqlCommand("SELECT DB_ID(@DatabaseName)", sqlConnection);
+            using var sqlCommand = new NpgsqlCommand("SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('@DatabaseName')", sqlConnection);
             sqlCommand.Parameters.AddWithValue("@DatabaseName", DatabaseUtils.DatabaseName);
             var databaseId = sqlCommand.ExecuteScalar();
             Assert.IsNotType<DBNull>(databaseId);
@@ -53,14 +54,14 @@ namespace OgcApi.Features.SqlServer.Tests
                 Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
 
             Assert.Throws<OptionsValidationException>(() =>
-                new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));
+                new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>()));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new SqlServerProvider(null, new NullLogger<SqlServerProvider>()));
+                new PostGisProvider(null, new NullLogger<PostGisProvider>()));
         }
 
         [Fact]
@@ -70,16 +71,16 @@ namespace OgcApi.Features.SqlServer.Tests
 
             Assert.NotNull(feature);
             Assert.Equal("POLYGON ((0 0, 0 1000000, 1000000 1000000, 1000000 0, 0 0))", feature.Geometry.ToString());
-            Assert.Equal("Simple polygon", (string)feature.Attributes["Name"]);
-            Assert.Equal(1, (int)feature.Attributes["Number"]);
-            Assert.Equal(0.25, (double)feature.Attributes["S"]);
-            Assert.Equal(new DateTime(2020, 1, 1), (DateTime)feature.Attributes["Date"]);
+            Assert.Equal("Simple polygon", (string)feature.Attributes["name"]);
+            Assert.Equal(1, (int)feature.Attributes["num"]);
+            Assert.Equal(0.25, (double)feature.Attributes["s"]);
+            Assert.Equal(new DateTime(2020, 1, 1), (DateTime)feature.Attributes["date"]);
         }
 
         [Fact]
         public void GetFeatureTableNotExists()
         {
-            Assert.Throws<SqlException>(() => TestProviders.GetProviderWithErrors().GetFeature("Test", "1"));
+            Assert.Throws<PostgresException>(() => TestProviders.GetProviderWithErrors().GetFeature("Test", "1"));
         }
 
         [Fact]
@@ -116,7 +117,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetBboxTableNotExists()
         {
-            Assert.Throws<SqlException>(() => TestProviders.GetProviderWithErrors().GetBbox("Test"));
+            Assert.Throws<PostgresException>(() => TestProviders.GetProviderWithErrors().GetBbox("Test"));
         }
 
         [Fact]
@@ -164,8 +165,8 @@ namespace OgcApi.Features.SqlServer.Tests
             var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", 2);
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
-            Assert.Equal("Polygon with hole", features[1].Attributes["Name"]);
+            Assert.Equal("Simple polygon", features[0].Attributes["name"]);
+            Assert.Equal("Polygon with hole", features[1].Attributes["name"]);
         }
 
         [Fact]
@@ -174,8 +175,8 @@ namespace OgcApi.Features.SqlServer.Tests
             var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", 2, 1);
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("Polygon with hole", features[0].Attributes["Name"]);
-            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["Name"]);
+            Assert.Equal("Polygon with hole", features[0].Attributes["name"]);
+            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["name"]);
         }
 
         [Fact]
@@ -185,8 +186,8 @@ namespace OgcApi.Features.SqlServer.Tests
                 .GetFeatures("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000));
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
-            Assert.Equal("Polygon with hole", features[1].Attributes["Name"]);
+            Assert.Equal("Simple polygon", features[0].Attributes["name"]);
+            Assert.Equal("Polygon with hole", features[1].Attributes["name"]);
         }
 
         [Fact]
@@ -196,8 +197,8 @@ namespace OgcApi.Features.SqlServer.Tests
                 .GetFeatures("Polygons", startDateTime: new DateTime(2022, 1, 1));
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("MultiPolygon with two parts", features[0].Attributes["Name"]);
-            Assert.Equal("MultiPolygon with two parts, one with hole", features[1].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts", features[0].Attributes["name"]);
+            Assert.Equal("MultiPolygon with two parts, one with hole", features[1].Attributes["name"]);
         }
 
         [Fact]
@@ -207,9 +208,9 @@ namespace OgcApi.Features.SqlServer.Tests
                 .GetFeatures("Polygons", endDateTime: new DateTime(2022, 1, 1));
 
             Assert.Equal(3, features.Count);
-            Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
-            Assert.Equal("Polygon with hole", features[1].Attributes["Name"]);
-            Assert.Equal("MultiPolygon with two parts", features[2].Attributes["Name"]);
+            Assert.Equal("Simple polygon", features[0].Attributes["name"]);
+            Assert.Equal("Polygon with hole", features[1].Attributes["name"]);
+            Assert.Equal("MultiPolygon with two parts", features[2].Attributes["name"]);
         }
 
         [Fact]
@@ -221,8 +222,8 @@ namespace OgcApi.Features.SqlServer.Tests
                 endDateTime: new DateTime(2022, 1, 1));
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("Polygon with hole", features[0].Attributes["Name"]);
-            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["Name"]);
+            Assert.Equal("Polygon with hole", features[0].Attributes["name"]);
+            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["name"]);
         }
 
         [Fact]
@@ -243,9 +244,9 @@ namespace OgcApi.Features.SqlServer.Tests
             var features = TestProviders.GetProviderWithApiKey().GetFeatures("PointsWithApiKey", apiKey: "2");
 
             Assert.Equal(3, features.Count);
-            Assert.Equal("Point 2", features[0].Attributes["Name"]);
-            Assert.Equal("Point 3", features[1].Attributes["Name"]);
-            Assert.Equal("Point 4", features[2].Attributes["Name"]);
+            Assert.Equal("Point 2", features[0].Attributes["name"]);
+            Assert.Equal("Point 3", features[1].Attributes["name"]);
+            Assert.Equal("Point 4", features[2].Attributes["name"]);
         }
 
         [Fact]
@@ -257,7 +258,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesTableNotExists()
         {
-            Assert.Throws<SqlException>(() => TestProviders.GetProviderWithErrors().GetFeatures("Test"));
+            Assert.Throws<PostgresException>(() => TestProviders.GetProviderWithErrors().GetFeatures("Test"));
         }
 
         [Fact]
@@ -281,7 +282,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesCountTableNotExists()
         {
-            Assert.Throws<SqlException>(() => TestProviders.GetProviderWithErrors().GetFeaturesCount("Test"));
+            Assert.Throws<PostgresException>(() => TestProviders.GetProviderWithErrors().GetFeaturesCount("Test"));
         }
 
         [Fact]
@@ -324,10 +325,10 @@ namespace OgcApi.Features.SqlServer.Tests
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
                         {
-                            { "Name", "CreateTest" },
-                            { "Number", 1 },
-                            { "Date", new DateTime(2021, 1, 1) },
-                            { "S", 0.25 }
+                            { "name", "CreateTest" },
+                            { "num", 1 },
+                            { "date", new DateTime(2021, 1, 1) },
+                            { "s", 0.25 }
                         }
                     ),
                     Geometry = new Polygon(
@@ -362,9 +363,9 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var insertedFeature = provider.GetFeature("PolygonsForInsert", (string)testFeature.Id);
             Assert.Equal(testFeature.Geometry, insertedFeature.Geometry);
-            Assert.Equal(testFeature.Attributes["Name"], insertedFeature.Attributes["Name"]);
-            Assert.Equal(testFeature.Attributes["Number"], insertedFeature.Attributes["Number"]);
-            Assert.Equal(testFeature.Attributes["Date"], insertedFeature.Attributes["Date"]);
+            Assert.Equal(testFeature.Attributes["name"], insertedFeature.Attributes["name"]);
+            Assert.Equal(testFeature.Attributes["num"], insertedFeature.Attributes["num"]);
+            Assert.Equal(testFeature.Attributes["date"], insertedFeature.Attributes["date"]);
 
             DeleteTestFeature(provider, (string)testFeature.Id);
         }
@@ -380,9 +381,9 @@ namespace OgcApi.Features.SqlServer.Tests
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
                         {
-                            { "Name", "CreateTest" },
-                            { "Number", 1 },
-                            { "Date", new DateTime(2021, 1, 1) }
+                            { "name", "CreateTest" },
+                            { "num", 1 },
+                            { "date", new DateTime(2021, 1, 1) }
                         }
                     )
                 };
@@ -403,9 +404,9 @@ namespace OgcApi.Features.SqlServer.Tests
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
                         {
-                            { "Name", "UpdateTest" },
-                            { "Number", 11 },
-                            { "Date", new DateTime(2021, 1, 2) }
+                            { "name", "UpdateTest" },
+                            { "num", 11 },
+                            { "date", new DateTime(2021, 1, 2) }
                         }
                     ),
                     Geometry = new Polygon(
@@ -425,10 +426,10 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var updatedFeature = provider.GetFeature("PolygonsForInsert", testFeatureId);
             Assert.Equal(featureUpdateFrom.Geometry, updatedFeature.Geometry);
-            Assert.Equal(featureUpdateFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
-            Assert.Equal(featureUpdateFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
-            Assert.Equal(featureUpdateFrom.Attributes["Date"], updatedFeature.Attributes["Date"]);
-            Assert.Equal( 0.25, updatedFeature.Attributes["S"]);
+            Assert.Equal(featureUpdateFrom.Attributes["name"], updatedFeature.Attributes["name"]);
+            Assert.Equal(featureUpdateFrom.Attributes["num"], updatedFeature.Attributes["num"]);
+            Assert.Equal(featureUpdateFrom.Attributes["date"], updatedFeature.Attributes["date"]);
+            Assert.Equal( 0.25, updatedFeature.Attributes["s"]);
 
             DeleteTestFeature(provider, testFeatureId);
         }
@@ -449,7 +450,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
                         {
-                            { "Name", "UpdateTest" }
+                            { "name", "UpdateTest" }
                         }
                     )
                 };
@@ -458,10 +459,10 @@ namespace OgcApi.Features.SqlServer.Tests
             var updatedFeature = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             Assert.Equal(featureBeforeUpdate.Geometry, updatedFeature.Geometry);
-            Assert.Equal(featureUpdateFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["Number"], updatedFeature.Attributes["Number"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["Date"], updatedFeature.Attributes["Date"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["S"], updatedFeature.Attributes["S"]);
+            Assert.Equal(featureUpdateFrom.Attributes["name"], updatedFeature.Attributes["name"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["num"], updatedFeature.Attributes["num"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["date"], updatedFeature.Attributes["date"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["s"], updatedFeature.Attributes["s"]);
 
             DeleteTestFeature(provider, testFeatureId);
         }
@@ -496,10 +497,10 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var updatedFeature = provider.GetFeature("PolygonsForInsert", testFeatureId);
             Assert.Equal(featureUpdateFrom.Geometry, updatedFeature.Geometry);
-            Assert.Equal(featureBeforeUpdate.Attributes["Name"], updatedFeature.Attributes["Name"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["Number"], updatedFeature.Attributes["Number"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["Date"], updatedFeature.Attributes["Date"]);
-            Assert.Equal(featureBeforeUpdate.Attributes["S"], updatedFeature.Attributes["S"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["name"], updatedFeature.Attributes["name"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["num"], updatedFeature.Attributes["num"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["date"], updatedFeature.Attributes["date"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["s"], updatedFeature.Attributes["s"]);
 
             DeleteTestFeature(provider, testFeatureId);
         }
@@ -518,9 +519,9 @@ namespace OgcApi.Features.SqlServer.Tests
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
                         {
-                            { "Name", "UpdateTest" },
-                            { "Number", 11 },
-                            { "Date", new DateTime(2021, 1, 1) }
+                            { "name", "UpdateTest" },
+                            { "num", 11 },
+                            { "date", new DateTime(2021, 1, 1) }
                         }
                     ),
                     Geometry = new Polygon(
@@ -540,10 +541,10 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var updatedFeature = provider.GetFeature("PolygonsForInsert", testFeatureId);
             Assert.Equal(featureReplaceFrom.Geometry, updatedFeature.Geometry);
-            Assert.Equal(featureReplaceFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
-            Assert.Equal(featureReplaceFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
-            Assert.Equal(featureReplaceFrom.Attributes["Date"], updatedFeature.Attributes["Date"]);
-            Assert.True(!updatedFeature.Attributes.GetNames().Contains("S"));
+            Assert.Equal(featureReplaceFrom.Attributes["name"], updatedFeature.Attributes["name"]);
+            Assert.Equal(featureReplaceFrom.Attributes["num"], updatedFeature.Attributes["num"]);
+            Assert.Equal(featureReplaceFrom.Attributes["date"], updatedFeature.Attributes["date"]);
+            Assert.True(!updatedFeature.Attributes.GetNames().Contains("s"));
 
             DeleteTestFeature(provider, testFeatureId);
         }
