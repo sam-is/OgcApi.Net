@@ -1,9 +1,9 @@
-﻿using OgcApi.Net.Features.DataProviders;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OgcApi.Net.Features.DataProviders;
 
-namespace OgcApi.Net.Features.SqlServer.Options
+namespace OgcApi.Net.Features.Options
 {
-    public class SqlServerCollectionSourceOptions : ICollectionSource
+    public class SqlCollectionSourceOptions : ICollectionSource
     {
         public string Id { get; set; }
 
@@ -25,6 +25,12 @@ namespace OgcApi.Net.Features.SqlServer.Options
 
         public List<string> Properties { get; set; }
 
-        public string ApiKeyPredicate { get; set; }
+        public string ApiKeyPredicateForGet { get; set; }
+
+        public string ApiKeyPredicateForCreate { get; set; }
+
+        public string ApiKeyPredicateForUpdate { get; set; }
+
+        public string ApiKeyPredicateForDelete { get; set; }
     }
 }

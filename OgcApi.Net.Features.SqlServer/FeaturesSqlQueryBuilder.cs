@@ -1,27 +1,39 @@
 ﻿using Microsoft.Data.SqlClient;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.SqlServer.Options;
+using NetTopologySuite.IO;
+using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Features;
+using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlTypes;
 
 namespace OgcApi.Net.Features.SqlServer
 {
-    public class FeaturesSqlQueryBuilder
+    public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
     {
         private string _query = "";
 
         private readonly List<SqlParameter> _sqlParameters = new();
 
-        private readonly SqlServerCollectionSourceOptions _collectionOptions;
+        private readonly SqlCollectionSourceOptions _collectionOptions;
 
         private readonly List<string> _predicateConditions = new();
 
-        public FeaturesSqlQueryBuilder(SqlServerCollectionSourceOptions collectionOptions)
+        public FeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions)
         {
             _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
         }
 
-        public FeaturesSqlQueryBuilder AddSelect()
+        public IFeaturesSqlQueryBuilder AddSelectBbox()
+        {
+            _query += $"SELECT {_collectionOptions.GeometryDataType}::EnvelopeAggregate({_collectionOptions.GeometryColumn}) " +
+                      $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}]";
+            return this;
+        }
+
+        public IFeaturesSqlQueryBuilder AddSelect()
         {
             _query += $"SELECT {_collectionOptions.IdentifierColumn}, {_collectionOptions.GeometryColumn}";
             if (_collectionOptions.Properties != null)
@@ -30,13 +42,119 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddCount()
+        public IFeaturesSqlQueryBuilder AddInsert(OgcFeature feature)
+        {
+            _query += $"INSERT INTO \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ({_collectionOptions.GeometryColumn}";
+            if (_collectionOptions.Properties != null)
+                _query += ", " + string.Join(", ", _collectionOptions.Properties);
+            _query += $") OUTPUT Inserted.{_collectionOptions.IdentifierColumn} VALUES (@p0";
+            if (_collectionOptions.Properties != null)
+                for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+                {
+                    _query += $", @p{i + 1}";
+                    _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
+                        feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+                }
+            _query += ")";
+
+            if (feature.Geometry != null)
+            {
+                var geometryWriter = new SqlServerBytesWriter { IsGeography = _collectionOptions.GeometryDataType == "geography" };
+                var geometryBytes = geometryWriter.Write(feature.Geometry);
+                _sqlParameters.Add(new SqlParameter("@p0", new SqlBytes(geometryBytes))
+                {
+                    SqlDbType = SqlDbType.Udt,
+                    UdtTypeName = _collectionOptions.GeometryDataType
+                });
+            }
+            else
+            {
+                _sqlParameters.Add(new SqlParameter("@p0", null));
+            }
+
+            return this;
+        }
+
+        public IFeaturesSqlQueryBuilder AddReplace(OgcFeature feature)
+        {
+            _query += 
+                $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
+                $"SET {_collectionOptions.GeometryColumn} = @p0";
+            if (_collectionOptions.Properties == null) return this;
+            for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+            {
+                _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
+                _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
+                    feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+            }
+
+            var geometryWriter = new SqlServerBytesWriter { IsGeography = _collectionOptions.GeometryDataType == "geography" };
+            var geometryBytes = geometryWriter.Write(feature.Geometry);
+            _sqlParameters.Add(new SqlParameter("@p0", new SqlBytes(geometryBytes))
+            {
+                SqlDbType = SqlDbType.Udt,
+                UdtTypeName = _collectionOptions.GeometryDataType
+            });
+
+            _query += " ";
+
+            return this;
+        }
+
+        public IFeaturesSqlQueryBuilder AddUpdate(OgcFeature feature)
+        {
+            _query += 
+                $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
+                "SET ";
+
+            if (feature.Geometry != null)
+            {
+                _query += $"{_collectionOptions.GeometryColumn} = @p0 ";
+                var geometryWriter = new SqlServerBytesWriter { IsGeography = _collectionOptions.GeometryDataType == "geography" };
+                var geometryBytes = geometryWriter.Write(feature.Geometry);
+                _sqlParameters.Add(new SqlParameter("@p0", new SqlBytes(geometryBytes))
+                {
+                    SqlDbType = SqlDbType.Udt,
+                    UdtTypeName = _collectionOptions.GeometryDataType
+                });
+
+                if (feature.Attributes != null)
+                {
+                    _query += ",";
+                }
+            }
+
+            if (feature.Attributes != null)
+            {
+                var attributesNames = feature.Attributes.GetNames();
+                for (var i = 0; i < attributesNames.Length; i++)
+                {
+                    if (!_collectionOptions.Properties.Contains(attributesNames[i])) continue;
+                    _query += $" {attributesNames[i]} = @p{i + 1}";
+                    if (i != attributesNames.Length - 1)
+                        _query += ",";
+                    _sqlParameters.Add(new SqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i])));
+                }
+            }
+            
+            _query += " ";
+
+            return this;
+        }
+
+        public IFeaturesSqlQueryBuilder AddDelete()
+        {
+            _query += $"DELETE FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ";
+            return this;
+        }
+
+        public IFeaturesSqlQueryBuilder AddCount()
         {
             _query += "SELECT COUNT(*)";
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddLimit(int offset, int limit)
+        public IFeaturesSqlQueryBuilder AddLimit(int offset, int limit)
         {
             _query +=
                 $" ORDER BY {_collectionOptions.IdentifierColumn} " +
@@ -45,13 +163,13 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddFrom()
+        public IFeaturesSqlQueryBuilder AddFrom()
         {
             _query += $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ";
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddWhere(Envelope bbox)
+        public IFeaturesSqlQueryBuilder AddWhere(Envelope bbox)
         {
             if (bbox != null)
             {
@@ -62,7 +180,7 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddWhere(DateTime? startDateTime, DateTime? endDateTime)
+        public IFeaturesSqlQueryBuilder AddWhere(DateTime? startDateTime, DateTime? endDateTime)
         {
             if (!string.IsNullOrWhiteSpace(_collectionOptions.DateTimeColumn))
             {
@@ -80,14 +198,14 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddWhere(string featureIdColumn)
+        public IFeaturesSqlQueryBuilder AddWhere(string featureIdColumn)
         {
             _predicateConditions.Add($"{_collectionOptions.IdentifierColumn} = @FeatureId");
             _sqlParameters.Add(new SqlParameter("@FeatureId", featureIdColumn));
             return this;
         }
 
-        public FeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
+        public IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
         {
             if (!string.IsNullOrWhiteSpace(apiKeyPredicate) &&
                 !string.IsNullOrWhiteSpace(apiKey))
@@ -98,7 +216,7 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public FeaturesSqlQueryBuilder ComposeWhereClause()
+        public IFeaturesSqlQueryBuilder ComposeWhereClause()
         {
             if (_predicateConditions.Count > 0)
             {
@@ -107,12 +225,17 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public SqlCommand BuildCommand(SqlConnection connection)
+        public IDbCommand BuildCommand(IDbConnection connection)
         {
-            var sqlCommand = new SqlCommand(_query, connection);
-            sqlCommand.Parameters.AddRange(_sqlParameters.ToArray());
+            var command = connection.CreateCommand();
+            command.CommandText = _query;
 
-            return sqlCommand;
+            foreach (var parameter in _sqlParameters)
+            {
+                command.Parameters.Add(parameter);
+            }
+
+            return command;
         }
     }
 }

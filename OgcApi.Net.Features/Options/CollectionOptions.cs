@@ -32,5 +32,13 @@ namespace OgcApi.Net.Features.Options
         public string SourceType { get; set; }
 
         public Func<string, Uri> FeatureHtmlPage { get; set; }
+
+        public bool AllowCreate { get; set; }
+
+        public bool AllowReplace { get; set; }
+
+        public bool AllowUpdate { get; set; }
+
+        public bool AllowDelete { get; set; }
     }
 }

@@ -2,16 +2,21 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Features.SqlServer.Tests.Utils;
+using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Features;
+using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.SqlServer;
-using OgcApi.Net.Features.SqlServer.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace OgcApi.Features.SqlServer.Tests
 {
+    [Collection("SqlServerTests")]
     public class SqlServerFacts : IClassFixture<DatabaseFixture>
     {
         [Fact]
@@ -35,25 +40,28 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void ConstructorWrongOptions()
         {
-            var options = new SqlServerCollectionSourcesOptions()
+            var options = new SqlCollectionSourcesOptions
             {
-                Sources = new List<SqlServerCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>
                 {
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "Polygons"
                     }
                 }
             };
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlServerCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+            var optionsMonitor =
+                Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
 
-            Assert.Throws<OptionsValidationException>(() => new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));
+            Assert.Throws<OptionsValidationException>(() =>
+                new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() => new SqlServerProvider(null, new NullLogger<SqlServerProvider>()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new SqlServerProvider(null, new NullLogger<SqlServerProvider>()));
         }
 
         [Fact]
@@ -119,9 +127,15 @@ namespace OgcApi.Features.SqlServer.Tests
 
             Assert.Equal(4, features.Count);
             Assert.Equal("POLYGON ((0 0, 0 1000000, 1000000 1000000, 1000000 0, 0 0))", features[0].Geometry.ToString());
-            Assert.Equal("POLYGON ((2000000 0, 2000000 1000000, 3000000 1000000, 3000000 0, 2000000 0), (2250000 250000, 2250000 750000, 2750000 750000, 2750000 250000, 2250000 250000))", features[1].Geometry.ToString());
-            Assert.Equal("MULTIPOLYGON (((0 2000000, 0 3000000, 1000000 3000000, 1000000 2000000, 0 2000000)), ((1250000 2250000, 1250000 2750000, 1750000 2750000, 1750000 2250000, 1250000 2250000)))", features[2].Geometry.ToString());
-            Assert.Equal("MULTIPOLYGON (((2000000 2000000, 2000000 3000000, 3000000 3000000, 3000000 2000000, 2000000 2000000), (2250000 2250000, 2250000 2750000, 2750000 2750000, 2750000 2250000, 2250000 2250000)), ((3250000 2250000, 3250000 2750000, 3750000 2750000, 3750000 2250000, 3250000 2250000)))", features[3].Geometry.ToString());
+            Assert.Equal(
+                "POLYGON ((2000000 0, 2000000 1000000, 3000000 1000000, 3000000 0, 2000000 0), (2250000 250000, 2250000 750000, 2750000 750000, 2750000 250000, 2250000 250000))",
+                features[1].Geometry.ToString());
+            Assert.Equal(
+                "MULTIPOLYGON (((0 2000000, 0 3000000, 1000000 3000000, 1000000 2000000, 0 2000000)), ((1250000 2250000, 1250000 2750000, 1750000 2750000, 1750000 2250000, 1250000 2250000)))",
+                features[2].Geometry.ToString());
+            Assert.Equal(
+                "MULTIPOLYGON (((2000000 2000000, 2000000 3000000, 3000000 3000000, 3000000 2000000, 2000000 2000000), (2250000 2250000, 2250000 2750000, 2750000 2750000, 2750000 2250000, 2250000 2250000)), ((3250000 2250000, 3250000 2750000, 3750000 2750000, 3750000 2250000, 3250000 2250000)))",
+                features[3].Geometry.ToString());
         }
 
         [Fact]
@@ -131,7 +145,8 @@ namespace OgcApi.Features.SqlServer.Tests
 
             Assert.Equal(2, features.Count);
             Assert.Equal("LINESTRING (4000000 0, 4000000 1000000)", features[0].Geometry.ToString());
-            Assert.Equal("MULTILINESTRING ((4000000 2000000, 4000000 3000000), (5000000 2000000, 5000000 3000000))", features[1].Geometry.ToString());
+            Assert.Equal("MULTILINESTRING ((4000000 2000000, 4000000 3000000), (5000000 2000000, 5000000 3000000))",
+                features[1].Geometry.ToString());
         }
 
         [Fact]
@@ -147,7 +162,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesLimit()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", limit: 2);
+            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", 2);
 
             Assert.Equal(2, features.Count);
             Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
@@ -157,17 +172,18 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesLimitWithOffset()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", limit: 2, offset: 1);
+            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", 2, 1);
 
             Assert.Equal(2, features.Count);
             Assert.Equal("Polygon with hole", features[0].Attributes["Name"]);
-            Assert.Equal("MiltiPolygon with two parts", features[1].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["Name"]);
         }
 
         [Fact]
         public void GetFeaturesBbox()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000));
+            var features = TestProviders.GetDefaultProvider()
+                .GetFeatures("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000));
 
             Assert.Equal(2, features.Count);
             Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
@@ -177,22 +193,24 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesStartDate()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", startDateTime: new DateTime(2022, 1, 1));
+            var features = TestProviders.GetDefaultProvider()
+                .GetFeatures("Polygons", startDateTime: new DateTime(2022, 1, 1));
 
             Assert.Equal(2, features.Count);
-            Assert.Equal("MiltiPolygon with two parts", features[0].Attributes["Name"]);
-            Assert.Equal("MiltiPolygon with two parts, one with hole", features[1].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts", features[0].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts, one with hole", features[1].Attributes["Name"]);
         }
 
         [Fact]
         public void GetFeaturesEndDate()
         {
-            var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", endDateTime: new DateTime(2022, 1, 1));
+            var features = TestProviders.GetDefaultProvider()
+                .GetFeatures("Polygons", endDateTime: new DateTime(2022, 1, 1));
 
             Assert.Equal(3, features.Count);
             Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
             Assert.Equal("Polygon with hole", features[1].Attributes["Name"]);
-            Assert.Equal("MiltiPolygon with two parts", features[2].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts", features[2].Attributes["Name"]);
         }
 
         [Fact]
@@ -205,7 +223,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
             Assert.Equal(2, features.Count);
             Assert.Equal("Polygon with hole", features[0].Attributes["Name"]);
-            Assert.Equal("MiltiPolygon with two parts", features[1].Attributes["Name"]);
+            Assert.Equal("MultiPolygon with two parts", features[1].Attributes["Name"]);
         }
 
         [Fact]
@@ -270,19 +288,24 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesCountBbox()
         {
-            Assert.Equal(2, TestProviders.GetDefaultProvider().GetFeaturesCount("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000)));
+            Assert.Equal(2,
+                TestProviders.GetDefaultProvider()
+                    .GetFeaturesCount("Polygons", bbox: new Envelope(0, 3000000, 0, 1000000)));
         }
 
         [Fact]
         public void GetFeaturesCountStartDate()
         {
-            Assert.Equal(2, TestProviders.GetDefaultProvider().GetFeaturesCount("Polygons", startDateTime: new DateTime(2022, 1, 1)));
+            Assert.Equal(2,
+                TestProviders.GetDefaultProvider()
+                    .GetFeaturesCount("Polygons", startDateTime: new DateTime(2022, 1, 1)));
         }
 
         [Fact]
         public void GetFeaturesCountEndDate()
         {
-            Assert.Equal(3, TestProviders.GetDefaultProvider().GetFeaturesCount("Polygons", endDateTime: new DateTime(2022, 1, 1)));
+            Assert.Equal(3,
+                TestProviders.GetDefaultProvider().GetFeaturesCount("Polygons", endDateTime: new DateTime(2022, 1, 1)));
         }
 
         [Fact]
@@ -292,6 +315,275 @@ namespace OgcApi.Features.SqlServer.Tests
                 "Polygons",
                 startDateTime: new DateTime(2021, 1, 1),
                 endDateTime: new DateTime(2022, 1, 1)));
+        }
+
+        private static OgcFeature CreateTestFeature(IDataProvider provider)
+        {
+            var feature = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "CreateTest" },
+                            { "Number", 1 },
+                            { "Date", new DateTime(2021, 1, 1) },
+                            { "S", 0.25 }
+                        }
+                    ),
+                    Geometry = new Polygon(
+                        new LinearRing(
+                            new Coordinate[]
+                            {
+                                new(0, 0),
+                                new(0, 1000000),
+                                new(1000000, 1000000),
+                                new(1000000, 0),
+                                new(0, 0)
+                            }
+                        )
+                    )
+                };
+            feature.Id = provider.CreateFeature("Polygons", feature);
+            return feature;
+        }
+
+        private static void DeleteTestFeature(IDataProvider provider, string featureId)
+        {
+            provider.DeleteFeature("Polygons", featureId);
+        }
+
+        [Fact]
+        public void CreateFeature()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            Assert.NotNull(testFeature.Id);
+
+            var insertedFeature = provider.GetFeature("Polygons", (string)testFeature.Id);
+            Assert.Equal(testFeature.Geometry, insertedFeature.Geometry);
+            Assert.Equal(testFeature.Attributes["Name"], insertedFeature.Attributes["Name"]);
+            Assert.Equal(testFeature.Attributes["Number"], insertedFeature.Attributes["Number"]);
+            Assert.Equal(testFeature.Attributes["Date"], insertedFeature.Attributes["Date"]);
+
+            DeleteTestFeature(provider, (string)testFeature.Id);
+        }
+
+        [Fact]
+        public void CreateFeatureNullGeometry()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "CreateTest" },
+                            { "Number", 1 },
+                            { "Date", new DateTime(2021, 1, 1) }
+                        }
+                    )
+                };
+            Assert.Throws<ArgumentException>(() => provider.CreateFeature("Polygons", testFeature));
+        }
+
+        [Fact]
+        public void UpdateFeature()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            var testFeatureId = (string)testFeature.Id;
+
+            var featureUpdateFrom = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "UpdateTest" },
+                            { "Number", 11 },
+                            { "Date", new DateTime(2021, 1, 2) }
+                        }
+                    ),
+                    Geometry = new Polygon(
+                        new LinearRing(
+                            new Coordinate[]
+                            {
+                                new(0, 0),
+                                new(0, 1000001),
+                                new(1000001, 1000001),
+                                new(1000001, 0),
+                                new(0, 0)
+                            }
+                        )
+                    )
+                };
+            provider.UpdateFeature("Polygons", testFeatureId, featureUpdateFrom);
+
+            var updatedFeature = provider.GetFeature("Polygons", testFeatureId);
+            Assert.Equal(featureUpdateFrom.Geometry, updatedFeature.Geometry);
+            Assert.Equal(featureUpdateFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
+            Assert.Equal(featureUpdateFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
+            Assert.Equal(featureUpdateFrom.Attributes["Date"], updatedFeature.Attributes["Date"]);
+            Assert.Equal( 0.25, updatedFeature.Attributes["S"]);
+
+            DeleteTestFeature(provider, testFeatureId);
+        }
+
+        [Fact]
+        public void UpdateFeatureNullGeometry()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            var testFeatureId = (string)testFeature.Id;
+
+            var featureBeforeUpdate = provider.GetFeature("Polygons", testFeatureId);
+
+            var featureUpdateFrom = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "UpdateTest" }
+                        }
+                    )
+                };
+            provider.UpdateFeature("Polygons", testFeatureId, featureUpdateFrom);
+
+            var updatedFeature = provider.GetFeature("Polygons", testFeatureId);
+
+            Assert.Equal(featureBeforeUpdate.Geometry, updatedFeature.Geometry);
+            Assert.Equal(featureUpdateFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["Number"], updatedFeature.Attributes["Number"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["Date"], updatedFeature.Attributes["Date"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["S"], updatedFeature.Attributes["S"]);
+
+            DeleteTestFeature(provider, testFeatureId);
+        }
+
+        [Fact]
+        public void UpdateFeatureOnlyGeometry()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            var testFeatureId = (string)testFeature.Id;
+
+            var featureBeforeUpdate = provider.GetFeature("Polygons", testFeatureId);
+
+            var featureUpdateFrom = 
+                new OgcFeature()
+                {
+                    Geometry = new Polygon(
+                        new LinearRing(
+                            new Coordinate[]
+                            {
+                                new(0, 0),
+                                new(0, 1000002),
+                                new(1000002, 1000002),
+                                new(1000002, 0),
+                                new(0, 0)
+                            }
+                        )
+                    )
+                };
+            provider.UpdateFeature("Polygons", testFeatureId, featureUpdateFrom);
+
+            var updatedFeature = provider.GetFeature("Polygons", testFeatureId);
+            Assert.Equal(featureUpdateFrom.Geometry, updatedFeature.Geometry);
+            Assert.Equal(featureBeforeUpdate.Attributes["Name"], updatedFeature.Attributes["Name"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["Number"], updatedFeature.Attributes["Number"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["Date"], updatedFeature.Attributes["Date"]);
+            Assert.Equal(featureBeforeUpdate.Attributes["S"], updatedFeature.Attributes["S"]);
+
+            DeleteTestFeature(provider, testFeatureId);
+        }
+
+        [Fact]
+        public void ReplaceFeature()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            var testFeatureId = (string)testFeature.Id;
+
+            var featureReplaceFrom = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "UpdateTest" },
+                            { "Number", 11 },
+                            { "Date", new DateTime(2021, 1, 1) }
+                        }
+                    ),
+                    Geometry = new Polygon(
+                        new LinearRing(
+                            new Coordinate[]
+                            {
+                                new(0, 0),
+                                new(0, 1000001),
+                                new(1000001, 1000001),
+                                new(1000001, 0),
+                                new(0, 0)
+                            }
+                        )
+                    )
+                };
+            provider.ReplaceFeature("Polygons", testFeatureId, featureReplaceFrom);
+
+            var updatedFeature = provider.GetFeature("Polygons", testFeatureId);
+            Assert.Equal(featureReplaceFrom.Geometry, updatedFeature.Geometry);
+            Assert.Equal(featureReplaceFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
+            Assert.Equal(featureReplaceFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
+            Assert.Equal(featureReplaceFrom.Attributes["Date"], updatedFeature.Attributes["Date"]);
+            Assert.True(!updatedFeature.Attributes.GetNames().Contains("S"));
+
+            DeleteTestFeature(provider, testFeatureId);
+        }
+
+        [Fact]
+        public void ReplaceFeatureNullGeometry()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var feature = 
+                new OgcFeature()
+                {
+                    Attributes = new AttributesTable(
+                        new Dictionary<string, object>
+                        {
+                            { "Name", "UpdateTest" }
+                        }
+                    )
+                };
+            Assert.Throws<ArgumentException>(() => provider.ReplaceFeature("Polygons", "1", feature));
+        }
+        
+        [Fact]
+        public void DeleteFeature()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+
+            var testFeature = CreateTestFeature(provider);
+            var testFeatureId = (string)testFeature.Id;
+
+            DeleteTestFeature(provider, testFeatureId);
+            Assert.Null(provider.GetFeature("Polygons", testFeatureId));
+        }
+
+        [Fact]
+        public void DeleteNotExistingFeature()
+        {
+            var provider = TestProviders.GetDefaultProvider();
+            Assert.Throws<ArgumentException>(() => provider.DeleteFeature("Polygons", "200"));
         }
     }
 }

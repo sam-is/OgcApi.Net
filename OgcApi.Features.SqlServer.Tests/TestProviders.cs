@@ -1,22 +1,22 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.SqlServer.Tests.Utils;
+using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.SqlServer;
-using OgcApi.Net.Features.SqlServer.Options;
-using System.Collections.Generic;
 
 namespace OgcApi.Features.SqlServer.Tests
 {
     public static class TestProviders
     {
-        public static SqlServerCollectionSourcesOptions GetDefaultOptions()
+        public static SqlCollectionSourcesOptions GetDefaultOptions()
         {
-            return new SqlServerCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions()
             {
-                Sources = new List<SqlServerCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>()
                 {
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "Polygons",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -35,7 +35,7 @@ namespace OgcApi.Features.SqlServer.Tests
                             "Date"
                         }
                     },
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "LineStrings",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -50,7 +50,7 @@ namespace OgcApi.Features.SqlServer.Tests
                             "Name"
                         }
                     },
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "Points",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -65,7 +65,7 @@ namespace OgcApi.Features.SqlServer.Tests
                             "Name"
                         }
                     },
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "Empty",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -84,13 +84,13 @@ namespace OgcApi.Features.SqlServer.Tests
             };
         }
 
-        public static SqlServerCollectionSourcesOptions GetOptionsWithUnknownTable()
+        public static SqlCollectionSourcesOptions GetOptionsWithUnknownTable()
         {
-            return new SqlServerCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions()
             {
-                Sources = new List<SqlServerCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>()
                 {
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "Test",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -105,13 +105,13 @@ namespace OgcApi.Features.SqlServer.Tests
             };
         }
 
-        public static SqlServerCollectionSourcesOptions GetOptionsWithApiKey()
+        public static SqlCollectionSourcesOptions GetOptionsWithApiKey()
         {
-            return new SqlServerCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions()
             {
-                Sources = new List<SqlServerCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>()
                 {
-                    new SqlServerCollectionSourceOptions()
+                    new()
                     {
                         Id = "PointsWithApiKey",
                         ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -125,7 +125,7 @@ namespace OgcApi.Features.SqlServer.Tests
                         {
                             "Name"
                         },
-                        ApiKeyPredicate = "[Key] = @ApiKey"
+                        ApiKeyPredicateForGet = "[Key] = @ApiKey"
                     }
                 }
             };
@@ -133,22 +133,22 @@ namespace OgcApi.Features.SqlServer.Tests
 
         public static SqlServerProvider GetDefaultProvider()
         {
-            SqlServerCollectionSourcesOptions options = GetDefaultOptions();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlServerCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+            SqlCollectionSourcesOptions options = GetDefaultOptions();
+            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
         }
 
         public static SqlServerProvider GetProviderWithErrors()
         {
-            SqlServerCollectionSourcesOptions options = GetOptionsWithUnknownTable();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlServerCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+            SqlCollectionSourcesOptions options = GetOptionsWithUnknownTable();
+            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
         }
 
         public static SqlServerProvider GetProviderWithApiKey()
         {
-            SqlServerCollectionSourcesOptions options = GetOptionsWithApiKey();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlServerCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+            SqlCollectionSourcesOptions options = GetOptionsWithApiKey();
+            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
         }
     }

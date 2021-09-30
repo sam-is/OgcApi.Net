@@ -15,5 +15,13 @@ namespace OgcApi.Net.Features.DataProviders
         OgcFeature GetFeature(string collectionId, string featureId, string apiKey = null);
 
         int GetFeaturesCount(string collectionId, Envelope bbox = null, DateTime? startDateTime = null, DateTime? endDateTime = null, string apiKey = null);
+
+        string CreateFeature(string collectionId, OgcFeature feature, string apiKey = null);
+
+        void UpdateFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null);
+
+        void ReplaceFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null);
+
+        void DeleteFeature(string collectionId, string featureId, string apiKey = null);
     }
 }
