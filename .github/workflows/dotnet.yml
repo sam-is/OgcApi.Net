@@ -22,6 +22,10 @@ jobs:
           ACCEPT_EULA: Y          
         ports:
           - "1433:1433"
+      postgis:
+        image: postgis/postgis
+        env:
+          POSTGRES_PASSWORD: password 
 
     steps:    
     - uses: actions/checkout@v2
