@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
+using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.Controllers
 {
@@ -388,14 +389,14 @@ namespace OgcApi.Net.Features.Controllers
         }
 
         [HttpPost("{collectionId}/items")]
-        [Produces("text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult CreateFeature(
             string collectionId,
-            [FromBody] OgcFeature feature,
+            [FromBody] IFeature feature,
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
@@ -428,7 +429,11 @@ namespace OgcApi.Net.Features.Controllers
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
 
-                var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
+                var createdFeatureId = dataProvider.CreateFeature(collectionId, new OgcFeature()
+                {
+                    Geometry = feature.Geometry,
+                    Attributes = feature.Attributes
+                }, apiKey);
                 return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
             }
 
@@ -444,7 +449,7 @@ namespace OgcApi.Net.Features.Controllers
         public ActionResult ReplaceFeature(
             string collectionId,
             string featureId,
-            [FromBody] OgcFeature feature,
+            [FromBody] IFeature feature,
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
@@ -475,7 +480,11 @@ namespace OgcApi.Net.Features.Controllers
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
 
-                dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
+                dataProvider.ReplaceFeature(collectionId, featureId, new OgcFeature()
+                {
+                    Geometry = feature.Geometry,
+                    Attributes = feature.Attributes
+                }, apiKey);
                 return Ok();
             }
 
@@ -521,7 +530,7 @@ namespace OgcApi.Net.Features.Controllers
         public ActionResult UpdateFeature(
             string collectionId,
             string featureId,
-            [FromBody] OgcFeature feature,
+            [FromBody] IFeature feature,
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
@@ -552,7 +561,11 @@ namespace OgcApi.Net.Features.Controllers
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
 
-                dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
+                dataProvider.UpdateFeature(collectionId, featureId, new OgcFeature()
+                {
+                    Geometry = feature.Geometry,
+                    Attributes = feature.Attributes
+                }, apiKey);
                 return Ok();
             }
 

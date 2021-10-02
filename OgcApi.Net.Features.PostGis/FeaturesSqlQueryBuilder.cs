@@ -28,13 +28,13 @@ namespace OgcApi.Net.Features.PostGis
 
         public IFeaturesSqlQueryBuilder AddSelectBbox()
         {
-            _query += $"SELECT ST_Envelope(ST_Union(ST_Envelope({_collectionOptions.GeometryColumn}))) FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\"";
+            _query += $"SELECT ST_AsEWKB(ST_Extent({_collectionOptions.GeometryColumn})::geometry) FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\"";
             return this;
         }
 
         public IFeaturesSqlQueryBuilder AddSelect()
         {
-            _query += $"SELECT {_collectionOptions.IdentifierColumn}, {_collectionOptions.GeometryColumn}";
+            _query += $"SELECT {_collectionOptions.IdentifierColumn}, ST_AsEWKB({_collectionOptions.GeometryColumn})";
             if (_collectionOptions.Properties != null)
                 _query += ", " + string.Join(", ", _collectionOptions.Properties);
             _query += " ";
@@ -51,7 +51,8 @@ namespace OgcApi.Net.Features.PostGis
                 for (var i = 0; i < _collectionOptions.Properties.Count; i++)
                 {
                     _query += $", @p{i + 1}";
-                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i])));
+                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
+                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
                 }
             _query += $") RETURNING {_collectionOptions.IdentifierColumn}";
 
@@ -69,19 +70,22 @@ namespace OgcApi.Net.Features.PostGis
             _query += 
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 $"SET {_collectionOptions.GeometryColumn} = @p0";
-            if (_collectionOptions.Properties == null) return this;
-            for (var i = 0; i < _collectionOptions.Properties.Count; i++)
-            {
-                _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
-                _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
-                    feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
-            }
 
             var geometryBytes = new PostGisWriter().Write(feature.Geometry);
             _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
             {
                 NpgsqlDbType = NpgsqlDbType.Bytea
             });
+
+            if (_collectionOptions.Properties != null)
+            {
+                for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+                {
+                    _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
+                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
+                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+                }
+            }
 
             _query += " ";
 
@@ -118,7 +122,7 @@ namespace OgcApi.Net.Features.PostGis
                     _query += $" {attributesNames[i]} = @p{i + 1}";
                     if (i != attributesNames.Length - 1)
                         _query += ",";
-                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i])));
+                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
                 }
             }
             
