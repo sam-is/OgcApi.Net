@@ -2,6 +2,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.Features
 {
@@ -9,7 +10,7 @@ namespace OgcApi.Net.Features.Features
     {
         public override bool CanConvert(Type typeToConvert)
         {
-            return typeToConvert == typeof(OgcFeatureCollection) || base.CanConvert(typeToConvert);
+            return typeToConvert == typeof(OgcFeatureCollection) || typeToConvert == typeof(OgcFeature) || base.CanConvert(typeToConvert);
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)

@@ -42,8 +42,8 @@ namespace OgcApi.Net.Features.PostGis
             {
                 RepairRings = false
             };
-            var geometryStream = dataReader.GetStream(ordinal);
-            return geometryReader.Read(geometryStream);
+            
+            return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
         }
     }
 }

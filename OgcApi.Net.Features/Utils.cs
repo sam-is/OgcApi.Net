@@ -10,7 +10,7 @@ namespace OgcApi.Net.Features
     {
         public static Uri GetBaseUrl(HttpRequest request)
         {
-            return new($"{request.Scheme}://{request.Host}{request.Path}/");
+            return new($"{request.Scheme}://{request.Host}{request.PathBase}/");
         }
 
         public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)

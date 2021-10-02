@@ -53,7 +53,7 @@ namespace OgcApi.Net.Features.SqlServer
                 {
                     _query += $", @p{i + 1}";
                     _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
-                        feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
                 }
             _query += ")";
 
@@ -77,15 +77,17 @@ namespace OgcApi.Net.Features.SqlServer
 
         public IFeaturesSqlQueryBuilder AddReplace(OgcFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 $"SET {_collectionOptions.GeometryColumn} = @p0";
-            if (_collectionOptions.Properties == null) return this;
-            for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+            if (_collectionOptions.Properties != null)
             {
-                _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
-                _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
-                    feature.Attributes.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+                for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+                {
+                    _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
+                    _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
+                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+                }
             }
 
             var geometryWriter = new SqlServerBytesWriter { IsGeography = _collectionOptions.GeometryDataType == "geography" };
@@ -103,7 +105,7 @@ namespace OgcApi.Net.Features.SqlServer
 
         public IFeaturesSqlQueryBuilder AddUpdate(OgcFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 "SET ";
 
@@ -133,10 +135,10 @@ namespace OgcApi.Net.Features.SqlServer
                     _query += $" {attributesNames[i]} = @p{i + 1}";
                     if (i != attributesNames.Length - 1)
                         _query += ",";
-                    _sqlParameters.Add(new SqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i])));
+                    _sqlParameters.Add(new SqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
                 }
             }
-            
+
             _query += " ";
 
             return this;
