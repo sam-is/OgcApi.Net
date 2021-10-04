@@ -78,7 +78,8 @@ namespace OgcApi.Net.Features.Crs
             if (srcCrs == dstCrs)
                 return;
 
-            feature.Geometry.Transform(srcCrs, dstCrs);
+            if (feature.Geometry != null)
+                feature.Geometry.Transform(srcCrs, dstCrs);
         }
 
         public static void Transform(this IFeature feature, Uri srcCrsUri, Uri dstCrsUri)
@@ -101,9 +102,10 @@ namespace OgcApi.Net.Features.Crs
             if (srcCrsUri == dstCrsUri)
                 return;
 
-            feature.Geometry.Transform(
-                GetCoordinateSystemBySrid(srcCrsUri.Segments.Last()),
-                GetCoordinateSystemBySrid(dstCrsUri.Segments.Last()));
+            if (feature.Geometry != null)
+                feature.Geometry.Transform(
+                    GetCoordinateSystemBySrid(srcCrsUri.Segments.Last()),
+                    GetCoordinateSystemBySrid(dstCrsUri.Segments.Last()));
         }
 
         public static void Transform(this Geometry geometry, CoordinateSystem srcCrs, CoordinateSystem dstCrs)
