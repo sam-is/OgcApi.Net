@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Crs;
-using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Resources;
@@ -12,6 +11,7 @@ using OgcApi.Net.Features.Temporal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using NetTopologySuite.Features;
 
@@ -428,8 +428,9 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                var createdFeatureId = dataProvider.CreateFeature(collectionId, new OgcFeature()
+                var createdFeatureId = dataProvider.CreateFeature(collectionId, new OgcFeature
                 {
                     Geometry = feature.Geometry,
                     Attributes = feature.Attributes
@@ -479,8 +480,9 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.ReplaceFeature(collectionId, featureId, new OgcFeature()
+                dataProvider.ReplaceFeature(collectionId, featureId, new OgcFeature
                 {
                     Geometry = feature.Geometry,
                     Attributes = feature.Attributes
@@ -560,8 +562,9 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.UpdateFeature(collectionId, featureId, new OgcFeature()
+                dataProvider.UpdateFeature(collectionId, featureId, new OgcFeature
                 {
                     Geometry = feature.Geometry,
                     Attributes = feature.Attributes
