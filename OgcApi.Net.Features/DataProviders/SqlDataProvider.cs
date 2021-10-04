@@ -46,7 +46,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -84,7 +84,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -157,7 +157,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -226,7 +226,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -273,7 +273,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -311,7 +311,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -358,7 +358,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
@@ -401,7 +401,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
-                    $"The source collection with ID = {collectionId} was not found in the provided PostGis options");
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 

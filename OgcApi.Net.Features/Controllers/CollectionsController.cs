@@ -69,7 +69,7 @@ namespace OgcApi.Net.Features.Controllers
             List<Link> links;
             if (_apiOptions.Collections.Links == null || _apiOptions.Collections.Links.Count == 0)
             {
-                links = new List<Link>()
+                links = new List<Link>
                 {
                     new()
                     {
@@ -90,7 +90,7 @@ namespace OgcApi.Net.Features.Controllers
                 links = _apiOptions.Collections.Links;
             }
 
-            return new Collections()
+            return new Collections
             {
                 Links = links,
                 Items = collections
@@ -105,22 +105,25 @@ namespace OgcApi.Net.Features.Controllers
             if (extent == null)
             {
                 var envelope = dataProvider.GetBbox(collectionOptions.Id);
-                envelope.Transform(collectionOptions.StorageCrs, CrsUtils.DefaultCrs);
-
-                extent = new Extent()
+                if (envelope != null)
                 {
-                    Spatial = new SpatialExtent()
+                    envelope.Transform(collectionOptions.StorageCrs, CrsUtils.DefaultCrs);
+
+                    extent = new Extent
                     {
-                        Bbox = new[] { new[] { envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY } },
-                        Crs = new List<Uri>() { CrsUtils.DefaultCrs }
-                    }
-                };
+                        Spatial = new SpatialExtent
+                        {
+                            Bbox = new[] { new[] { envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY } },
+                            Crs = new List<Uri> { CrsUtils.DefaultCrs }
+                        }
+                    };
+                }
             }
 
             List<Link> links;
             if (_apiOptions.Collections.Links == null || _apiOptions.Collections.Links.Count == 0)
             {
-                links = new List<Link>()
+                links = new List<Link>
                 {
                     new()
                     {
@@ -142,14 +145,14 @@ namespace OgcApi.Net.Features.Controllers
                 links = collectionOptions.Links;
             }
 
-            var collection = new Collection()
+            var collection = new Collection
             {
                 Id = collectionOptions.Id,
                 Title = collectionOptions.Title,
                 Description = collectionOptions.Description,
                 Extent = extent,
                 Links = links,
-                Crs = collectionOptions.Crs ?? new List<Uri>() { CrsUtils.DefaultCrs },
+                Crs = collectionOptions.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
                 StorageCrs = collectionOptions.StorageCrs ?? CrsUtils.DefaultCrs,
                 StorageCrsCoordinateEpoch = collectionOptions.StorageCrsCoordinateEpoch
             };
@@ -196,7 +199,8 @@ namespace OgcApi.Net.Features.Controllers
 
             _logger.LogTrace($"Get collection items with parameters {Request.QueryString}");
 
-            var validParams = new List<string>() {
+            var validParams = new List<string>
+            {
                 nameof(limit),
                 nameof(offset),
                 nameof(bbox),               
@@ -263,7 +267,7 @@ namespace OgcApi.Net.Features.Controllers
                     apiKey);
                 features.Transform(collectionOptions.StorageCrs, crs);
 
-                features.Links = new List<Link>()
+                features.Links = new List<Link>
                 {
                     new()
                     {
@@ -291,7 +295,7 @@ namespace OgcApi.Net.Features.Controllers
                     var parameters = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                     parameters.Set("offset", (offset + limit).ToString());
 
-                    features.Links.Add(new Link()
+                    features.Links.Add(new Link
                     {
                         Href = new Uri(baseUri, $"?{parameters}"),
                         Rel = "next",
@@ -357,9 +361,15 @@ namespace OgcApi.Net.Features.Controllers
                 }
 
                 var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
+
+                if (feature == null)
+                {
+                    return NotFound();
+                }
+
                 feature.Transform(collectionOptions.StorageCrs, crs);
 
-                feature.Links = new List<Link>()
+                feature.Links = new List<Link>
                 {
                     new()
                     {

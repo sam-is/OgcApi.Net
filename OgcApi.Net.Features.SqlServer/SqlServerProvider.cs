@@ -17,7 +17,7 @@ namespace OgcApi.Net.Features.SqlServer
         {
         }
 
-        public override string SourceType { get; } = "SqlServer";
+        public override string SourceType => "SqlServer";
 
         protected override DbConnection GetDbConnection(string connectionString)
         {
