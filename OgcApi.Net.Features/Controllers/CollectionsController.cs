@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Crs;
 using OgcApi.Net.Features.Features;
@@ -13,7 +14,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.Controllers
 {
@@ -60,11 +60,12 @@ namespace OgcApi.Net.Features.Controllers
 
             _logger.LogTrace($"Get collections with parameters {Request.QueryString}");
 
-            var collections = new List<Collection>();
-            foreach (var collectionOptions in _apiOptions.Collections.Items)
-            {
-                collections.Add(GetCollectionMetadata(new Uri(baseUri, $"{collectionOptions.Id}/items"), collectionOptions));
-            }
+            var collections = _apiOptions.Collections.Items
+                .Select(collectionOptions => GetCollectionMetadata(new Uri(
+                        baseUri,
+                        $"collections/{collectionOptions.Id}/items"),
+                    collectionOptions))
+                .ToList();
 
             List<Link> links;
             if (_apiOptions.Collections.Links == null || _apiOptions.Collections.Links.Count == 0)
