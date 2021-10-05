@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
 using System;
-using System.Collections.Generic;
 
 namespace OgcApi.Net.Features
 {
@@ -10,13 +9,13 @@ namespace OgcApi.Net.Features
     {
         public static Uri GetBaseUrl(HttpRequest request)
         {
-            return new($"{request.Scheme}://{request.Host}{request.PathBase}/");
+            return new Uri($"{request.Scheme}://{request.Host}{request.PathBase}/api/ogc/");
         }
 
         public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)
         {
-            IEnumerable<IDataProvider> dataProviders = serviceProvider.GetServices<IDataProvider>();
-            foreach (IDataProvider dataProvider in dataProviders)
+            var dataProviders = serviceProvider.GetServices<IDataProvider>();
+            foreach (var dataProvider in dataProviders)
             {
                 if (dataProvider.SourceType == dataProviderType)
                 {

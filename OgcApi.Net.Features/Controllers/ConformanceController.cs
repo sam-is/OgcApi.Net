@@ -45,13 +45,11 @@ namespace OgcApi.Net.Features.Controllers
         {
             _logger.LogTrace($"Get conformance with parameters {Request.QueryString}");
 
-            if (_apiOptions == null ||
-                _apiOptions.ConformsTo == null ||
-                _apiOptions.ConformsTo.Count == 0)
+            if (_apiOptions?.ConformsTo == null || _apiOptions.ConformsTo.Count == 0)
             {
-                return new Conformance()
+                return new Conformance
                 {
-                    ConformsTo = new List<Uri>()
+                    ConformsTo = new List<Uri>
                     {
                         new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
                         new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"),
@@ -60,13 +58,11 @@ namespace OgcApi.Net.Features.Controllers
                     }
                 };
             }
-            else
+
+            return new Conformance
             {
-                return new Conformance()
-                {
-                    ConformsTo = _apiOptions.ConformsTo
-                };
-            }
+                ConformsTo = _apiOptions.ConformsTo
+            };
         }
     }
 }

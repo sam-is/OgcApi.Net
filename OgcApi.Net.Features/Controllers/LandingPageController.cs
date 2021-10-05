@@ -14,7 +14,7 @@ namespace OgcApi.Net.Features.Controllers
     [ApiExplorerSettings(GroupName = "ogc")]
     public class LandingPageController : ControllerBase
     {
-        readonly LandingPageOptions _apiOptions;
+        private readonly LandingPageOptions _apiOptions;
 
         private readonly ILogger _logger;
 
@@ -43,7 +43,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public LandingPage Get()
         {
-            Uri baseUri = Utils.GetBaseUrl(Request);
+            var baseUri = Utils.GetBaseUrl(Request);
 
             _logger.LogTrace($"Get landing page with parameters {Request.QueryString}");
 
@@ -51,7 +51,7 @@ namespace OgcApi.Net.Features.Controllers
             if (_apiOptions.Links == null ||
                 _apiOptions.Links.Count == 0)
             {
-                links = new List<Link>()
+                links = new List<Link>
                 {
                     new()
                     {
@@ -100,7 +100,7 @@ namespace OgcApi.Net.Features.Controllers
                 links = _apiOptions.Links;
             }
 
-            return new LandingPage()
+            return new LandingPage
             {
                 Title = _apiOptions.Title,
                 Description = _apiOptions.Description,
