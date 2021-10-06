@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features
 {
@@ -25,6 +28,12 @@ namespace OgcApi.Net.Features
                 }
             }
             throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
+        }
+
+        public static string GetFeatureETag(IFeature feature)
+        {
+            var featureHashString = feature.Geometry + string.Join(' ', feature.Attributes.GetNames()) + string.Join(' ', feature.Attributes.GetValues());
+            return "\"" + featureHashString.GetHashCode() + "\"";
         }
     }
 }

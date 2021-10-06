@@ -391,6 +391,8 @@ namespace OgcApi.Net.Features.Controllers
                     }
                 };
 
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+
                 return Ok(feature);
             }
 
@@ -453,6 +455,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         public ActionResult ReplaceFeature(
             string collectionId,
             string featureId,
@@ -472,6 +475,16 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
+                if (!Request.Headers.ContainsKey("If-Match"))
+                {
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
+
                 if (crs != null)
                 {
                     if (!collectionOptions.Crs.Contains(crs))
@@ -489,6 +502,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
                 dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
                 return Ok();
             }
 
@@ -531,6 +545,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         public ActionResult UpdateFeature(
             string collectionId,
             string featureId,
@@ -550,6 +565,16 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
+                if (!Request.Headers.ContainsKey("If-Match"))
+                {
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
+
                 if (crs != null)
                 {
                     if (!collectionOptions.Crs.Contains(crs))
@@ -567,6 +592,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
                 dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
                 return Ok();
             }
 
