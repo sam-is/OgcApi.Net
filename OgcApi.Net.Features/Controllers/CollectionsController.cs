@@ -362,6 +362,8 @@ namespace OgcApi.Net.Features.Controllers
 
                 var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
 
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+
                 if (feature == null)
                 {
                     return NotFound();
@@ -390,8 +392,6 @@ namespace OgcApi.Net.Features.Controllers
                         Type = "application/json"
                     }
                 };
-
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
 
                 return Ok(feature);
             }
@@ -475,16 +475,6 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
-                if (!Request.Headers.ContainsKey("If-Match"))
-                {
-                    var requestETag = Request.Headers["If-Match"].First();
-                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
-                    if (requestETag != providerETag)
-                    {
-                        return Problem(statusCode: 412);
-                    }
-                }
-
                 if (crs != null)
                 {
                     if (!collectionOptions.Crs.Contains(crs))
@@ -500,6 +490,16 @@ namespace OgcApi.Net.Features.Controllers
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
+
+                if (Request.Headers.ContainsKey("If-Match"))
+                {
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
 
                 dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
                 Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
@@ -565,16 +565,6 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
-                if (!Request.Headers.ContainsKey("If-Match"))
-                {
-                    var requestETag = Request.Headers["If-Match"].First();
-                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
-                    if (requestETag != providerETag)
-                    {
-                        return Problem(statusCode: 412);
-                    }
-                }
-
                 if (crs != null)
                 {
                     if (!collectionOptions.Crs.Contains(crs))
@@ -590,6 +580,16 @@ namespace OgcApi.Net.Features.Controllers
 
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
+
+                if (Request.Headers.ContainsKey("If-Match"))
+                {
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
 
                 dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
                 Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
