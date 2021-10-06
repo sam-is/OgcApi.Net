@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.Features;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -9,9 +9,9 @@ namespace OgcApi.Net.Features.DataProviders
     {
         IFeaturesSqlQueryBuilder AddSelect();
         IFeaturesSqlQueryBuilder AddSelectBbox();
-        IFeaturesSqlQueryBuilder AddInsert(OgcFeature feature);
-        IFeaturesSqlQueryBuilder AddUpdate(OgcFeature feature);
-        IFeaturesSqlQueryBuilder AddReplace(OgcFeature feature);
+        IFeaturesSqlQueryBuilder AddInsert(IFeature feature);
+        IFeaturesSqlQueryBuilder AddUpdate(IFeature feature);
+        IFeaturesSqlQueryBuilder AddReplace(IFeature feature);
         IFeaturesSqlQueryBuilder AddDelete();
         IFeaturesSqlQueryBuilder AddCount();
         IFeaturesSqlQueryBuilder AddLimit(int offset, int limit);

@@ -2,12 +2,12 @@
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
+using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.SqlServer
 {
@@ -42,7 +42,7 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddInsert(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddInsert(IFeature feature)
         {
             _query += $"INSERT INTO \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ({_collectionOptions.GeometryColumn}";
             if (_collectionOptions.Properties != null)
@@ -75,7 +75,7 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddReplace(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
         {
             _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
@@ -103,7 +103,7 @@ namespace OgcApi.Net.Features.SqlServer
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddUpdate(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
         {
             _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +

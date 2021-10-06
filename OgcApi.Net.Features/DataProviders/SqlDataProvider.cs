@@ -257,7 +257,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public string CreateFeature(string collectionId, OgcFeature feature, string apiKey = null)
+        public string CreateFeature(string collectionId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
@@ -300,7 +300,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public void UpdateFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null)
+        public void UpdateFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
@@ -342,7 +342,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public void ReplaceFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null)
+        public void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
