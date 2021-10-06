@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using OgcApi.Net.Features.DataProviders;
+﻿using OgcApi.Net.Features.DataProviders;
+using System.Collections.Generic;
 
 namespace OgcApi.Net.Features.Options
 {

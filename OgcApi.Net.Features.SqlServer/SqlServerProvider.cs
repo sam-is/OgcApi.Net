@@ -4,15 +4,15 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options;
 using System.Data;
 using System.Data.Common;
-using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features.SqlServer
 {
     public class SqlServerProvider : SqlDataProvider
     {
-        public SqlServerProvider(IOptionsMonitor<SqlCollectionSourcesOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger) 
+        public SqlServerProvider(IOptionsMonitor<SqlCollectionSourcesOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger)
             : base(sqlCollectionSourcesOptions, logger)
         {
         }
@@ -40,9 +40,9 @@ namespace OgcApi.Net.Features.SqlServer
         {
             var geometryStream = dataReader.GetStream(ordinal);
             var geometryReader = new SqlServerBytesReader
-            { 
-                RepairRings = true, 
-                IsGeography = collectionSourceOptions.GeometryDataType == "geography" 
+            {
+                RepairRings = true,
+                IsGeography = collectionSourceOptions.GeometryDataType == "geography"
             };
             return geometryReader.Read(geometryStream);
         }

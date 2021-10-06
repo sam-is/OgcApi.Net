@@ -34,7 +34,7 @@ namespace OgcApi.Net.Features.PostGis
             {
                 RepairRings = false
             };
-            
+
             return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
         }
     }

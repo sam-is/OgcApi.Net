@@ -1,9 +1,9 @@
-﻿using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Features;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
 using NpgsqlTypes;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace OgcApi.Net.Features.PostGis
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddInsert(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddInsert(IFeature feature)
         {
             _query += $"INSERT INTO \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ({_collectionOptions.GeometryColumn}";
             if (_collectionOptions.Properties != null)
@@ -65,9 +65,9 @@ namespace OgcApi.Net.Features.PostGis
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddReplace(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 $"SET {_collectionOptions.GeometryColumn} = @p0";
 
@@ -92,9 +92,9 @@ namespace OgcApi.Net.Features.PostGis
             return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddUpdate(OgcFeature feature)
+        public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 "SET ";
 
@@ -125,9 +125,9 @@ namespace OgcApi.Net.Features.PostGis
                     _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
                 }
             }
-            
+
             _query += " ";
-            
+
             return this;
         }
 

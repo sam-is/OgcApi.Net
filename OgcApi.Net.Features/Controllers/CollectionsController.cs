@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Crs;
-using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Resources;
 using OgcApi.Net.Features.Temporal;
@@ -204,7 +203,7 @@ namespace OgcApi.Net.Features.Controllers
             {
                 nameof(limit),
                 nameof(offset),
-                nameof(bbox),               
+                nameof(bbox),
                 nameof(crs),
                 nameof(apiKey),
                 "bbox-crs",
@@ -363,6 +362,8 @@ namespace OgcApi.Net.Features.Controllers
 
                 var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
 
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+
                 if (feature == null)
                 {
                     return NotFound();
@@ -441,11 +442,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                var createdFeatureId = dataProvider.CreateFeature(collectionId, new OgcFeature
-                {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
                 return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
             }
 
@@ -458,6 +455,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         public ActionResult ReplaceFeature(
             string collectionId,
             string featureId,
@@ -493,11 +491,18 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.ReplaceFeature(collectionId, featureId, new OgcFeature
+                if (Request.Headers.ContainsKey("If-Match"))
                 {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
+
+                dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
                 return Ok();
             }
 
@@ -540,6 +545,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         public ActionResult UpdateFeature(
             string collectionId,
             string featureId,
@@ -575,11 +581,18 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.UpdateFeature(collectionId, featureId, new OgcFeature
+                if (Request.Headers.ContainsKey("If-Match"))
                 {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                    var requestETag = Request.Headers["If-Match"].First();
+                    var providerETag = Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey));
+                    if (requestETag != providerETag)
+                    {
+                        return Problem(statusCode: 412);
+                    }
+                }
+
+                dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
+                Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
                 return Ok();
             }
 

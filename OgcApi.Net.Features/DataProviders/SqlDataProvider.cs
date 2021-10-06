@@ -1,11 +1,11 @@
-﻿using System;
-using System.Data.Common;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
+using System;
+using System.Data.Common;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -183,7 +183,7 @@ namespace OgcApi.Net.Features.DataProviders
                     .AddLimit(offset, limit)
                     .BuildCommand(connection);
 
-                Logger.LogTrace($"Query: {selectFeaturesCommand.CommandText}");                
+                Logger.LogTrace($"Query: {selectFeaturesCommand.CommandText}");
 
                 using var reader = (DbDataReader)selectFeaturesCommand.ExecuteReader();
                 var featureCollection = new OgcFeatureCollection();
@@ -257,7 +257,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public string CreateFeature(string collectionId, OgcFeature feature, string apiKey = null)
+        public string CreateFeature(string collectionId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
@@ -300,7 +300,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public void UpdateFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null)
+        public void UpdateFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
@@ -342,7 +342,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public void ReplaceFeature(string collectionId, string featureId, OgcFeature feature, string apiKey = null)
+        public void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
         {
             if (feature == null)
             {
