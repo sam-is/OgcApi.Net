@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
@@ -7,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
-using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.SqlServer
 {

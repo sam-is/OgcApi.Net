@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.SqlServer;
+using System.Collections.Generic;
 
 namespace OgcApi.Features.SqlServer.Tests
 {

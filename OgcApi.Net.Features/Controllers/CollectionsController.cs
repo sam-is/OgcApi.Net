@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Crs;
-using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Resources;
 using OgcApi.Net.Features.Temporal;
@@ -204,7 +203,7 @@ namespace OgcApi.Net.Features.Controllers
             {
                 nameof(limit),
                 nameof(offset),
-                nameof(bbox),               
+                nameof(bbox),
                 nameof(crs),
                 nameof(apiKey),
                 "bbox-crs",
@@ -441,11 +440,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                var createdFeatureId = dataProvider.CreateFeature(collectionId, new OgcFeature
-                {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
                 return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
             }
 
@@ -493,11 +488,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.ReplaceFeature(collectionId, featureId, new OgcFeature
-                {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
                 return Ok();
             }
 
@@ -575,11 +566,7 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                dataProvider.UpdateFeature(collectionId, featureId, new OgcFeature
-                {
-                    Geometry = feature.Geometry,
-                    Attributes = feature.Attributes
-                }, apiKey);
+                dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
                 return Ok();
             }
 

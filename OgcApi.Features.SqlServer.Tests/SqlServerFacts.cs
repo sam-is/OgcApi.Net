@@ -318,7 +318,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
         private static OgcFeature CreateTestFeature(IDataProvider provider)
         {
-            var feature = 
+            var feature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -374,7 +374,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             var provider = TestProviders.GetDefaultProvider();
 
-            var testFeature = 
+            var testFeature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -397,7 +397,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeature = CreateTestFeature(provider);
             var testFeatureId = (string)testFeature.Id;
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -428,7 +428,7 @@ namespace OgcApi.Features.SqlServer.Tests
             Assert.Equal(featureUpdateFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
             Assert.Equal(featureUpdateFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
             Assert.Equal(featureUpdateFrom.Attributes["Date"], updatedFeature.Attributes["Date"]);
-            Assert.Equal( 0.25, updatedFeature.Attributes["S"]);
+            Assert.Equal(0.25, updatedFeature.Attributes["S"]);
 
             DeleteTestFeature(provider, testFeatureId);
         }
@@ -443,7 +443,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -476,7 +476,7 @@ namespace OgcApi.Features.SqlServer.Tests
 
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Geometry = new Polygon(
@@ -512,7 +512,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeature = CreateTestFeature(provider);
             var testFeatureId = (string)testFeature.Id;
 
-            var featureReplaceFrom = 
+            var featureReplaceFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -553,7 +553,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             var provider = TestProviders.GetDefaultProvider();
 
-            var feature = 
+            var feature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -565,7 +565,7 @@ namespace OgcApi.Features.SqlServer.Tests
                 };
             Assert.Throws<ArgumentException>(() => provider.ReplaceFeature("PolygonsForInsert", "1", feature));
         }
-        
+
         [Fact]
         public void DeleteFeature()
         {

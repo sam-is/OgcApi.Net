@@ -11,7 +11,7 @@ namespace OgcApi.Net.Features
         public static Uri GetBaseUrl(HttpRequest request)
         {
             var forwardedProtocol = request.Headers["X-Forwarded-Proto"].FirstOrDefault();
-            return new Uri($"{forwardedProtocol ??request.Scheme}://{request.Host}{request.PathBase}/api/ogc/");
+            return new Uri($"{forwardedProtocol ?? request.Scheme}://{request.Host}{request.PathBase}/api/ogc/");
         }
 
         public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)

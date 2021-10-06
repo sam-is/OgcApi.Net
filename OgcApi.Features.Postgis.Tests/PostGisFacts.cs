@@ -319,7 +319,7 @@ namespace OgcApi.Features.PostGis.Tests
 
         private static OgcFeature CreateTestFeature(IDataProvider provider)
         {
-            var feature = 
+            var feature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -375,7 +375,7 @@ namespace OgcApi.Features.PostGis.Tests
         {
             var provider = TestProviders.GetDefaultProvider();
 
-            var testFeature = 
+            var testFeature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -398,7 +398,7 @@ namespace OgcApi.Features.PostGis.Tests
             var testFeature = CreateTestFeature(provider);
             var testFeatureId = (string)testFeature.Id;
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -429,7 +429,7 @@ namespace OgcApi.Features.PostGis.Tests
             Assert.Equal(featureUpdateFrom.Attributes["name"], updatedFeature.Attributes["name"]);
             Assert.Equal(featureUpdateFrom.Attributes["num"], updatedFeature.Attributes["num"]);
             Assert.Equal(featureUpdateFrom.Attributes["date"], updatedFeature.Attributes["date"]);
-            Assert.Equal( 0.25, updatedFeature.Attributes["s"]);
+            Assert.Equal(0.25, updatedFeature.Attributes["s"]);
 
             DeleteTestFeature(provider, testFeatureId);
         }
@@ -444,7 +444,7 @@ namespace OgcApi.Features.PostGis.Tests
 
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -477,7 +477,7 @@ namespace OgcApi.Features.PostGis.Tests
 
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
-            var featureUpdateFrom = 
+            var featureUpdateFrom =
                 new OgcFeature()
                 {
                     Geometry = new Polygon(
@@ -513,7 +513,7 @@ namespace OgcApi.Features.PostGis.Tests
             var testFeature = CreateTestFeature(provider);
             var testFeatureId = (string)testFeature.Id;
 
-            var featureReplaceFrom = 
+            var featureReplaceFrom =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -554,7 +554,7 @@ namespace OgcApi.Features.PostGis.Tests
         {
             var provider = TestProviders.GetDefaultProvider();
 
-            var feature = 
+            var feature =
                 new OgcFeature()
                 {
                     Attributes = new AttributesTable(
@@ -566,7 +566,7 @@ namespace OgcApi.Features.PostGis.Tests
                 };
             Assert.Throws<ArgumentException>(() => provider.ReplaceFeature("PolygonsForInsert", "1", feature));
         }
-        
+
         [Fact]
         public void DeleteFeature()
         {

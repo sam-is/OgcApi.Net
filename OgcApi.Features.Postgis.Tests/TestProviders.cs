@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.PostGis;
+using System.Collections.Generic;
 
 namespace OgcApi.Features.PostGis.Tests
 {

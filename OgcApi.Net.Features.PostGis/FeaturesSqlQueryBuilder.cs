@@ -1,4 +1,5 @@
-﻿using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Features;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
 using NpgsqlTypes;
@@ -7,7 +8,6 @@ using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -67,7 +67,7 @@ namespace OgcApi.Net.Features.PostGis
 
         public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 $"SET {_collectionOptions.GeometryColumn} = @p0";
 
@@ -94,7 +94,7 @@ namespace OgcApi.Net.Features.PostGis
 
         public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
         {
-            _query += 
+            _query +=
                 $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
                 "SET ";
 
@@ -125,9 +125,9 @@ namespace OgcApi.Net.Features.PostGis
                     _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
                 }
             }
-            
+
             _query += " ";
-            
+
             return this;
         }
 

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Data;
-using NetTopologySuite.Features;
+﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using System;
+using System.Data;
 
 namespace OgcApi.Net.Features.DataProviders
 {
