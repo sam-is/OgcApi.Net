@@ -17,6 +17,8 @@ namespace OgcApi.Net.Features.Options
 
         public string GeometryDataType { get; set; }
 
+        public string GeometryGeoJsonType { get; set; }
+
         public int GeometrySrid { get; set; } = 0;
 
         public string DateTimeColumn { get; set; }
