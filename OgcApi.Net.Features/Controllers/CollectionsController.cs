@@ -414,7 +414,7 @@ namespace OgcApi.Net.Features.Controllers
         {
             var baseUri = Utils.GetBaseUrl(Request);
 
-            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+            _logger.LogTrace($"Create feature with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
@@ -463,7 +463,7 @@ namespace OgcApi.Net.Features.Controllers
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
-            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+            _logger.LogTrace($"Replace feature with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
@@ -520,7 +520,7 @@ namespace OgcApi.Net.Features.Controllers
             string featureId,
             [FromQuery] string apiKey = null)
         {
-            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+            _logger.LogTrace($"Delete feature with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
@@ -553,7 +553,7 @@ namespace OgcApi.Net.Features.Controllers
             [FromQuery] Uri crs = null,
             [FromQuery] string apiKey = null)
         {
-            _logger.LogTrace($"Get feature with parameters {Request.QueryString}");
+            _logger.LogTrace($"Update feature with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
