@@ -183,6 +183,7 @@ namespace OgcApi.Net.Features.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult GetItems(
             string collectionId,
             [FromQuery] int limit = 10,

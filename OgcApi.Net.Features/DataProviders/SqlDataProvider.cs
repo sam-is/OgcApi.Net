@@ -170,7 +170,7 @@ namespace OgcApi.Net.Features.DataProviders
             if (!string.IsNullOrWhiteSpace(collectionOptions.ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
             {
                 Logger.LogTrace("API key is not supplied");
-                throw new ArgumentException("API key is not supplied");
+                throw new UnauthorizedAccessException("API key is not supplied");
             }
 
             try
