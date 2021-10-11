@@ -31,7 +31,7 @@ namespace OgcApi.Net.Features.OpenApi
                 },
                 Servers = new List<OpenApiServer>
                 {
-                    new() { Url = baseUrl.ToString() },
+                    new() { Url = baseUrl.ToString() }
                 },
                 SecurityRequirements = new List<OpenApiSecurityRequirement>
                 {
