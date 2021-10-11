@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Extensions;
+using OgcApi.Net.Features.OpenApi;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.OpenApi;
-using Microsoft.OpenApi.Extensions;
-using OgcApi.Net.Features.OpenApi;
 
 namespace OgcApi.Net.Features.Controllers
 {

@@ -218,13 +218,14 @@ namespace OgcApi.Net.Features.OpenApi
                                 },
                                 ["extent"] = new()
                                 {
-                                    Type = "object", 
+                                    Type = "object",
                                     Description = "The extent of the features in the collection",
                                     Properties = new Dictionary<string, OpenApiSchema>
                                     {
-                                        ["spatial"] = new() {
+                                        ["spatial"] = new()
+                                        {
                                             Type = "object",
-                                            Description = "The spatial extent of the features in the collection", 
+                                            Description = "The spatial extent of the features in the collection",
                                             Properties = new Dictionary<string, OpenApiSchema>
                                             {
                                                 ["bbox"] = new()
@@ -269,7 +270,7 @@ namespace OgcApi.Net.Features.OpenApi
                                                         }
                                                     }
                                                 },
-                                                ["crs"] = new ()
+                                                ["crs"] = new()
                                                 {
                                                     Description = "Coordinate reference system of the coordinates in the spatial extent\n" +
                                                                   "(property `bbox`). The default reference system is WGS 84 longitude/latitude",
@@ -278,9 +279,10 @@ namespace OgcApi.Net.Features.OpenApi
                                                 }
                                             }
                                         },
-                                        ["temporal"] = new() {
+                                        ["temporal"] = new()
+                                        {
                                             Type = "object",
-                                            Description = "The temporal extent of the features in the collection", 
+                                            Description = "The temporal extent of the features in the collection",
                                             Properties = new Dictionary<string, OpenApiSchema>
                                             {
                                                 ["interval"] = new()
@@ -291,7 +293,7 @@ namespace OgcApi.Net.Features.OpenApi
                                                     MinItems = 1,
                                                     Items = new OpenApiSchema
                                                     {
-                                                        Description = "Begin and end times of the time interval. The timestamps\n" + 
+                                                        Description = "Begin and end times of the time interval. The timestamps\n" +
                                                                       "are in the coordinate reference system specified in `trs`. By default\n" +
                                                                       "this is the Gregorian calendar.",
                                                         Type = "array",
@@ -345,28 +347,28 @@ namespace OgcApi.Net.Features.OpenApi
                             Type = "object",
                             Properties = new Dictionary<string, OpenApiSchema>
                             {
-                                ["type"] = new() 
+                                ["type"] = new()
                                 {
                                     Type = "string",
                                     Nullable = true
                                 },
-                                ["title"] = new() 
+                                ["title"] = new()
                                 {
                                     Type = "string",
                                     Nullable = true
                                 },
-                                ["status"] = new() 
+                                ["status"] = new()
                                 {
                                     Type = "integer",
                                     Format = "int32",
                                     Nullable = true
                                 },
-                                ["detail"] = new() 
+                                ["detail"] = new()
                                 {
                                     Type = "string",
                                     Nullable = true
                                 },
-                                ["instance"] = new() 
+                                ["instance"] = new()
                                 {
                                     Type = "string",
                                     Nullable = true
@@ -386,7 +388,7 @@ namespace OgcApi.Net.Features.OpenApi
                     }
                 }
             };
-            
+
             foreach (var collection in _apiOptions.Collections.Items)
             {
                 openApiDocument.Paths.Add($"/collections/{collection.Id}", new OpenApiPathItem
@@ -575,7 +577,9 @@ namespace OgcApi.Net.Features.OpenApi
                     ["type"] = new() { Type = "string", Enum = { new OpenApiString("Point") } },
                     ["coordinates"] = new()
                     {
-                        Type = "array", MinItems = 2, Items = new OpenApiSchema { Type = "number" }
+                        Type = "array",
+                        MinItems = 2,
+                        Items = new OpenApiSchema { Type = "number" }
                     }
                 }
             };
@@ -1070,7 +1074,7 @@ namespace OgcApi.Net.Features.OpenApi
                         new() { Name = collection.Title }
                     },
                     Summary = "Fetch features",
-                    Description = $"Fetch features of the feature collection with id {collection.Id}.\n" + 
+                    Description = $"Fetch features of the feature collection with id {collection.Id}.\n" +
                                   "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema.",
                     Parameters = new List<OpenApiParameter>
                     {
@@ -1107,10 +1111,10 @@ namespace OgcApi.Net.Features.OpenApi
                             Name = "bbox",
                             Description = @"Only features that have a geometry that intersects the bounding box are selected.\n" +
                                           "The bounding box is provided as four or six numbers, depending on whether the\n" +
-                                          "coordinate reference system includes a vertical axis (height or depth):\n\n" + 
+                                          "coordinate reference system includes a vertical axis (height or depth):\n\n" +
                                           "* Lower left corner, coordinate axis 1\n" +
                                           "* Lower left corner, coordinate axis 2\n" +
-                                          "* Upper right corner, coordinate axis 1\n" + 
+                                          "* Upper right corner, coordinate axis 1\n" +
                                           "* Upper right corner, coordinate axis 2\n\n" +
                                           "The coordinate reference system of the values is WGS 84 longitude/latitude\n" +
                                           "(http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate\n" +

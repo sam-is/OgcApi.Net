@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
 using System;
 using System.Linq;
-using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features
 {

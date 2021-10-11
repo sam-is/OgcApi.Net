@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
+using System;
 
 namespace OgcApi.Net.Features.OpenApi
 {
