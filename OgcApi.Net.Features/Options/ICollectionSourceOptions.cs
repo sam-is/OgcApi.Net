@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.DataProviders
+namespace OgcApi.Net.Features.Options
 {
-    public interface ICollectionSource
+    public interface ICollectionSourceOptions
     {
         public string Id { get; set; }
 

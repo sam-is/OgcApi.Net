@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.SqlServer
 {

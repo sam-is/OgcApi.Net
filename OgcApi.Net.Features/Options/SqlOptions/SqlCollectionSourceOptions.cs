@@ -1,9 +1,8 @@
-﻿using OgcApi.Net.Features.DataProviders;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Features.Options.SqlOptions
 {
-    public class SqlCollectionSourceOptions : ICollectionSource
+    public class SqlCollectionSourceOptions : ICollectionSourceOptions
     {
         public string Id { get; set; }
 

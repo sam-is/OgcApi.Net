@@ -6,6 +6,7 @@ using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
 using System;
 using System.Data.Common;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -40,7 +41,7 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
-        public ICollectionSources GetCollectionSourcesOptions()
+        public ICollectionSourcesOptions GetCollectionSourcesOptions()
         {
             return CollectionsOptions;
         }

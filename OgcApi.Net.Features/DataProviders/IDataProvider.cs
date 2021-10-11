@@ -2,6 +2,7 @@
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using System;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -9,7 +10,7 @@ namespace OgcApi.Net.Features.DataProviders
     {
         string SourceType { get; }
 
-        ICollectionSources GetCollectionSourcesOptions();
+        ICollectionSourcesOptions GetCollectionSourcesOptions();
 
         Envelope GetBbox(string collectionId, string apiKey = null);
 

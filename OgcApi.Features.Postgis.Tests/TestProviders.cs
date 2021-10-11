@@ -5,6 +5,7 @@ using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.PostGis;
 using System.Collections.Generic;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Features.PostGis.Tests
 {

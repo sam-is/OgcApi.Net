@@ -4,6 +4,7 @@ using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
 using System;
 using System.Linq;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features
 {
@@ -28,7 +29,7 @@ namespace OgcApi.Net.Features
             throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
         }
 
-        public static ICollectionSource GetCollectionSourceOptions(IServiceProvider serviceProvider,
+        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider,
             string collectionId)
         {
             var dataProviders = serviceProvider.GetServices<IDataProvider>();
