@@ -9,6 +9,8 @@ namespace OgcApi.Net.Features.DataProviders
     {
         string SourceType { get; }
 
+        ICollectionSources GetCollectionSourcesOptions();
+
         Envelope GetBbox(string collectionId, string apiKey = null);
 
         OgcFeatureCollection GetFeatures(string collectionId, int limit = 10, int offset = 0, Envelope bbox = null, DateTime? startDateTime = null, DateTime? endDateTime = null, string apiKey = null);

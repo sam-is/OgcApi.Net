@@ -174,10 +174,8 @@ namespace OgcApi.Net.Features.Controllers
             {
                 return Ok(GetCollectionMetadata(new Uri(baseUri, "items"), collectionOptions));
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return NotFound();
         }
 
         [HttpGet("{collectionId}/items")]

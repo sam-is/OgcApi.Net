@@ -40,9 +40,14 @@ namespace OgcApi.Net.Features.DataProviders
             }
         }
 
+        public ICollectionSources GetCollectionSourcesOptions()
+        {
+            return CollectionsOptions;
+        }
+
         public Envelope GetBbox(string collectionId, string apiKey = null)
         {
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -80,7 +85,7 @@ namespace OgcApi.Net.Features.DataProviders
 
         public OgcFeature GetFeature(string collectionId, string featureId, string apiKey = null)
         {
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -153,7 +158,7 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentOutOfRangeException(nameof(limit), errorMessage);
             }
 
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -222,7 +227,7 @@ namespace OgcApi.Net.Features.DataProviders
             DateTime? endDateTime = null,
             string apiKey = null)
         {
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -269,7 +274,7 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException("Feature geometry cannot be null");
             }
 
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -307,7 +312,7 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentNullException(nameof(feature));
             }
 
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -354,7 +359,7 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException("Feature geometry cannot be null");
             }
 
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(
@@ -397,7 +402,7 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentNullException(nameof(featureId));
             }
 
-            var collectionOptions = CollectionsOptions.Sources.Find(x => x.Id == collectionId);
+            var collectionOptions = (SqlCollectionSourceOptions)CollectionsOptions.GetSourceById(collectionId);
             if (collectionOptions == null)
             {
                 Logger.LogTrace(

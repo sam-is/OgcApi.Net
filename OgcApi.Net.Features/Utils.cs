@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using NetTopologySuite.Features;
 
 namespace OgcApi.Net.Features
@@ -28,6 +26,20 @@ namespace OgcApi.Net.Features
                 }
             }
             throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
+        }
+
+        public static ICollectionSource GetCollectionSourceOptions(IServiceProvider serviceProvider,
+            string collectionId)
+        {
+            var dataProviders = serviceProvider.GetServices<IDataProvider>();
+            foreach (var dataProvider in dataProviders)
+            {
+                var collectionSourcesOptions = dataProvider.GetCollectionSourcesOptions();
+                var collectionSourceOptions = collectionSourcesOptions.GetSourceById(collectionId);
+                if (collectionSourceOptions != null)
+                    return collectionSourceOptions;
+            }
+            throw new InvalidOperationException($"Collection source with id {collectionId} is not found");
         }
 
         public static string GetFeatureETag(IFeature feature)
