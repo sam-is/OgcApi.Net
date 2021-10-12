@@ -253,7 +253,7 @@ namespace OgcApi.Features.PostGis.Tests
         [Fact]
         public void GetFeaturesWithoutApiKey()
         {
-            Assert.Throws<ArgumentException>(() => TestProviders.GetProviderWithApiKey().GetFeatures("PointsWithApiKey"));
+            Assert.Throws<UnauthorizedAccessException>(() => TestProviders.GetProviderWithApiKey().GetFeatures("PointsWithApiKey"));
         }
 
         [Fact]
