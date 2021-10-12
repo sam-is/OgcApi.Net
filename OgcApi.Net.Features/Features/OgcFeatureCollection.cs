@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace OgcApi.Net.Features.Features
 {
-    public class OgcFeatureCollection : Collection<IFeature>, ISerializable
+    public class OgcFeatureCollection : Collection<IFeature>
     {
         public OgcFeatureCollection()
             : base(new List<IFeature>())
@@ -17,13 +17,5 @@ namespace OgcApi.Net.Features.Features
         public List<Link> Links { get; set; }
 
         public long TotalMatched { get; set; }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("links", Links);
-            info.AddValue("timeStamp", DateTime.Now);
-            info.AddValue("numberMatched", Items.Count);
-            info.AddValue("features", Items);
-        }
     }
 }

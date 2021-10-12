@@ -27,21 +27,22 @@ namespace OgcApi.Net.Features.OpenApi
                 Info = new OpenApiInfo
                 {
                     Title = _apiOptions.LandingPage.Title,
-                    Description = _apiOptions.LandingPage.Description
+                    Description = _apiOptions.LandingPage.Description,
+                    Version = _apiOptions.LandingPage.Version,
+                    Contact = new OpenApiContact()
+                    {
+                        Name = _apiOptions.LandingPage.ContactName,
+                        Url = _apiOptions.LandingPage.ContactUrl
+                    },
+                    License = new OpenApiLicense()
+                    {
+                        Name = _apiOptions.LandingPage.LicenseName,
+                        Url = _apiOptions.LandingPage.LicenseUrl
+                    }
                 },
                 Servers = new List<OpenApiServer>
                 {
                     new() { Url = baseUrl.ToString() }
-                },
-                SecurityRequirements = new List<OpenApiSecurityRequirement>
-                {
-                    new()
-                    {
-                        [new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
-                        }] = Array.Empty<string>()
-                    }
                 },
                 Paths = new OpenApiPaths
                 {
@@ -375,16 +376,6 @@ namespace OgcApi.Net.Features.OpenApi
                                 }
                             }
                         },
-                    },
-                    SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
-                    {
-                        ["ApiKey"] = new()
-                        {
-                            Type = SecuritySchemeType.ApiKey,
-                            In = ParameterLocation.Query,
-                            Name = "apiKey",
-                            Description = "API key"
-                        }
                     }
                 }
             };
@@ -447,6 +438,31 @@ namespace OgcApi.Net.Features.OpenApi
                 {
                     Operations = GetFeatureOperations(collection)
                 });
+            }
+
+            if (_apiOptions.UseApiKeyAuthorization)
+            {
+                openApiDocument.SecurityRequirements = new List<OpenApiSecurityRequirement>
+                {
+                    new()
+                    {
+                        [new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
+                        }] = Array.Empty<string>()
+                    }
+                };
+
+                openApiDocument.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+                {
+                    ["ApiKey"] = new()
+                    {
+                        Type = SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Query,
+                        Name = "apiKey",
+                        Description = "API key"
+                    }
+                };
             }
 
             return openApiDocument;

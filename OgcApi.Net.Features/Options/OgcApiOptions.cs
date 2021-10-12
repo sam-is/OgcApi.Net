@@ -12,5 +12,7 @@ namespace OgcApi.Net.Features.Options
 
         [Required]
         public CollectionsOptions Collections { get; set; }
+
+        public bool UseApiKeyAuthorization { get; set; }
     }
 }

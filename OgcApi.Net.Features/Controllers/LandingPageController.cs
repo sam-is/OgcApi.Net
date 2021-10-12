@@ -62,7 +62,7 @@ namespace OgcApi.Net.Features.Controllers
                 {
                     new()
                     {
-                        Href = baseUri,
+                        Href = Utils.GetBaseUrl(Request, false),
                         HrefLang = "en",
                         Rel = "self",
                         Type = "application/json",
@@ -116,11 +116,11 @@ namespace OgcApi.Net.Features.Controllers
         }
 
         [HttpGet("swagger.json")]
-        [Produces("application/json")]
+        [Produces("application/vnd.oai.openapi+json;version=3.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult GetOpenApiJson()
         {
-            return Content(_openApiGenerator.GetDocument(Utils.GetBaseUrl(Request)).SerializeAsJson(OpenApiSpecVersion.OpenApi3_0), "application/json",
+            return Content(_openApiGenerator.GetDocument(Utils.GetBaseUrl(Request, false)).SerializeAsJson(OpenApiSpecVersion.OpenApi3_0), "application/vnd.oai.openapi+json;version=3.0",
                 Encoding.UTF8);
         }
     }

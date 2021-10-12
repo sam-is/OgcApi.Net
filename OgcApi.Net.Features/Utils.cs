@@ -10,10 +10,13 @@ namespace OgcApi.Net.Features
 {
     public static class Utils
     {
-        public static Uri GetBaseUrl(HttpRequest request)
+        public static Uri GetBaseUrl(HttpRequest request, bool withTrailingSlash = true)
         {
             var forwardedProtocol = request.Headers["X-Forwarded-Proto"].FirstOrDefault();
-            return new Uri($"{forwardedProtocol ?? request.Scheme}://{request.Host}{request.PathBase}/api/ogc/");
+            var url = $"{forwardedProtocol ?? request.Scheme}://{request.Host}{request.PathBase}/api/ogc";
+            if (withTrailingSlash)
+                url += "/";
+            return new Uri(url);
         }
 
         public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)

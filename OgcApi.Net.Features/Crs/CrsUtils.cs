@@ -181,14 +181,14 @@ namespace OgcApi.Net.Features.Crs
                 return;
 
             var transformationFactory = new CoordinateTransformationFactory();
-            ICoordinateTransformation transformation = transformationFactory.CreateFromCoordinateSystems(srcCrs, dstCrs);
+            var transformation = transformationFactory.CreateFromCoordinateSystems(srcCrs, dstCrs);
 
-            double x1 = envelope.MinX;
-            double y1 = envelope.MinY;
-            double x2 = envelope.MaxX;
-            double y2 = envelope.MaxY;
+            var x1 = envelope.MinX;
+            var y1 = envelope.MinY;
+            var x2 = envelope.MaxX;
+            var y2 = envelope.MaxY;
 
-            MathTransform mathTransform = transformation.MathTransform;
+            var mathTransform = transformation.MathTransform;
             mathTransform.Transform(ref x1, ref y1);
             mathTransform.Transform(ref x2, ref y2);
 
