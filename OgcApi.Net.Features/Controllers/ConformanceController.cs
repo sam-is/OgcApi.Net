@@ -54,7 +54,8 @@ namespace OgcApi.Net.Features.Controllers
                         new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
                         new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"),
                         new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"),
-                        new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson")
+                        new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"),
+                        new("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs")
                     }
                 };
             }

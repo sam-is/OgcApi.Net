@@ -5,6 +5,7 @@ using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.SqlServer;
 using System.Collections.Generic;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Features.SqlServer.Tests
 {

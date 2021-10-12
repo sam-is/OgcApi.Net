@@ -1,20 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using NetTopologySuite.Features;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features
 {
     public static class Utils
     {
-        public static Uri GetBaseUrl(HttpRequest request)
+        public static Uri GetBaseUrl(HttpRequest request, bool withTrailingSlash = true)
         {
             var forwardedProtocol = request.Headers["X-Forwarded-Proto"].FirstOrDefault();
-            return new Uri($"{forwardedProtocol ?? request.Scheme}://{request.Host}{request.PathBase}/api/ogc/");
+            var url = $"{forwardedProtocol ?? request.Scheme}://{request.Host}{request.PathBase}/api/ogc";
+            if (withTrailingSlash)
+                url += "/";
+            return new Uri(url);
         }
 
         public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)
@@ -28,6 +30,20 @@ namespace OgcApi.Net.Features
                 }
             }
             throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
+        }
+
+        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider,
+            string collectionId)
+        {
+            var dataProviders = serviceProvider.GetServices<IDataProvider>();
+            foreach (var dataProvider in dataProviders)
+            {
+                var collectionSourcesOptions = dataProvider.GetCollectionSourcesOptions();
+                var collectionSourceOptions = collectionSourcesOptions.GetSourceById(collectionId);
+                if (collectionSourceOptions != null)
+                    return collectionSourceOptions;
+            }
+            throw new InvalidOperationException($"Collection source with id {collectionId} is not found");
         }
 
         public static string GetFeatureETag(IFeature feature)

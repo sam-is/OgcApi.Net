@@ -12,6 +12,7 @@ using OgcApi.Net.Features.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OgcApi.Net.Features.Options.SqlOptions;
 using Xunit;
 
 namespace OgcApi.Features.SqlServer.Tests
@@ -251,7 +252,7 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void GetFeaturesWithoutApiKey()
         {
-            Assert.Throws<ArgumentException>(() => TestProviders.GetProviderWithApiKey().GetFeatures("PointsWithApiKey"));
+            Assert.Throws<UnauthorizedAccessException>(() => TestProviders.GetProviderWithApiKey().GetFeatures("PointsWithApiKey"));
         }
 
         [Fact]

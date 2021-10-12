@@ -2,12 +2,15 @@
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using System;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features.DataProviders
 {
     public interface IDataProvider
     {
         string SourceType { get; }
+
+        ICollectionSourcesOptions GetCollectionSourcesOptions();
 
         Envelope GetBbox(string collectionId, string apiKey = null);
 

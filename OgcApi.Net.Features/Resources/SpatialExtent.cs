@@ -7,6 +7,6 @@ namespace OgcApi.Net.Features.Resources
     {
         public double[][] Bbox { get; set; }
 
-        public List<Uri> Crs { get; set; }
+        public Uri Crs { get; set; }
     }
 }

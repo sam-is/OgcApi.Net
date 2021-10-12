@@ -1,9 +1,8 @@
-﻿using OgcApi.Net.Features.DataProviders;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Features.Options.SqlOptions
 {
-    public class SqlCollectionSourceOptions : ICollectionSource
+    public class SqlCollectionSourceOptions : ICollectionSourceOptions
     {
         public string Id { get; set; }
 
@@ -16,6 +15,8 @@ namespace OgcApi.Net.Features.Options
         public string GeometryColumn { get; set; }
 
         public string GeometryDataType { get; set; }
+
+        public string GeometryGeoJsonType { get; set; }
 
         public int GeometrySrid { get; set; } = 0;
 

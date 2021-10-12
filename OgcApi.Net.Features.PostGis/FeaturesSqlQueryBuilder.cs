@@ -8,6 +8,7 @@ using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.PostGis
 {

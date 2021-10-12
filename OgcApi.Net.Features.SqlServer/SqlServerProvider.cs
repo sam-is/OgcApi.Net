@@ -7,6 +7,7 @@ using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options;
 using System.Data;
 using System.Data.Common;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.SqlServer
 {

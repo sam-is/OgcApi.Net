@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Extensions;
+using OgcApi.Net.Features.OpenApi;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Resources;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace OgcApi.Net.Features.Controllers
 {
@@ -14,13 +18,16 @@ namespace OgcApi.Net.Features.Controllers
     [ApiExplorerSettings(GroupName = "ogc")]
     public class LandingPageController : ControllerBase
     {
-        private readonly LandingPageOptions _apiOptions;
+        private readonly OgcApiOptions _apiOptions;
 
         private readonly ILogger _logger;
 
-        public LandingPageController(IOptionsMonitor<OgcApiOptions> apiOptions, ILoggerFactory logger)
+        private readonly IOpenApiGenerator _openApiGenerator;
+
+        public LandingPageController(IOptionsMonitor<OgcApiOptions> apiOptions, IOpenApiGenerator openApiGenerator, ILoggerFactory logger)
         {
-            _apiOptions = apiOptions.CurrentValue.LandingPage;
+            _apiOptions = apiOptions.CurrentValue;
+            _openApiGenerator = openApiGenerator;
 
             _logger = logger.CreateLogger("OGC API Features LandingPageController");
 
@@ -48,14 +55,14 @@ namespace OgcApi.Net.Features.Controllers
             _logger.LogTrace($"Get landing page with parameters {Request.QueryString}");
 
             List<Link> links;
-            if (_apiOptions.Links == null ||
-                _apiOptions.Links.Count == 0)
+            if (_apiOptions.LandingPage.Links == null ||
+                _apiOptions.LandingPage.Links.Count == 0)
             {
                 links = new List<Link>
                 {
                     new()
                     {
-                        Href = baseUri,
+                        Href = Utils.GetBaseUrl(Request, false),
                         HrefLang = "en",
                         Rel = "self",
                         Type = "application/json",
@@ -63,7 +70,7 @@ namespace OgcApi.Net.Features.Controllers
                     },
                     new()
                     {
-                        Href = _apiOptions.ApiDescriptionPage,
+                        Href = _apiOptions.LandingPage.ApiDescriptionPage,
                         HrefLang = "en",
                         Rel = "service-desc",
                         Type = "application/vnd.oai.openapi+json;version=3.0",
@@ -71,7 +78,7 @@ namespace OgcApi.Net.Features.Controllers
                     },
                     new()
                     {
-                        Href = _apiOptions.ApiDocumentPage,
+                        Href = _apiOptions.LandingPage.ApiDocumentPage,
                         HrefLang = "en",
                         Rel = "service-doc",
                         Type = "text/html",
@@ -97,15 +104,24 @@ namespace OgcApi.Net.Features.Controllers
             }
             else
             {
-                links = _apiOptions.Links;
+                links = _apiOptions.LandingPage.Links;
             }
 
             return new LandingPage
             {
-                Title = _apiOptions.Title,
-                Description = _apiOptions.Description,
+                Title = _apiOptions.LandingPage.Title,
+                Description = _apiOptions.LandingPage.Description,
                 Links = links
             };
+        }
+
+        [HttpGet("swagger.json")]
+        [Produces("application/vnd.oai.openapi+json;version=3.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult GetOpenApiJson()
+        {
+            return Content(_openApiGenerator.GetDocument(Utils.GetBaseUrl(Request, false)).SerializeAsJson(OpenApiSpecVersion.OpenApi3_0), "application/vnd.oai.openapi+json;version=3.0",
+                Encoding.UTF8);
         }
     }
 }
