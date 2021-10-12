@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
-    <PackageReference Include="Npgsql" Version="5.0.7" />
+    <PackageReference Include="Npgsql" Version="5.0.10" />
   </ItemGroup>
 
   <ItemGroup>
