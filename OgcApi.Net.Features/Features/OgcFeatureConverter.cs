@@ -32,6 +32,11 @@ namespace OgcApi.Net.Features.Features
             }
 
             writer.WriteString("type", "Feature");
+            if (value.Id != null || !options.IgnoreNullValues)
+            {
+                writer.WritePropertyName("id");
+                JsonSerializer.Serialize(writer, value.Id, options);
+            }
             if (value.Geometry != null || !options.IgnoreNullValues)
             {
                 writer.WritePropertyName("geometry");

@@ -272,55 +272,66 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dateTimeInterval = DateTimeInterval.Parse(dateTime);
 
-                var features = dataProvider.GetFeatures(
-                    collectionOptions.Id,
-                    limit,
-                    offset,
-                    envelope,
-                    dateTimeInterval.Start,
-                    dateTimeInterval.End,
-                    apiKey);
-                features.Transform(collectionOptions.StorageCrs, crs);
-
-                features.Links = new List<Link>
+                try
                 {
-                    new()
+                    var features = dataProvider.GetFeatures(
+                        collectionOptions.Id,
+                        limit,
+                        offset,
+                        envelope,
+                        dateTimeInterval.Start,
+                        dateTimeInterval.End,
+                        apiKey);
+                    features.Transform(collectionOptions.StorageCrs, crs);
+
+                    features.Links = new List<Link>
                     {
-                        Href = Utils.GetBaseUrl(Request, false),
-                        Rel = "self",
-                        Type = "application/geo+json"
-                    },
-                    new()
+                        new()
+                        {
+                            Href = Utils.GetBaseUrl(Request, false),
+                            Rel = "self",
+                            Type = "application/geo+json"
+                        },
+                        new()
+                        {
+                            Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
+                            Rel = "alternate",
+                            Type = "text/html"
+                        }
+                    };
+
+                    features.TotalMatched = dataProvider.GetFeaturesCount(
+                        collectionOptions.Id,
+                        envelope,
+                        dateTimeInterval.Start,
+                        dateTimeInterval.End,
+                        apiKey);
+
+                    if (offset + limit < features.TotalMatched)
                     {
-                        Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
-                        Rel = "alternate",
-                        Type = "text/html"
+                        var parameters = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                        parameters.Set("offset", (offset + limit).ToString());
+
+                        features.Links.Add(new Link
+                        {
+                            Href = new Uri(baseUri, $"collections/{collectionId}/items?{parameters}"),
+                            Rel = "next",
+                            Type = "application/geo+json"
+                        });
                     }
-                };
 
-                features.TotalMatched = dataProvider.GetFeaturesCount(
-                    collectionOptions.Id,
-                    envelope,
-                    dateTimeInterval.Start,
-                    dateTimeInterval.End,
-                    apiKey);
+                    Response.Headers.Add("Content-Crs", $"<{crs}>");
 
-                if (offset + limit < features.TotalMatched)
-                {
-                    var parameters = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-                    parameters.Set("offset", (offset + limit).ToString());
-
-                    features.Links.Add(new Link
-                    {
-                        Href = new Uri(baseUri, $"collections/{collectionId}/items?{parameters}"),
-                        Rel = "next",
-                        Type = "application/geo+json"
-                    });
+                    return Ok(features);
                 }
-
-                Response.Headers.Add("Content-Crs", $"<{crs}>");
-
-                return Ok(features);
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -375,42 +386,53 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
-
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
-
-                if (feature == null)
+                try
                 {
-                    return NotFound();
-                }
+                    var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
 
-                feature.Transform(collectionOptions.StorageCrs, crs);
+                    Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
 
-                feature.Links = new List<Link>
-                {
-                    new()
+                    if (feature == null)
                     {
-                        Href = new Uri(baseUri, $"{collectionOptions.Id}/items/{featureId}"),
-                        Rel = "self",
-                        Type = "application/geo+json"
-                    },
-                    new()
-                    {
-                        Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
-                        Rel = "alternate",
-                        Type = "text/html"
-                    },
-                    new()
-                    {
-                        Href = new Uri(baseUri, $"{collectionOptions.Id}/items"),
-                        Rel = "collection",
-                        Type = "application/json"
+                        return NotFound();
                     }
-                };
 
-                Response.Headers.Add("Content-Crs", $"<{crs}>");
+                    feature.Transform(collectionOptions.StorageCrs, crs);
 
-                return Ok(feature);
+                    feature.Links = new List<Link>
+                    {
+                        new()
+                        {
+                            Href = new Uri(baseUri, $"{collectionOptions.Id}/items/{featureId}"),
+                            Rel = "self",
+                            Type = "application/geo+json"
+                        },
+                        new()
+                        {
+                            Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
+                            Rel = "alternate",
+                            Type = "text/html"
+                        },
+                        new()
+                        {
+                            Href = new Uri(baseUri, $"{collectionOptions.Id}/items"),
+                            Rel = "collection",
+                            Type = "application/json"
+                        }
+                    };
+
+                    Response.Headers.Add("Content-Crs", $"<{crs}>");
+
+                    return Ok(feature);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -459,8 +481,19 @@ namespace OgcApi.Net.Features.Controllers
                 feature.Transform(crs, collectionOptions.StorageCrs);
                 feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
 
-                var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
-                return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
+                try
+                {
+                    var createdFeatureId = dataProvider.CreateFeature(collectionId, feature, apiKey);
+                    return Created($"{baseUri}/{collectionId}/items/{createdFeatureId}", createdFeatureId);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -518,9 +551,20 @@ namespace OgcApi.Net.Features.Controllers
                     }
                 }
 
-                dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
-                return Ok();
+                try
+                {
+                    dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
+                    Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+                    return Ok();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -549,8 +593,19 @@ namespace OgcApi.Net.Features.Controllers
 
                 var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
 
-                dataProvider.DeleteFeature(collectionId, featureId, apiKey);
-                return Ok();
+                try
+                {
+                    dataProvider.DeleteFeature(collectionId, featureId, apiKey);
+                    return Ok();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -608,9 +663,20 @@ namespace OgcApi.Net.Features.Controllers
                     }
                 }
 
-                dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
-                return Ok();
+                try
+                {
+                    dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
+                    Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
+                    return Ok();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Unauthorized();
+                }
+                catch (Exception)
+                {
+                    return Problem();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");

@@ -94,6 +94,12 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            if (!string.IsNullOrWhiteSpace(collectionOptions.ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
+            {
+                Logger.LogTrace("API key is not supplied");
+                throw new UnauthorizedAccessException("API key is not supplied");
+            }
+
             try
             {
                 using var connection = GetDbConnection(collectionOptions.ConnectionString);
