@@ -389,13 +389,12 @@ namespace OgcApi.Net.Features.Controllers
                 try
                 {
                     var feature = dataProvider.GetFeature(collectionOptions.Id, featureId, apiKey);
-
-                    Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
-
                     if (feature == null)
                     {
                         return NotFound();
                     }
+
+                    Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
 
                     feature.Transform(collectionOptions.StorageCrs, crs);
 
