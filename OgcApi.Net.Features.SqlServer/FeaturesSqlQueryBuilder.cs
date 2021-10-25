@@ -3,13 +3,12 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.SqlServer
 {
