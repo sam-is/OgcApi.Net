@@ -3,12 +3,12 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
-using OgcApi.Net.Features.Options.SqlOptions;
+using System.Linq;
 
 namespace OgcApi.Net.Features.SqlServer
 {
@@ -29,26 +29,26 @@ namespace OgcApi.Net.Features.SqlServer
 
         public IFeaturesSqlQueryBuilder AddSelectBbox()
         {
-            _query += $"SELECT {_collectionOptions.GeometryDataType}::EnvelopeAggregate({_collectionOptions.GeometryColumn}) " +
+            _query += $"SELECT {_collectionOptions.GeometryDataType}::EnvelopeAggregate([{_collectionOptions.GeometryColumn}]) " +
                       $"FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}]";
             return this;
         }
 
         public IFeaturesSqlQueryBuilder AddSelect()
         {
-            _query += $"SELECT {_collectionOptions.IdentifierColumn}, {_collectionOptions.GeometryColumn}";
+            _query += $"SELECT [{_collectionOptions.IdentifierColumn}], [{_collectionOptions.GeometryColumn}]";
             if (_collectionOptions.Properties != null)
-                _query += ", " + string.Join(", ", _collectionOptions.Properties);
+                _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $"[{property}]"));
             _query += " ";
             return this;
         }
 
         public IFeaturesSqlQueryBuilder AddInsert(IFeature feature)
         {
-            _query += $"INSERT INTO \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ({_collectionOptions.GeometryColumn}";
+            _query += $"INSERT INTO [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ([{_collectionOptions.GeometryColumn}]";
             if (_collectionOptions.Properties != null)
-                _query += ", " + string.Join(", ", _collectionOptions.Properties);
-            _query += $") OUTPUT Inserted.{_collectionOptions.IdentifierColumn} VALUES (@p0";
+                _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $"[{property}]"));
+            _query += $") OUTPUT Inserted.[{_collectionOptions.IdentifierColumn}] VALUES (@p0";
             if (_collectionOptions.Properties != null)
                 for (var i = 0; i < _collectionOptions.Properties.Count; i++)
                 {
@@ -79,13 +79,13 @@ namespace OgcApi.Net.Features.SqlServer
         public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
         {
             _query +=
-                $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
-                $"SET {_collectionOptions.GeometryColumn} = @p0";
+                $"UPDATE [{_collectionOptions.Schema}].[{_collectionOptions.Table}] " +
+                $"SET [{_collectionOptions.GeometryColumn}] = @p0";
             if (_collectionOptions.Properties != null)
             {
                 for (var i = 0; i < _collectionOptions.Properties.Count; i++)
                 {
-                    _query += $", {_collectionOptions.Properties[i]} = @p{i + 1}";
+                    _query += $", [{_collectionOptions.Properties[i]}] = @p{i + 1}";
                     _sqlParameters.Add(new SqlParameter($"@p{i + 1}",
                         feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
                 }
@@ -107,12 +107,12 @@ namespace OgcApi.Net.Features.SqlServer
         public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
         {
             _query +=
-                $"UPDATE \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" " +
+                $"UPDATE [{_collectionOptions.Schema}].[{_collectionOptions.Table}] " +
                 "SET ";
 
             if (feature.Geometry != null)
             {
-                _query += $"{_collectionOptions.GeometryColumn} = @p0 ";
+                _query += $"[{_collectionOptions.GeometryColumn}] = @p0 ";
                 var geometryWriter = new SqlServerBytesWriter { IsGeography = _collectionOptions.GeometryDataType == "geography" };
                 var geometryBytes = geometryWriter.Write(feature.Geometry);
                 _sqlParameters.Add(new SqlParameter("@p0", new SqlBytes(geometryBytes))
@@ -133,7 +133,7 @@ namespace OgcApi.Net.Features.SqlServer
                 for (var i = 0; i < attributesNames.Length; i++)
                 {
                     if (!_collectionOptions.Properties.Contains(attributesNames[i])) continue;
-                    _query += $" {attributesNames[i]} = @p{i + 1}";
+                    _query += $" [{attributesNames[i]}] = @p{i + 1}";
                     if (i != attributesNames.Length - 1)
                         _query += ",";
                     _sqlParameters.Add(new SqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
@@ -147,7 +147,7 @@ namespace OgcApi.Net.Features.SqlServer
 
         public IFeaturesSqlQueryBuilder AddDelete()
         {
-            _query += $"DELETE FROM \"{_collectionOptions.Schema}\".\"{_collectionOptions.Table}\" ";
+            _query += $"DELETE FROM [{_collectionOptions.Schema}].[{_collectionOptions.Table}] ";
             return this;
         }
 
@@ -160,7 +160,7 @@ namespace OgcApi.Net.Features.SqlServer
         public IFeaturesSqlQueryBuilder AddLimit(int offset, int limit)
         {
             _query +=
-                $" ORDER BY {_collectionOptions.IdentifierColumn} " +
+                $" ORDER BY [{_collectionOptions.IdentifierColumn}] " +
                 $"OFFSET {offset} ROWS " +
                 $"FETCH NEXT {limit} ROWS ONLY ";
             return this;
@@ -176,7 +176,7 @@ namespace OgcApi.Net.Features.SqlServer
         {
             if (bbox != null)
             {
-                _predicateConditions.Add($"{_collectionOptions.GeometryColumn}.STIntersects({_collectionOptions.GeometryDataType}::STGeomFromText(@Bbox, @GeometrySRID)) = 1");
+                _predicateConditions.Add($"[{_collectionOptions.GeometryColumn}].STIntersects({_collectionOptions.GeometryDataType}::STGeomFromText(@Bbox, @GeometrySRID)) = 1");
                 _sqlParameters.Add(new SqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
                 _sqlParameters.Add(new SqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
             }
@@ -189,12 +189,12 @@ namespace OgcApi.Net.Features.SqlServer
             {
                 if (startDateTime != null)
                 {
-                    _predicateConditions.Add($"{_collectionOptions.DateTimeColumn} >= @StartDateTime");
+                    _predicateConditions.Add($"[{_collectionOptions.DateTimeColumn}] >= @StartDateTime");
                     _sqlParameters.Add(new SqlParameter("@StartDateTime", startDateTime.Value));
                 }
                 if (endDateTime != null)
                 {
-                    _predicateConditions.Add($"{_collectionOptions.DateTimeColumn} <= @EndDateTime");
+                    _predicateConditions.Add($"[{_collectionOptions.DateTimeColumn}] <= @EndDateTime");
                     _sqlParameters.Add(new SqlParameter("@EndDateTime", endDateTime.Value));
                 }
             }
@@ -203,19 +203,16 @@ namespace OgcApi.Net.Features.SqlServer
 
         public IFeaturesSqlQueryBuilder AddWhere(string featureIdColumn)
         {
-            _predicateConditions.Add($"{_collectionOptions.IdentifierColumn} = @FeatureId");
+            _predicateConditions.Add($"[{_collectionOptions.IdentifierColumn}] = @FeatureId");
             _sqlParameters.Add(new SqlParameter("@FeatureId", featureIdColumn));
             return this;
         }
 
         public IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
         {
-            if (!string.IsNullOrWhiteSpace(apiKeyPredicate) &&
-                !string.IsNullOrWhiteSpace(apiKey))
-            {
-                _predicateConditions.Add(apiKeyPredicate);
-                _sqlParameters.Add(new SqlParameter("@ApiKey", apiKey));
-            }
+            if (string.IsNullOrWhiteSpace(apiKeyPredicate) || string.IsNullOrWhiteSpace(apiKey)) return this;
+            _predicateConditions.Add(apiKeyPredicate);
+            _sqlParameters.Add(new SqlParameter("@ApiKey", apiKey));
             return this;
         }
 
