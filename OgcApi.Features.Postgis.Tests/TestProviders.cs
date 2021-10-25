@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.PostGis.Tests.Utils;
-using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.PostGis;
 using System.Collections.Generic;
 using OgcApi.Net.Features.Options.SqlOptions;
@@ -13,9 +12,9 @@ namespace OgcApi.Features.PostGis.Tests
     {
         private static SqlCollectionSourcesOptions GetDefaultOptions()
         {
-            return new SqlCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>
                 {
                     new()
                     {
@@ -28,7 +27,7 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         DateTimeColumn = "date",
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
                             "name",
                             "num",
@@ -46,7 +45,7 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
                             "name"
                         }
@@ -61,7 +60,7 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
                             "name"
                         }
@@ -76,7 +75,7 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
                             "name"
                         }
@@ -92,7 +91,7 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
                         DateTimeColumn = "date",
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
                             "name",
                             "num",
@@ -106,9 +105,9 @@ namespace OgcApi.Features.PostGis.Tests
 
         private static SqlCollectionSourcesOptions GetOptionsWithUnknownTable()
         {
-            return new SqlCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>
                 {
                     new()
                     {
@@ -127,9 +126,9 @@ namespace OgcApi.Features.PostGis.Tests
 
         private static SqlCollectionSourcesOptions GetOptionsWithApiKey()
         {
-            return new SqlCollectionSourcesOptions()
+            return new SqlCollectionSourcesOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>()
+                Sources = new List<SqlCollectionSourceOptions>
                 {
                     new()
                     {
@@ -141,9 +140,9 @@ namespace OgcApi.Features.PostGis.Tests
                         GeometryColumn = "geom",
                         GeometryDataType = "geometry",
                         GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Properties = new List<string>
                         {
-                            "Name"
+                            "name"
                         },
                         ApiKeyPredicateForGet = "key = @ApiKey"
                     }
@@ -153,21 +152,21 @@ namespace OgcApi.Features.PostGis.Tests
 
         public static PostGisProvider GetDefaultProvider()
         {
-            SqlCollectionSourcesOptions options = GetDefaultOptions();
+            var options = GetDefaultOptions();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
 
         public static PostGisProvider GetProviderWithErrors()
         {
-            SqlCollectionSourcesOptions options = GetOptionsWithUnknownTable();
+            var options = GetOptionsWithUnknownTable();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
 
         public static PostGisProvider GetProviderWithApiKey()
         {
-            SqlCollectionSourcesOptions options = GetOptionsWithApiKey();
+            var options = GetOptionsWithApiKey();
             var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
             return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
         }
