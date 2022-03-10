@@ -40,5 +40,7 @@ namespace OgcApi.Net.Features.Options
         public bool AllowUpdate { get; set; }
 
         public bool AllowDelete { get; set; }
+
+
     }
 }
