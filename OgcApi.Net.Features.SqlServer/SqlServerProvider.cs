@@ -13,7 +13,7 @@ namespace OgcApi.Net.Features.SqlServer
 {
     public class SqlServerProvider : SqlDataProvider
     {
-        public SqlServerProvider(IOptionsMonitor<SqlCollectionSourcesOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger)
+        public SqlServerProvider(IOptionsMonitor<CollectionsOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger)
             : base(sqlCollectionSourcesOptions, logger)
         {
         }

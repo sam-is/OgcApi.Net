@@ -815,7 +815,7 @@ namespace OgcApi.Net.Features.OpenApi
                 }
             };
 
-            if (collection.AllowReplace)
+            if (collection.Features.Storage.AllowReplace)
             {
                 result.Add(OperationType.Put, new OpenApiOperation
                 {
@@ -909,7 +909,7 @@ namespace OgcApi.Net.Features.OpenApi
                 });
             }
 
-            if (collection.AllowDelete)
+            if (collection.Features.Storage.AllowDelete)
             {
                 result.Add(OperationType.Delete, new OpenApiOperation
                 {
@@ -982,7 +982,7 @@ namespace OgcApi.Net.Features.OpenApi
                 });
             }
 
-            if (collection.AllowUpdate)
+            if (collection.Features.Storage.AllowUpdate)
             {
                 result.Add(OperationType.Patch, new OpenApiOperation
                 {
@@ -1249,7 +1249,7 @@ namespace OgcApi.Net.Features.OpenApi
                 }
             };
 
-            if (collection.AllowCreate)
+            if (collection.Features.Storage.AllowCreate)
             {
                 result.Add(OperationType.Post, new OpenApiOperation
                 {

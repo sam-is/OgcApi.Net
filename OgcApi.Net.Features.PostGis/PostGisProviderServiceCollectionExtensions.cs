@@ -9,7 +9,7 @@ namespace OgcApi.Net.Features.PostGis
     public static class OgcApiServiceCollectionExtensions
     {
         public static IServiceCollection AddOgcApiPostGisProvider(
-            this IServiceCollection services, Action<SqlCollectionSourcesOptions> configureOptions)
+            this IServiceCollection services, Action<CollectionsOptions> configureOptions)
         {
             services.Configure(configureOptions);
 

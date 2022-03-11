@@ -10,7 +10,7 @@ namespace OgcApi.Net.Features.DataProviders
     {
         string SourceType { get; }
 
-        ICollectionSourcesOptions GetCollectionSourcesOptions();
+        ICollectionsOptions GetCollectionSourcesOptions();
 
         Envelope GetBbox(string collectionId, string apiKey = null);
 

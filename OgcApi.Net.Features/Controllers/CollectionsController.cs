@@ -99,7 +99,7 @@ namespace OgcApi.Net.Features.Controllers
 
         private Collection GetCollectionMetadata(Uri uri, CollectionOptions collectionOptions)
         {
-            var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+            var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
             var extent = collectionOptions.Extent;
             if (extent == null)
@@ -107,7 +107,7 @@ namespace OgcApi.Net.Features.Controllers
                 var envelope = dataProvider.GetBbox(collectionOptions.Id);
                 if (envelope != null)
                 {
-                    envelope.Transform(collectionOptions.StorageCrs, CrsUtils.DefaultCrs);
+                    envelope.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
 
                     extent = new Extent
                     {
@@ -152,9 +152,9 @@ namespace OgcApi.Net.Features.Controllers
                 Description = collectionOptions.Description,
                 Extent = extent,
                 Links = links,
-                Crs = collectionOptions.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
-                StorageCrs = collectionOptions.StorageCrs ?? CrsUtils.DefaultCrs,
-                StorageCrsCoordinateEpoch = collectionOptions.StorageCrsCoordinateEpoch
+                Crs = collectionOptions.Features.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
+                StorageCrs = collectionOptions.Features.StorageCrs ?? CrsUtils.DefaultCrs,
+                StorageCrsCoordinateEpoch = collectionOptions.Features.StorageCrsCoordinateEpoch
             };
             return collection;
         }
@@ -218,7 +218,7 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 if (bboxCrs == null)
                 {
@@ -234,7 +234,7 @@ namespace OgcApi.Net.Features.Controllers
                         envelope = new Envelope(bboxCoords[0], bboxCoords[2], bboxCoords[1], bboxCoords[3]);
                         try
                         {
-                            envelope.Transform(bboxCrs, collectionOptions.StorageCrs);
+                            envelope.Transform(bboxCrs, collectionOptions.Features.StorageCrs);
                         }
                         catch
                         {
@@ -253,7 +253,7 @@ namespace OgcApi.Net.Features.Controllers
 
                 if (crs != null)
                 {
-                    if (!collectionOptions.Crs.Contains(crs))
+                    if (!collectionOptions.Features.Crs.Contains(crs))
                     {
                         _logger.LogError("Invalid parameter crs");
                         return BadRequest("Invalid parameter crs");
@@ -264,7 +264,7 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                if (!collectionOptions.Crs.Contains(bboxCrs))
+                if (!collectionOptions.Features.Crs.Contains(bboxCrs))
                 {
                     _logger.LogError("Invalid parameter bbox-crs");
                     return BadRequest("Invalid parameter bbox-crs");
@@ -282,7 +282,7 @@ namespace OgcApi.Net.Features.Controllers
                         dateTimeInterval.Start,
                         dateTimeInterval.End,
                         apiKey);
-                    features.Transform(collectionOptions.StorageCrs, crs);
+                    features.Transform(collectionOptions.Features.StorageCrs, crs);
 
                     features.Links = new List<Link>
                     {
@@ -371,11 +371,11 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 if (crs != null)
                 {
-                    if (!collectionOptions.Crs.Contains(crs))
+                    if (!collectionOptions.Features.Crs.Contains(crs))
                     {
                         _logger.LogError("Invalid parameter crs");
                         return BadRequest("Invalid parameter crs");
@@ -396,7 +396,7 @@ namespace OgcApi.Net.Features.Controllers
 
                     Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
 
-                    feature.Transform(collectionOptions.StorageCrs, crs);
+                    feature.Transform(collectionOptions.Features.StorageCrs, crs);
 
                     feature.Links = new List<Link>
                     {
@@ -457,16 +457,16 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                if (!collectionOptions.AllowCreate)
+                if (!collectionOptions.Features.Storage.AllowCreate)
                 {
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 if (crs != null)
                 {
-                    if (!collectionOptions.Crs.Contains(crs))
+                    if (!collectionOptions.Features.Crs.Contains(crs))
                     {
                         _logger.LogError("Invalid parameter crs");
                         return BadRequest("Invalid parameter crs");
@@ -477,8 +477,8 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                feature.Transform(crs, collectionOptions.StorageCrs);
-                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
+                feature.Transform(crs, collectionOptions.Features.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.Features.StorageCrs.Segments.Last());
 
                 try
                 {
@@ -517,16 +517,16 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                if (!collectionOptions.AllowReplace)
+                if (!collectionOptions.Features.Storage.AllowReplace)
                 {
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 if (crs != null)
                 {
-                    if (!collectionOptions.Crs.Contains(crs))
+                    if (!collectionOptions.Features.Crs.Contains(crs))
                     {
                         _logger.LogError("Invalid parameter crs");
                         return BadRequest("Invalid parameter crs");
@@ -537,8 +537,8 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                feature.Transform(crs, collectionOptions.StorageCrs);
-                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
+                feature.Transform(crs, collectionOptions.Features.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.Features.StorageCrs.Segments.Last());
 
                 if (Request.Headers.ContainsKey("If-Match"))
                 {
@@ -585,12 +585,12 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                if (!collectionOptions.AllowDelete)
+                if (!collectionOptions.Features.Storage.AllowDelete)
                 {
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 try
                 {
@@ -629,16 +629,16 @@ namespace OgcApi.Net.Features.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                if (!collectionOptions.AllowUpdate)
+                if (!collectionOptions.Features.Storage.AllowUpdate)
                 {
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
                 if (crs != null)
                 {
-                    if (!collectionOptions.Crs.Contains(crs))
+                    if (!collectionOptions.Features.Crs.Contains(crs))
                     {
                         _logger.LogError("Invalid parameter crs");
                         return BadRequest("Invalid parameter crs");
@@ -649,8 +649,8 @@ namespace OgcApi.Net.Features.Controllers
                     crs = CrsUtils.DefaultCrs;
                 }
 
-                feature.Transform(crs, collectionOptions.StorageCrs);
-                feature.Geometry.SRID = int.Parse(collectionOptions.StorageCrs.Segments.Last());
+                feature.Transform(crs, collectionOptions.Features.StorageCrs);
+                feature.Geometry.SRID = int.Parse(collectionOptions.Features.StorageCrs.Segments.Last());
 
                 if (Request.Headers.ContainsKey("If-Match"))
                 {

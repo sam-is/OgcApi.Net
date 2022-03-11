@@ -12,7 +12,6 @@ namespace OgcApi.Net.Features.Tests
     public class OgcApiOptionsTests
     {
         private readonly ITestOutputHelper output;
-        public IConfiguration Configuration { get; }
         public OgcApiOptionsTests(ITestOutputHelper output)
         {
             this.output = output;
@@ -20,7 +19,7 @@ namespace OgcApi.Net.Features.Tests
 
         [Theory]
         [InlineData("//Util//appsettings_test.json")]
-        public void SettingDecerializationTest(string value)
+        public void AppSettingDecerializationTest(string value)
         {
             var config = new ConfigurationBuilder().AddJsonFile(value).Build();
             var options = new OgcApiOptions();
@@ -29,6 +28,12 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(options.Collections);
             Assert.NotNull(options.LandingPage);
             Assert.True(options.UseApiKeyAuthorization);
+            Assert.NotNull(options.Conformance);
+
+            output.WriteLine(options.Collections.Items.Count.ToString());
+            output.WriteLine(options.Conformance.ConformsTo.Count.ToString());
+            output.WriteLine(options.LandingPage.Title);
+            output.WriteLine(options.LandingPage.Version);
         }
     }
 }
