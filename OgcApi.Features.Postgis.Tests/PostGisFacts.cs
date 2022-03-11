@@ -41,9 +41,9 @@ namespace OgcApi.Features.PostGis.Tests
         [Fact]
         public void ConstructorWrongOptions()
         {
-            var options = new SqlCollectionSourcesOptions
+            var options = new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>
+                Items = new List<CollectionOptions>()
                 {
                     new()
                     {
@@ -52,7 +52,7 @@ namespace OgcApi.Features.PostGis.Tests
                 }
             };
             var optionsMonitor =
-                Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
 
             Assert.Throws<OptionsValidationException>(() =>
                 new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>()));
