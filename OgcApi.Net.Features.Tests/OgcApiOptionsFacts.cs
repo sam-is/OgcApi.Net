@@ -1,19 +1,22 @@
 using Xunit;
-using OgcApi.Net.Features.Options;
-using Xunit.Abstractions;
-using System.Text.Json;
-using System.IO;
-using System;
-using OgcApi.Net.Features.OpenApi;
-using Microsoft.Extensions.Configuration;
 using OgcApi.Net.Features.Tests.Util;
+using System.Text.Json;
 
 namespace OgcApi.Net.Features.Tests
 {
     public class OgcApiOptionsFacts
     {
         [Fact]
-        public void SettingDecerialization()
+        public void SettingsSerializationExecuted()
+        {
+            var options = OptionsUtils.GetOptionsFromCode();
+            var res = JsonSerializer.Serialize(options, options.GetType());
+
+            Assert.NotNull(res);
+        }
+
+        [Fact]
+        public void SettingsDeserializationExecuted()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -21,7 +24,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void LandingPageValid()
+        public void LandingPageDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -36,7 +39,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void ConformanceValid()
+        public void ConformanceDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -49,7 +52,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void UseApiKeyAuthorizationValid()
+        public void UseApiKeyAuthorizationDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -57,7 +60,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void CollectionsLinksValid()
+        public void CollectionsLinksDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 

@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Features.PostGis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Features.PostGis.Tests", "OgcApi.Features.Postgis.Tests\OgcApi.Features.PostGis.Tests.csproj", "{68A87D43-AB1E-48C1-ABE0-28394D5AA2C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.Features.Tests", "OgcApi.Net.Features.Tests\OgcApi.Net.Features.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Features.Tests", "OgcApi.Net.Features.Tests\OgcApi.Net.Features.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
