@@ -3,6 +3,7 @@ using OgcApi.Net.Features.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.Options
 {

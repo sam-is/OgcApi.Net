@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.Options.SqlOptions
 {

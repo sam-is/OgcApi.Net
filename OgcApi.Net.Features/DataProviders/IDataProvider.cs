@@ -2,7 +2,7 @@
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using System;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.DataProviders
 {

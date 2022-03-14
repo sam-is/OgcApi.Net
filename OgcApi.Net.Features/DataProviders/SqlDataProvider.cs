@@ -7,6 +7,7 @@ using OgcApi.Net.Features.Options;
 using System;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -43,7 +44,7 @@ namespace OgcApi.Net.Features.DataProviders
 
         public ICollectionsOptions GetCollectionSourcesOptions()
         {
-            return CollectionsOptions;
+            return (ICollectionsOptions)CollectionsOptions;
         }
 
         public Envelope GetBbox(string collectionId, string apiKey = null)

@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features
 {

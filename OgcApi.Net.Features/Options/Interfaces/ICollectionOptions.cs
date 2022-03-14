@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Features.Options.Interfaces
 {
     public interface ICollectionOptions
     {
