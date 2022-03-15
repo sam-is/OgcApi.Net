@@ -1,6 +1,10 @@
 ﻿using OgcApi.Net.Features.Options;
 using Microsoft.Extensions.Configuration;
 using OgcApi.Net.Features.Options.SqlOptions;
+using System.IO;
+using System;
+using System.Text.Json;
+using System.Text;
 
 namespace OgcApi.Net.Features.Tests.Util
 {
@@ -8,10 +12,11 @@ namespace OgcApi.Net.Features.Tests.Util
     {
         public static OgcApiOptions GetOptionsFromJson()
         {
-            var config = new ConfigurationBuilder().AddJsonFile("//Util//appsettings_test.json").Build();
-            var options = new OgcApiOptions();
-            config.GetSection("FeaturesOptions").Bind(options);
-            return options;
+            var jsonReadOnlySpan = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\Util\\appsettings_test.json");
+            var reader = new Utf8JsonReader(jsonReadOnlySpan);
+            var converter = new OgcApiOptionsConverter();
+            var options = converter.Read(ref reader, typeof(OgcApiOptions), new());
+            return options;               
         }
 
         public static OgcApiOptions GetOptionsFromCode()
@@ -53,7 +58,7 @@ namespace OgcApi.Net.Features.Tests.Util
                         new()
                         {
                             Id = "Collection1",
-                            Title="Collection title 1",
+                            Title = "Collection title 1",
                             Description = "Collection description 1",
                             Features = new()
                             {
@@ -130,5 +135,19 @@ namespace OgcApi.Net.Features.Tests.Util
                 }
             };
         }
+
+        public static string SerializeOptions(OgcApiOptions options)
+        {
+            var ms = new MemoryStream();
+            var writer = new Utf8JsonWriter(ms);
+            var converter = new OgcApiOptionsConverter();
+            converter.Write(writer, options, new());
+            writer.Flush();
+            ms.Close();
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+
+
     }
 }

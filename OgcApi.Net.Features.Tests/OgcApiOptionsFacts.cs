@@ -1,6 +1,9 @@
 using Xunit;
-using OgcApi.Net.Features.Tests.Util;
+using System.IO;
+using System.Text;
 using System.Text.Json;
+using OgcApi.Net.Features.Tests.Util;
+using OgcApi.Net.Features.Options;
 
 namespace OgcApi.Net.Features.Tests
 {
@@ -9,12 +12,11 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void SettingsSerializationExecuted()
         {
-            var options = OptionsUtils.GetOptionsFromCode();
-            var res = JsonSerializer.Serialize(options, options.GetType());
+            var res = OptionsUtils.SerializeOptions(OptionsUtils.GetOptionsFromCode());
 
-            Assert.NotNull(res);
+            Assert.False(string.IsNullOrEmpty(res));
         }
-
+        
         [Fact]
         public void SettingsDeserializationExecuted()
         {
