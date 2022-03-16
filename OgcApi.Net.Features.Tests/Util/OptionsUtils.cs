@@ -56,11 +56,16 @@ namespace OgcApi.Net.Features.Tests.Util
                     Items = new()
                     {
                         new()
-                        {
+                        {                           
                             Id = "Collection1",
                             Title = "Collection title 1",
                             Description = "Collection description 1",
-                            Features = new()
+                            Extent = new()
+                            {
+                                Spatial = new() { Bbox = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Crs = new("http://www.opengis.net/def/crs/OGC/1.3/CRS84") },
+                                Temporal = new() { Interval = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Trs = "Trs" }
+                            },
+                                Features = new()
                             {
                                 Crs = new()
                                 {
@@ -99,7 +104,7 @@ namespace OgcApi.Net.Features.Tests.Util
                             Title = "Collection title 2",
                             Description = "Collection description 2",
                             Features = new()
-                            {
+                            {                               
                                 Crs = new()
                                 {
                                     new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),

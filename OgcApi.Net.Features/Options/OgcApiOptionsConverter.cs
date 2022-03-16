@@ -1,4 +1,5 @@
 ﻿using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Resources;
 using System;
 using System.Linq;
 using System.Text.Json;
@@ -13,10 +14,6 @@ namespace OgcApi.Net.Features.Options
             var res = new OgcApiOptions();
             while (reader.Read())
             {
-                //if (reader.TokenType == JsonTokenType.EndObject)
-                //{
-                //    return res;
-                //}
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
                     var propertyName = reader.GetString()!;
@@ -48,6 +45,9 @@ namespace OgcApi.Net.Features.Options
                                         case "ApiDocumentPage":
                                             res.LandingPage.ApiDocumentPage = new(reader.GetString());
                                             break;
+                                        case "Version":
+                                            res.LandingPage.Version = new(reader.GetString());
+                                            break;
                                         case "ApiDescriptionPage":
                                             res.LandingPage.ApiDescriptionPage = new(reader.GetString());
                                             break;
@@ -59,10 +59,12 @@ namespace OgcApi.Net.Features.Options
                                             break;
                                         case "Links":
                                             res.LandingPage.Links = new();
-                                            
-                                            while(reader.TokenType != JsonTokenType.EndArray)
+                                            reader.Read();
+                                            while (reader.TokenType != JsonTokenType.EndArray)
                                             {
-
+                                                if (reader.TokenType == JsonTokenType.String)
+                                                    res.LandingPage.Links.Add(new() { Href = new(reader.GetString()) });
+                                                reader.Read();
                                             }
                                             break;
                                     }
@@ -71,13 +73,128 @@ namespace OgcApi.Net.Features.Options
                             }
                             break;
                         case "Conformance":
-                            res.Conformance = new ConformanceOptions();
+                            res.Conformance = JsonSerializer.Deserialize<ConformanceOptions>(ref reader, options);
                             break;
                         case "UseApiKeyAuthorization":
                             res.UseApiKeyAuthorization = reader.GetBoolean();
                             break;
                         case "Collections":
                             res.Collections = new CollectionsOptions();
+                            while (reader.TokenType != JsonTokenType.EndObject)
+                            {
+                                if (reader.TokenType == JsonTokenType.PropertyName)
+                                {
+                                    var collectionspropertyName = reader.GetString()!;
+                                    reader.Read();
+                                    switch (collectionspropertyName)
+                                    {
+                                        case "Links":
+                                            res.Collections.Links = new();
+                                            reader.Read();
+                                            while (reader.TokenType != JsonTokenType.EndArray)
+                                            {
+                                                if (reader.TokenType == JsonTokenType.String)
+                                                    res.Collections.Links.Add(new() { Href = new(reader.GetString()) });
+                                                reader.Read();
+                                            }
+                                            break;
+                                        case "Items":
+                                            res.Collections.Items = new();
+                                            reader.Read();
+                                            while (reader.TokenType != JsonTokenType.EndArray)
+                                            {                                              
+                                                if (reader.TokenType == JsonTokenType.PropertyName)
+                                                {
+                                                    var itemPropertyName = reader.GetString()!;
+                                                    reader.Read();
+                                                    if (itemPropertyName == "Collection")
+                                                    {
+                                                        var collection = new CollectionOptions();
+                                                        reader.Read();
+                                                        while (reader.TokenType != JsonTokenType.EndObject)
+                                                        {
+                                                            if (reader.TokenType == JsonTokenType.PropertyName)
+                                                            {
+                                                                var collectionPropertyName = reader.GetString()!;
+                                                                reader.Read();
+                                                                switch (collectionPropertyName)
+                                                                {
+                                                                    case "Id":
+                                                                        collection.Id = reader.GetString();
+                                                                        break;
+                                                                    case "Title":
+                                                                        collection.Title = reader.GetString();
+                                                                        break;
+                                                                    case "Description":
+                                                                        collection.Description = reader.GetString();
+                                                                        break;
+                                                                    case "Links":
+                                                                        collection.Links = new();
+                                                                        reader.Read();
+                                                                        while (reader.TokenType != JsonTokenType.EndArray)
+                                                                        {
+                                                                            if (reader.TokenType == JsonTokenType.String)
+                                                                                collection.Links.Add(new() { Href = new(reader.GetString()) });
+                                                                            reader.Read();
+                                                                        }
+                                                                        break;
+                                                                    case "ItemType":
+                                                                        collection.ItemType = reader.GetString();
+                                                                        break;
+                                                                    case "Features":
+                                                                        var features = new CollectionOptionsFeatures();
+                                                                        reader.Read();
+                                                                        while (reader.TokenType != JsonTokenType.EndObject)
+                                                                        {
+                                                                            if (reader.TokenType == JsonTokenType.PropertyName)
+                                                                            {
+                                                                                var featurePropertyName = reader.GetString()!;
+                                                                                reader.Read();
+                                                                                switch (featurePropertyName)
+                                                                                {
+                                                                                    case "Crs":
+                                                                                        features.Crs = new();
+                                                                                        reader.Read();
+                                                                                        while (reader.TokenType != JsonTokenType.EndArray)
+                                                                                        {
+                                                                                            if (reader.TokenType == JsonTokenType.String)
+                                                                                                features.Crs.Add(new(reader.GetString()));
+                                                                                            reader.Read();
+                                                                                        }
+                                                                                        break;
+                                                                                    case "StorageCrs":
+                                                                                        features.StorageCrs = new(reader.GetString());
+                                                                                        break;
+                                                                                    case "StorageCrsCoordinateEpoch":
+                                                                                        features.StorageCrsCoordinateEpoch = reader.GetString();
+                                                                                        break;
+                                                                                    case "Storage":                                                                                       
+                                                                                        features.Storage = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(ref reader, options);
+                                                                                        break;
+                                                                                }
+                                                                            }
+                                                                            reader.Read();
+                                                                        }
+                                                                        collection.Features = features;
+                                                                        break;
+                                                                    case "Extent":
+                                                                        collection.Extent = JsonSerializer.Deserialize<Extent>(ref reader, options);
+                                                                        break;
+                                                                }
+                                                            }
+                                                            reader.Read();
+                                                        }
+                                                        res.Collections.Items.Add(collection);
+                                                    }
+                                                   
+                                                }
+                                                reader.Read();
+                                            }
+                                            break;
+                                    }
+                                }
+                                reader.Read();
+                            }    
                             break;
                     }
                 }
@@ -94,11 +211,11 @@ namespace OgcApi.Net.Features.Options
                 writer.WriteString("Title", value.LandingPage.Title);
                 writer.WriteString("Description", value.LandingPage.Description);
                 writer.WriteString("ContactName", value.LandingPage.ContactName);
-                writer.WriteString("ContactUrl", value.LandingPage.ContactUrl.ToString());
-                writer.WriteString("ApiDocumentPage", value.LandingPage.ApiDocumentPage.ToString());
-                writer.WriteString("ApiDescriptionPage", value.LandingPage.ApiDescriptionPage.ToString());
+                if (value.LandingPage.ContactUrl != null) writer.WriteString("ContactUrl", value.LandingPage.ContactUrl.ToString());
+                if (value.LandingPage.ApiDocumentPage != null) writer.WriteString("ApiDocumentPage", value.LandingPage.ApiDocumentPage.ToString());
+                if (value.LandingPage.ApiDescriptionPage != null) writer.WriteString("ApiDescriptionPage", value.LandingPage.ApiDescriptionPage.ToString());
                 writer.WriteString("LicenseName", value.LandingPage.LicenseName);
-                writer.WriteString("LicenseUrl", value.LandingPage.LicenseUrl.ToString());
+                if (value.LandingPage.LicenseUrl != null) writer.WriteString("LicenseUrl", value.LandingPage.LicenseUrl.ToString());
                 if (value.LandingPage.Links != null && value.LandingPage.Links.Any())
                 {
                     writer.WriteStartArray("Links");
@@ -153,8 +270,10 @@ namespace OgcApi.Net.Features.Options
                         }
 
                         if (item.Extent != null)
+                        {
+                            writer.WritePropertyName("Extent");
                             JsonSerializer.Serialize(writer, item.Extent, options);
-
+                        }
                         writer.WriteString("ItemType", item.ItemType);
 
                         if (item.Features != null)

@@ -5,8 +5,6 @@ namespace OgcApi.Net.Features.Options.SqlOptions
 {
     public class SqlCollectionSourceOptions : ICollectionSourceOptions
     {
-        //public string Id { get; set; }
-
         public string Type { get; set; }
         public string ConnectionString { get; set; }
 
