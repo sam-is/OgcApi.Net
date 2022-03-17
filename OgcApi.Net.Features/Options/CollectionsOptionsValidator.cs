@@ -27,8 +27,7 @@ namespace OgcApi.Net.Features.Options
                     if (item.Features.StorageCrs == null)
                         failureMessages.Add("Parameter StorageCrs is required for the collection feature option");
 
-                    var storage = item.Features.Storage as SqlCollectionSourceOptions;
-                    if (storage != null)
+                    if(item.Features.Storage is SqlCollectionSourceOptions storage)
                     {                     
                         if (string.IsNullOrWhiteSpace(storage.ConnectionString))
                             failureMessages.Add("Parameter ConnectionString is required for the collection feature storage option");
