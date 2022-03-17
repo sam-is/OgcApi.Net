@@ -1,9 +1,5 @@
 using Xunit;
-using System.IO;
-using System.Text;
-using System.Text.Json;
 using OgcApi.Net.Features.Tests.Util;
-using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.Tests
@@ -154,7 +150,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void FisrtCollectionOptionsFeaturesStorageDeserializationValid()
+        public void FirstCollectionOptionsFeaturesStorageDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
             var storage = options.Collections.Items[0].Features.Storage as SqlCollectionSourceOptions;
@@ -172,8 +168,8 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(storage.Properties);
             Assert.NotEmpty(storage.Properties);
             Assert.Equal(2, storage.Properties.Count);
-            Assert.Equal("prop1", storage.Properties[0].ToString());
-            Assert.Equal("prop2", storage.Properties[1].ToString());
+            Assert.Equal("prop1", storage.Properties[0]);
+            Assert.Equal("prop2", storage.Properties[1]);
             Assert.True(storage.AllowCreate);
             Assert.True(storage.AllowReplace);
             Assert.True(storage.AllowUpdate);
@@ -203,8 +199,8 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(storage.Properties);
             Assert.NotEmpty(storage.Properties);
             Assert.Equal(2, storage.Properties.Count);
-            Assert.Equal("Prop1", storage.Properties[0].ToString());
-            Assert.Equal("Prop2", storage.Properties[1].ToString());
+            Assert.Equal("Prop1", storage.Properties[0]);
+            Assert.Equal("Prop2", storage.Properties[1]);
             Assert.True(storage.AllowCreate);
             Assert.True(storage.AllowReplace);
             Assert.True(storage.AllowUpdate);

@@ -1,11 +1,4 @@
-﻿using OgcApi.Net.Features.Options.SqlOptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OgcApi.Net.Features.Options.Interfaces
+﻿namespace OgcApi.Net.Features.Options.Interfaces
 {
     public interface ICollectionOptions
     {

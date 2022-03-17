@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
-using System;
-using System.Linq;
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features

@@ -32,7 +32,7 @@ namespace OgcApi.Net.Features.DataProviders
 
             try
             {
-                CollectionsOptions = collectionsOptions.CurrentValue;
+                CollectionsOptions = collectionsOptions.CurrentValue;                
                 CollectionsOptionsValidator.Validate(CollectionsOptions);
             }
             catch (OptionsValidationException ex)
@@ -44,7 +44,7 @@ namespace OgcApi.Net.Features.DataProviders
 
         public ICollectionsOptions GetCollectionSourcesOptions()
         {
-            return (ICollectionsOptions)CollectionsOptions;
+            return CollectionsOptions;
         }
 
         public Envelope GetBbox(string collectionId, string apiKey = null)
@@ -56,13 +56,21 @@ namespace OgcApi.Net.Features.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
+            
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
 
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 using var selectBboxCommand = featuresQueryBuilder
                     .AddSelectBbox()
                     .BuildCommand(connection);
@@ -72,7 +80,7 @@ namespace OgcApi.Net.Features.DataProviders
                 if (reader.IsDBNull(0))
                     return null;
 
-                var geometry = ReadGeometry(reader, 0, collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var geometry = ReadGeometry(reader, 0, sourceOptions);
 
                 Logger.LogTrace("GetBbox database query completed successfully");
 
@@ -94,8 +102,15 @@ namespace OgcApi.Net.Features.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
 
-            if (!string.IsNullOrWhiteSpace((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
+            if (!string.IsNullOrWhiteSpace(sourceOptions.ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
             {
                 Logger.LogTrace("API key is not supplied");
                 throw new UnauthorizedAccessException("API key is not supplied");
@@ -103,15 +118,15 @@ namespace OgcApi.Net.Features.DataProviders
 
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var selectFeatureCommand = featuresQueryBuilder
                     .AddSelect()
                     .AddFrom()
                     .AddWhere(featureId)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForGet, apiKey)
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
@@ -121,7 +136,7 @@ namespace OgcApi.Net.Features.DataProviders
                     if (reader.Read())
                         if (!reader.IsDBNull(1))
                         {
-                            var geometry = ReadGeometry(reader, 1, collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                            var geometry = ReadGeometry(reader, 1, sourceOptions);
                             var feature = new OgcFeature
                             {
                                 Id = reader.GetValue(0).ToString(),
@@ -173,8 +188,15 @@ namespace OgcApi.Net.Features.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
 
-            if (!string.IsNullOrWhiteSpace((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
+            if (!string.IsNullOrWhiteSpace(sourceOptions.ApiKeyPredicateForGet) && string.IsNullOrWhiteSpace(apiKey))
             {
                 Logger.LogTrace("API key is not supplied");
                 throw new UnauthorizedAccessException("API key is not supplied");
@@ -182,16 +204,16 @@ namespace OgcApi.Net.Features.DataProviders
 
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var selectFeaturesCommand = featuresQueryBuilder
                     .AddSelect()
                     .AddFrom()
                     .AddWhere(bbox)
                     .AddWhere(startDateTime, endDateTime)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForGet, apiKey)
                     .ComposeWhereClause()
                     .AddLimit(offset, limit)
                     .BuildCommand(connection);
@@ -203,7 +225,7 @@ namespace OgcApi.Net.Features.DataProviders
                 while (reader.Read())
                     if (!reader.IsDBNull(1))
                     {
-                        var geometry = ReadGeometry(reader, 1, collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                        var geometry = ReadGeometry(reader, 1, sourceOptions);
 
                         var feature = new OgcFeature
                         {
@@ -243,18 +265,26 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var selectFeaturesCommand = featuresQueryBuilder
                     .AddCount()
                     .AddFrom()
                     .AddWhere(bbox)
                     .AddWhere(startDateTime, endDateTime)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForGet, apiKey)
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
@@ -290,15 +320,23 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var insertFeatureCommand = featuresQueryBuilder
                     .AddInsert(feature)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForCreate, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForCreate, apiKey)
                     .BuildCommand(connection);
 
                 var featureId = insertFeatureCommand.ExecuteScalar()?.ToString();
@@ -328,16 +366,24 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var updateFeatureCommand = featuresQueryBuilder
                     .AddUpdate(feature)
                     .AddWhere(featureId)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForUpdate, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForUpdate, apiKey)
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
@@ -375,16 +421,24 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var replaceFeatureCommand = featuresQueryBuilder
                     .AddReplace(feature)
                     .AddWhere(featureId)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForUpdate, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForUpdate, apiKey)
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 
@@ -418,16 +472,24 @@ namespace OgcApi.Net.Features.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
+            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
             try
             {
-                using var connection = GetDbConnection((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
+                using var connection = GetDbConnection(sourceOptions.ConnectionString);
                 connection.Open();
 
-                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(collectionOptions.Features.Storage as SqlCollectionSourceOptions);
+                var featuresQueryBuilder = GetFeaturesSqlQueryBuilder(sourceOptions);
                 var deleteFeatureCommand = featuresQueryBuilder
                     .AddDelete()
                     .AddWhere(featureId)
-                    .AddApiKeyWhere((collectionOptions.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForDelete, apiKey)
+                    .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForDelete, apiKey)
                     .ComposeWhereClause()
                     .BuildCommand(connection);
 

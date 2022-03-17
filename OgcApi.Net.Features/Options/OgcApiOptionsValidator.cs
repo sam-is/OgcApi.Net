@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using OgcApi.Net.Features.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace OgcApi.Net.Features.Options
 {

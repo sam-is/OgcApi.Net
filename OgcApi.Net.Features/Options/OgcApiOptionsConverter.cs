@@ -22,13 +22,13 @@ namespace OgcApi.Net.Features.Options
                     {
                         case "LandingPage":
                             res.LandingPage = new LandingPageOptions();
-                            while(reader.TokenType != JsonTokenType.EndObject)
+                            while (reader.TokenType != JsonTokenType.EndObject)
                             {
                                 if (reader.TokenType == JsonTokenType.PropertyName)
                                 {
                                     var landingPagePropertyName = reader.GetString()!;
                                     reader.Read();
-                                    switch(landingPagePropertyName)
+                                    switch (landingPagePropertyName)
                                     {
                                         case "Title":
                                             res.LandingPage.Title = reader.GetString();
@@ -84,9 +84,9 @@ namespace OgcApi.Net.Features.Options
                             {
                                 if (reader.TokenType == JsonTokenType.PropertyName)
                                 {
-                                    var collectionspropertyName = reader.GetString()!;
+                                    var collectionsPropertyName = reader.GetString()!;
                                     reader.Read();
-                                    switch (collectionspropertyName)
+                                    switch (collectionsPropertyName)
                                     {
                                         case "Links":
                                             res.Collections.Links = new();
@@ -102,7 +102,7 @@ namespace OgcApi.Net.Features.Options
                                             res.Collections.Items = new();
                                             reader.Read();
                                             while (reader.TokenType != JsonTokenType.EndArray)
-                                            {                                              
+                                            {
                                                 if (reader.TokenType == JsonTokenType.PropertyName)
                                                 {
                                                     var itemPropertyName = reader.GetString()!;
@@ -168,7 +168,7 @@ namespace OgcApi.Net.Features.Options
                                                                                     case "StorageCrsCoordinateEpoch":
                                                                                         features.StorageCrsCoordinateEpoch = reader.GetString();
                                                                                         break;
-                                                                                    case "Storage":                                                                                       
+                                                                                    case "Storage":
                                                                                         features.Storage = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(ref reader, options);
                                                                                         break;
                                                                                 }
@@ -186,7 +186,7 @@ namespace OgcApi.Net.Features.Options
                                                         }
                                                         res.Collections.Items.Add(collection);
                                                     }
-                                                   
+
                                                 }
                                                 reader.Read();
                                             }
@@ -194,7 +194,7 @@ namespace OgcApi.Net.Features.Options
                                     }
                                 }
                                 reader.Read();
-                            }    
+                            }
                             break;
                     }
                 }
