@@ -12,7 +12,7 @@ namespace OgcApi.Net.Features.Tests.Util
     {
         public static OgcApiOptions GetOptionsFromJson()
         {
-            var jsonReadOnlySpan = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\Util\\appsettings_test.json");
+            var jsonReadOnlySpan = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}/Util/appsettings_test.json");
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
             var converter = new OgcApiOptionsConverter();
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new());
