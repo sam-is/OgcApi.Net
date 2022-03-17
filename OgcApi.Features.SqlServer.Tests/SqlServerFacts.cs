@@ -40,9 +40,9 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void ConstructorWrongOptions()
         {
-            var options = new SqlCollectionSourcesOptions
+            var options = new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>
+                Items = new List<CollectionOptions>()
                 {
                     new()
                     {
@@ -51,7 +51,7 @@ namespace OgcApi.Features.SqlServer.Tests
                 }
             };
             var optionsMonitor =
-                Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
+                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
 
             Assert.Throws<OptionsValidationException>(() =>
                 new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));

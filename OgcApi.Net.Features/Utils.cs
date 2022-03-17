@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
-using System;
-using System.Linq;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features
 {
@@ -32,8 +32,7 @@ namespace OgcApi.Net.Features
             throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
         }
 
-        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider,
-            string collectionId)
+        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider, string collectionId)
         {
             var dataProviders = serviceProvider.GetServices<IDataProvider>();
             foreach (var dataProvider in dataProviders)
@@ -41,7 +40,7 @@ namespace OgcApi.Net.Features
                 var collectionSourcesOptions = dataProvider.GetCollectionSourcesOptions();
                 var collectionSourceOptions = collectionSourcesOptions.GetSourceById(collectionId);
                 if (collectionSourceOptions != null)
-                    return collectionSourceOptions;
+                    return collectionSourceOptions.Features.Storage;
             }
             throw new InvalidOperationException($"Collection source with id {collectionId} is not found");
         }

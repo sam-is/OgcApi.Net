@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace OgcApi.Net.Features.Options
 {
@@ -21,34 +21,8 @@ namespace OgcApi.Net.Features.Options
             }
 
             CollectionsOptions collectionsOptions = options.Collections;
-            if (options.Collections == null ||
-                options.Collections.Items == null ||
-                options.Collections.Items.Count == 0)
-            {
-                throw new OptionsValidationException(
-                    "OgcApiOptions",
-                    typeof(OgcApiOptions),
-                    new List<string>() { "Collections should not be empty" });
-            }
-
-            foreach (CollectionOptions collectionOptions in collectionsOptions.Items)
-            {
-                if (string.IsNullOrWhiteSpace(collectionOptions.Id))
-                {
-                    throw new OptionsValidationException(
-                        "OgcApiOptions",
-                        typeof(OgcApiOptions),
-                        new List<string>() { "Parameter Id is required for the collection" });
-                }
-
-                if (string.IsNullOrWhiteSpace(collectionOptions.SourceType))
-                {
-                    throw new OptionsValidationException(
-                        "OgcApiOptions",
-                        typeof(OgcApiOptions),
-                        new List<string>() { "Parameter SourceType is required for the collection" });
-                }
-            }
+            CollectionsOptionsValidator.Validate(collectionsOptions);
         }
+                    
     }
 }

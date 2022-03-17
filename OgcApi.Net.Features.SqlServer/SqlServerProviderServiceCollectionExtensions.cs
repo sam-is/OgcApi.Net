@@ -9,7 +9,7 @@ namespace OgcApi.Net.Features.SqlServer
     public static class OgcApiServiceCollectionExtensions
     {
         public static IServiceCollection AddOgcApiSqlServerProvider(
-            this IServiceCollection services, Action<SqlCollectionSourcesOptions> configureOptions)
+            this IServiceCollection services, Action<CollectionsOptions> configureOptions)
         {
             services.Configure(configureOptions);
 

@@ -12,7 +12,7 @@ namespace OgcApi.Net.Features.PostGis
 {
     public class PostGisProvider : SqlDataProvider
     {
-        public PostGisProvider(IOptionsMonitor<SqlCollectionSourcesOptions> sqlCollectionSourcesOptions, ILogger<PostGisProvider> logger)
+        public PostGisProvider(IOptionsMonitor<CollectionsOptions> sqlCollectionSourcesOptions, ILogger<PostGisProvider> logger)
             : base(sqlCollectionSourcesOptions, logger)
         {
         }
