@@ -8,6 +8,7 @@ using OgcApi.Net.Features.Options;
 using System.Data;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.SqlServer
 {
@@ -46,6 +47,14 @@ namespace OgcApi.Net.Features.SqlServer
                 IsGeography = collectionSourceOptions.GeometryDataType == "geography"
             };
             return geometryReader.Read(geometryStream);
+        }
+
+        public static new ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        {
+            if (providerType == "SqlServer")
+                return new SqlCollectionSourceOptions() { ConnectionString = "SqlServer zaloopah" };
+            else return null;
+
         }
     }
 }

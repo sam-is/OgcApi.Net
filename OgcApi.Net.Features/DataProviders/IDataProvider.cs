@@ -3,6 +3,9 @@ using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using System;
 using OgcApi.Net.Features.Options.Interfaces;
+using System.Text.Json;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -27,5 +30,15 @@ namespace OgcApi.Net.Features.DataProviders
         void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null);
 
         void DeleteFeature(string collectionId, string featureId, string apiKey = null);
+
+        public static ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        {
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(IDataProvider).IsAssignableFrom(p) && p != typeof(IDataProvider));
+            var options = new List<object>();
+            foreach (var type in types)
+                if(type.GetMethod("GetCollectionSourceOptions") != null)
+                    options.Add(type.GetMethod("GetCollectionSourceOptions").Invoke(null, new object[] { providerType }));
+            return options.FirstOrDefault(o => o != null) as ICollectionSourceOptions;
+        }
     }
 }

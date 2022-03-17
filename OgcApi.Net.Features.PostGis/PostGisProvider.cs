@@ -7,6 +7,7 @@ using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -37,6 +38,14 @@ namespace OgcApi.Net.Features.PostGis
             };
 
             return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
+        }
+
+        public static new ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        {
+            if (providerType == "PostGis")
+                return new SqlCollectionSourceOptions() { ConnectionString = "PostGis zaloopah" };
+            else return null;
+
         }
     }
 }

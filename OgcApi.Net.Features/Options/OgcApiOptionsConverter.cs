@@ -1,4 +1,6 @@
-﻿using OgcApi.Net.Features.Options.SqlOptions;
+﻿using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Resources;
 using System;
 using System.Linq;
@@ -169,7 +171,9 @@ namespace OgcApi.Net.Features.Options
                                                                                         features.StorageCrsCoordinateEpoch = reader.GetString();
                                                                                         break;
                                                                                     case "Storage":
-                                                                                        features.Storage = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(ref reader, options);
+                                                                                        object p = IDataProvider.GetCollectionSourceOptions("SqlServer");
+                                                                                        //features.Storage = new ICollectionSourceOptions();
+                                                                                        //JsonSerializer.Deserialize<SqlCollectionSourceOptions>(ref reader, options, type); //redo via interfaces
                                                                                         break;
                                                                                 }
                                                                             }

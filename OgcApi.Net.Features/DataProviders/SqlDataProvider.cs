@@ -8,6 +8,10 @@ using System;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
+using System.Reflection;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -513,5 +517,15 @@ namespace OgcApi.Net.Features.DataProviders
         protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions);
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions);
+
+        public static ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        {
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(t => t.BaseType == typeof(SqlDataProvider));
+            var options = new List<object>();
+            foreach (var type in types)
+                if (type.GetMethod("GetCollectionSourceOptions") != null)
+                    options.Add(type.GetMethod("GetCollectionSourceOptions").Invoke(null, new object[] { providerType }));
+            return options.FirstOrDefault(o => o != null) as ICollectionSourceOptions;
+        }
     }
 }
