@@ -171,9 +171,7 @@ namespace OgcApi.Net.Features.Options
                                                                                         features.StorageCrsCoordinateEpoch = reader.GetString();
                                                                                         break;
                                                                                     case "Storage":
-                                                                                        object p = IDataProvider.GetCollectionSourceOptions("SqlServer");
-                                                                                        //features.Storage = new ICollectionSourceOptions();
-                                                                                        //JsonSerializer.Deserialize<SqlCollectionSourceOptions>(ref reader, options, type); //redo via interfaces
+                                                                                        features.Storage = IDataProvider.GetCollectionSourceOptions(ref reader, options);
                                                                                         break;
                                                                                 }
                                                                             }

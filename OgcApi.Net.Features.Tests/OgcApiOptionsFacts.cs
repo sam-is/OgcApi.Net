@@ -155,7 +155,7 @@ namespace OgcApi.Net.Features.Tests
             var options = OptionsUtils.GetOptionsFromJson();
             var storage = options.Collections.Items[0].Features.Storage as SqlCollectionSourceOptions;
             Assert.NotNull(storage);
-            Assert.Equal("PostGIS", storage.Type);
+            Assert.Equal("PostGis", storage.Type);
             Assert.Equal("Host=127.0.0.1;User Id=user;Password=user;Database=pgdb;Port=5432", storage.ConnectionString);
             Assert.Equal("api", storage.Schema);
             Assert.Equal("collection1", storage.Table);

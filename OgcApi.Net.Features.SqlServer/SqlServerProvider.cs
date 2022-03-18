@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
+using System.Text.Json;
 
 namespace OgcApi.Net.Features.SqlServer
 {
@@ -49,11 +50,13 @@ namespace OgcApi.Net.Features.SqlServer
             return geometryReader.Read(geometryStream);
         }
 
-        public static new ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        public static ICollectionSourceOptions CastToCollectionSourceOptions(string element, JsonSerializerOptions options)
         {
-            if (providerType == "SqlServer")
-                return new SqlCollectionSourceOptions() { ConnectionString = "SqlServer zaloopah" };
-            else return null;
+            var collectionOptions = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(element, options);
+            if (collectionOptions != null && collectionOptions.Type == "SqlServer")
+                return collectionOptions;
+            else
+                return null;
 
         }
     }

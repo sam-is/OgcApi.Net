@@ -8,6 +8,7 @@ using OgcApi.Net.Features.Options;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
+using System.Text.Json;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -40,12 +41,14 @@ namespace OgcApi.Net.Features.PostGis
             return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
         }
 
-        public static new ICollectionSourceOptions GetCollectionSourceOptions(string providerType)
+        public static ICollectionSourceOptions CastToCollectionSourceOptions(string element, JsonSerializerOptions options)
         {
-            if (providerType == "PostGis")
-                return new SqlCollectionSourceOptions() { ConnectionString = "PostGis zaloopah" };
-            else return null;
-
+            
+            var collectionOptions = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(element, options);
+            if (collectionOptions != null && collectionOptions.Type == "PostGis")
+                return collectionOptions;
+            else 
+                return null;
         }
     }
 }
