@@ -1,4 +1,5 @@
-﻿using OgcApi.Net.Features.DataProviders;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.Interfaces;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Resources;
@@ -11,9 +12,142 @@ namespace OgcApi.Net.Features.Options
 {
     public class OgcApiOptionsConverter : JsonConverter<OgcApiOptions>
     {
+        private IServiceProvider Provider { get; set; }
+        public OgcApiOptionsConverter(IServiceProvider provider)
+        {
+            Provider = provider;
+        }
+
+        private CollectionsOptions GetCollectionStorageOptions(ref Utf8JsonReader reader, JsonSerializerOptions options)
+        {          
+            var collectionOptions = new CollectionsOptions();
+            while (reader.TokenType != JsonTokenType.EndObject)
+            {
+                if (reader.TokenType == JsonTokenType.PropertyName)
+                {
+                    var collectionsPropertyName = reader.GetString()!;
+                    reader.Read();
+                    switch (collectionsPropertyName)
+                    {
+                        case "Links":
+                            collectionOptions.Links = new();
+                            reader.Read();
+                            while (reader.TokenType != JsonTokenType.EndArray)
+                            {
+                                if (reader.TokenType == JsonTokenType.String)
+                                    collectionOptions.Links.Add(new() { Href = new(reader.GetString()) });
+                                reader.Read();
+                            }
+                            break;
+                        case "Items":
+                            collectionOptions.Items = new();
+                            reader.Read();
+                            while (reader.TokenType != JsonTokenType.EndArray)
+                            {
+                                if (reader.TokenType == JsonTokenType.PropertyName)
+                                {
+                                    var itemPropertyName = reader.GetString()!;
+                                    reader.Read();
+                                    if (itemPropertyName == "Collection")
+                                    {
+                                        var collection = new CollectionOptions();
+                                        reader.Read();
+                                        while (reader.TokenType != JsonTokenType.EndObject)
+                                        {
+                                            if (reader.TokenType == JsonTokenType.PropertyName)
+                                            {
+                                                var collectionPropertyName = reader.GetString()!;
+                                                reader.Read();
+                                                switch (collectionPropertyName)
+                                                {
+                                                    case "Id":
+                                                        collection.Id = reader.GetString();
+                                                        break;
+                                                    case "Title":
+                                                        collection.Title = reader.GetString();
+                                                        break;
+                                                    case "Description":
+                                                        collection.Description = reader.GetString();
+                                                        break;
+                                                    case "Links":
+                                                        collection.Links = new();
+                                                        reader.Read();
+                                                        while (reader.TokenType != JsonTokenType.EndArray)
+                                                        {
+                                                            if (reader.TokenType == JsonTokenType.String)
+                                                                collection.Links.Add(new() { Href = new(reader.GetString()) });
+                                                            reader.Read();
+                                                        }
+                                                        break;
+                                                    case "ItemType":
+                                                        collection.ItemType = reader.GetString();
+                                                        break;
+                                                    case "Features":
+                                                        var features = new CollectionOptionsFeatures();
+                                                        reader.Read();
+                                                        while (reader.TokenType != JsonTokenType.EndObject)
+                                                        {
+                                                            if (reader.TokenType == JsonTokenType.PropertyName)
+                                                            {
+                                                                var featurePropertyName = reader.GetString()!;
+                                                                reader.Read();
+                                                                switch (featurePropertyName)
+                                                                {
+                                                                    case "Crs":
+                                                                        features.Crs = new();
+                                                                        reader.Read();
+                                                                        while (reader.TokenType != JsonTokenType.EndArray)
+                                                                        {
+                                                                            if (reader.TokenType == JsonTokenType.String)
+                                                                                features.Crs.Add(new(reader.GetString()));
+                                                                            reader.Read();
+                                                                        }
+                                                                        break;
+                                                                    case "StorageCrs":
+                                                                        features.StorageCrs = new(reader.GetString());
+                                                                        break;
+                                                                    case "StorageCrsCoordinateEpoch":
+                                                                        features.StorageCrsCoordinateEpoch = reader.GetString();
+                                                                        break;
+                                                                    case "Storage":
+                                                                        var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+                                                                        var type = json.GetProperty("Type").ToString();
+                                                                        var dataprovider = Utils.GetDataProvider(Provider, type);
+                                                                        features.Storage = dataprovider.DeserializeCollectionSourceOptions(json.ToString(), options);
+                                                                        break;
+                                                                }
+                                                            }
+                                                            reader.Read();
+                                                        }
+                                                        collection.Features = features;
+                                                        break;
+                                                    case "Extent":
+                                                        collection.Extent = JsonSerializer.Deserialize<Extent>(ref reader, options);
+                                                        break;
+                                                }
+                                            }
+                                            reader.Read();
+                                        }
+                                        collectionOptions.Items.Add(collection);
+                                    }
+
+                                }
+                                reader.Read();
+                            }
+                            break;
+                    }
+                    
+                }
+                reader.Read();
+            }                  
+            var providers = Provider.GetServices(typeof(IDataProvider));
+            foreach (IDataProvider provider in providers)
+                provider.SetCollectionOptions(collectionOptions);
+            return collectionOptions;
+        }
         public override OgcApiOptions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var res = new OgcApiOptions();
+            var apiOptions = new OgcApiOptions();
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.PropertyName)
@@ -23,7 +157,7 @@ namespace OgcApi.Net.Features.Options
                     switch (propertyName)
                     {
                         case "LandingPage":
-                            res.LandingPage = new LandingPageOptions();
+                            apiOptions.LandingPage = new LandingPageOptions();
                             while (reader.TokenType != JsonTokenType.EndObject)
                             {
                                 if (reader.TokenType == JsonTokenType.PropertyName)
@@ -33,39 +167,39 @@ namespace OgcApi.Net.Features.Options
                                     switch (landingPagePropertyName)
                                     {
                                         case "Title":
-                                            res.LandingPage.Title = reader.GetString();
+                                            apiOptions.LandingPage.Title = reader.GetString();
                                             break;
                                         case "Description":
-                                            res.LandingPage.Description = reader.GetString();
+                                            apiOptions.LandingPage.Description = reader.GetString();
                                             break;
                                         case "ContactName":
-                                            res.LandingPage.ContactName = reader.GetString();
+                                            apiOptions.LandingPage.ContactName = reader.GetString();
                                             break;
                                         case "ContactUrl":
-                                            res.LandingPage.ContactUrl = new(reader.GetString());
+                                            apiOptions.LandingPage.ContactUrl = new(reader.GetString());
                                             break;
                                         case "ApiDocumentPage":
-                                            res.LandingPage.ApiDocumentPage = new(reader.GetString());
+                                            apiOptions.LandingPage.ApiDocumentPage = new(reader.GetString());
                                             break;
                                         case "Version":
-                                            res.LandingPage.Version = new(reader.GetString());
+                                            apiOptions.LandingPage.Version = new(reader.GetString());
                                             break;
                                         case "ApiDescriptionPage":
-                                            res.LandingPage.ApiDescriptionPage = new(reader.GetString());
+                                            apiOptions.LandingPage.ApiDescriptionPage = new(reader.GetString());
                                             break;
                                         case "LicenseName":
-                                            res.LandingPage.LicenseName = reader.GetString();
+                                            apiOptions.LandingPage.LicenseName = reader.GetString();
                                             break;
                                         case "LicenseUrl":
-                                            res.LandingPage.LicenseUrl = new(reader.GetString());
+                                            apiOptions.LandingPage.LicenseUrl = new(reader.GetString());
                                             break;
                                         case "Links":
-                                            res.LandingPage.Links = new();
+                                            apiOptions.LandingPage.Links = new();
                                             reader.Read();
                                             while (reader.TokenType != JsonTokenType.EndArray)
                                             {
                                                 if (reader.TokenType == JsonTokenType.String)
-                                                    res.LandingPage.Links.Add(new() { Href = new(reader.GetString()) });
+                                                    apiOptions.LandingPage.Links.Add(new() { Href = new(reader.GetString()) });
                                                 reader.Read();
                                             }
                                             break;
@@ -75,133 +209,18 @@ namespace OgcApi.Net.Features.Options
                             }
                             break;
                         case "Conformance":
-                            res.Conformance = JsonSerializer.Deserialize<ConformanceOptions>(ref reader, options);
+                            apiOptions.Conformance = JsonSerializer.Deserialize<ConformanceOptions>(ref reader, options);
                             break;
                         case "UseApiKeyAuthorization":
-                            res.UseApiKeyAuthorization = reader.GetBoolean();
+                            apiOptions.UseApiKeyAuthorization = reader.GetBoolean();
                             break;
                         case "Collections":
-                            res.Collections = new CollectionsOptions();
-                            while (reader.TokenType != JsonTokenType.EndObject)
-                            {
-                                if (reader.TokenType == JsonTokenType.PropertyName)
-                                {
-                                    var collectionsPropertyName = reader.GetString()!;
-                                    reader.Read();
-                                    switch (collectionsPropertyName)
-                                    {
-                                        case "Links":
-                                            res.Collections.Links = new();
-                                            reader.Read();
-                                            while (reader.TokenType != JsonTokenType.EndArray)
-                                            {
-                                                if (reader.TokenType == JsonTokenType.String)
-                                                    res.Collections.Links.Add(new() { Href = new(reader.GetString()) });
-                                                reader.Read();
-                                            }
-                                            break;
-                                        case "Items":
-                                            res.Collections.Items = new();
-                                            reader.Read();
-                                            while (reader.TokenType != JsonTokenType.EndArray)
-                                            {
-                                                if (reader.TokenType == JsonTokenType.PropertyName)
-                                                {
-                                                    var itemPropertyName = reader.GetString()!;
-                                                    reader.Read();
-                                                    if (itemPropertyName == "Collection")
-                                                    {
-                                                        var collection = new CollectionOptions();
-                                                        reader.Read();
-                                                        while (reader.TokenType != JsonTokenType.EndObject)
-                                                        {
-                                                            if (reader.TokenType == JsonTokenType.PropertyName)
-                                                            {
-                                                                var collectionPropertyName = reader.GetString()!;
-                                                                reader.Read();
-                                                                switch (collectionPropertyName)
-                                                                {
-                                                                    case "Id":
-                                                                        collection.Id = reader.GetString();
-                                                                        break;
-                                                                    case "Title":
-                                                                        collection.Title = reader.GetString();
-                                                                        break;
-                                                                    case "Description":
-                                                                        collection.Description = reader.GetString();
-                                                                        break;
-                                                                    case "Links":
-                                                                        collection.Links = new();
-                                                                        reader.Read();
-                                                                        while (reader.TokenType != JsonTokenType.EndArray)
-                                                                        {
-                                                                            if (reader.TokenType == JsonTokenType.String)
-                                                                                collection.Links.Add(new() { Href = new(reader.GetString()) });
-                                                                            reader.Read();
-                                                                        }
-                                                                        break;
-                                                                    case "ItemType":
-                                                                        collection.ItemType = reader.GetString();
-                                                                        break;
-                                                                    case "Features":
-                                                                        var features = new CollectionOptionsFeatures();
-                                                                        reader.Read();
-                                                                        while (reader.TokenType != JsonTokenType.EndObject)
-                                                                        {
-                                                                            if (reader.TokenType == JsonTokenType.PropertyName)
-                                                                            {
-                                                                                var featurePropertyName = reader.GetString()!;
-                                                                                reader.Read();
-                                                                                switch (featurePropertyName)
-                                                                                {
-                                                                                    case "Crs":
-                                                                                        features.Crs = new();
-                                                                                        reader.Read();
-                                                                                        while (reader.TokenType != JsonTokenType.EndArray)
-                                                                                        {
-                                                                                            if (reader.TokenType == JsonTokenType.String)
-                                                                                                features.Crs.Add(new(reader.GetString()));
-                                                                                            reader.Read();
-                                                                                        }
-                                                                                        break;
-                                                                                    case "StorageCrs":
-                                                                                        features.StorageCrs = new(reader.GetString());
-                                                                                        break;
-                                                                                    case "StorageCrsCoordinateEpoch":
-                                                                                        features.StorageCrsCoordinateEpoch = reader.GetString();
-                                                                                        break;
-                                                                                    case "Storage":
-                                                                                        features.Storage = IDataProvider.GetCollectionSourceOptions(ref reader, options);
-                                                                                        break;
-                                                                                }
-                                                                            }
-                                                                            reader.Read();
-                                                                        }
-                                                                        collection.Features = features;
-                                                                        break;
-                                                                    case "Extent":
-                                                                        collection.Extent = JsonSerializer.Deserialize<Extent>(ref reader, options);
-                                                                        break;
-                                                                }
-                                                            }
-                                                            reader.Read();
-                                                        }
-                                                        res.Collections.Items.Add(collection);
-                                                    }
-
-                                                }
-                                                reader.Read();
-                                            }
-                                            break;
-                                    }
-                                }
-                                reader.Read();
-                            }
+                            apiOptions.Collections = GetCollectionStorageOptions(ref reader, options);
                             break;
                     }
                 }
             }
-            return res;
+            return apiOptions;
         }
 
         public override void Write(Utf8JsonWriter writer, OgcApiOptions value, JsonSerializerOptions options)

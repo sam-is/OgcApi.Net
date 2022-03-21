@@ -2,18 +2,40 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.PostGis;
+using OgcApi.Net.Features.SqlServer;
+using OgcApi.Net.Features;
 
 namespace OgcApi.Net.Features.Tests.Util
 {
     public static class OptionsUtils
     {
+        private static ServiceProvider Provider { get; set; }
+        public static IDataProvider GetDataProvider(string dbType)
+        {
+            return Utils.GetDataProvider(Provider, dbType);
+        }
+        private static void SetupServiceCollection()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging();
+            serviceCollection.AddOgcApiPostGisProvider();
+            serviceCollection.AddOgcApiSqlServerProvider();           
+            Provider = serviceCollection.BuildServiceProvider();
+            
+        }
+
         public static OgcApiOptions GetOptionsFromJson()
         {
+            SetupServiceCollection();
+
             var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Util", "appsettings_test.json"));
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
-            var converter = new OgcApiOptionsConverter();
+            var converter = new OgcApiOptionsConverter(Provider);
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new());
             return options;               
         }
@@ -142,16 +164,15 @@ namespace OgcApi.Net.Features.Tests.Util
 
         public static string SerializeOptions(OgcApiOptions options)
         {
+            SetupServiceCollection();
+
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
-            var converter = new OgcApiOptionsConverter();
+            var converter = new OgcApiOptionsConverter(Provider);
             converter.Write(writer, options, new());
             writer.Flush();
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());
         }
-
-
-
     }
 }

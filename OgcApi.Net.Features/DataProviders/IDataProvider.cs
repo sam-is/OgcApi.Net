@@ -13,6 +13,8 @@ namespace OgcApi.Net.Features.DataProviders
     {
         string SourceType { get; }
 
+        void SetCollectionOptions(ICollectionsOptions options);
+
         ICollectionsOptions GetCollectionSourcesOptions();
 
         Envelope GetBbox(string collectionId, string apiKey = null);
@@ -30,16 +32,7 @@ namespace OgcApi.Net.Features.DataProviders
         void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null);
 
         void DeleteFeature(string collectionId, string featureId, string apiKey = null);
-
-        public static ICollectionSourceOptions GetCollectionSourceOptions(ref Utf8JsonReader reader, JsonSerializerOptions options)
-        {
-            var json = JsonSerializer.Deserialize<JsonElement>(ref reader,options).ToString();
-            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(IDataProvider).IsAssignableFrom(p) && p != typeof(IDataProvider));
-            var opts = new List<object>();
-            foreach (var type in types)
-                if (type.GetMethod("CastToCollectionSourceOptions") != null)
-                    opts.Add(type.GetMethod("CastToCollectionSourceOptions").Invoke(null, new object[] { json, options }));
-            return opts.FirstOrDefault(o => o != null) as ICollectionSourceOptions;
-        }
+        ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
     }
 }
+

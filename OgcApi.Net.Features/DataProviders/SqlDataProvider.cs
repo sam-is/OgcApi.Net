@@ -8,6 +8,8 @@ using System;
 using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
+using System.Text.Json;
+using System.Linq;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -17,29 +19,15 @@ namespace OgcApi.Net.Features.DataProviders
 
         public const int FeaturesMaximumLimit = 10000;
 
-        protected readonly CollectionsOptions CollectionsOptions;
+        protected ICollectionsOptions CollectionsOptions;
 
         protected readonly ILogger Logger;
 
         public abstract string SourceType { get; }
 
-        protected SqlDataProvider(IOptionsMonitor<CollectionsOptions> collectionsOptions, ILogger logger)
+        protected SqlDataProvider(ILogger logger)
         {
-            if (collectionsOptions == null)
-                throw new ArgumentNullException(nameof(collectionsOptions));
-
             Logger = logger;
-
-            try
-            {
-                CollectionsOptions = collectionsOptions.CurrentValue;                
-                CollectionsOptionsValidator.Validate(CollectionsOptions);
-            }
-            catch (OptionsValidationException ex)
-            {
-                foreach (var failure in ex.Failures) Logger.LogError(failure);
-                throw;
-            }
         }
 
         public ICollectionsOptions GetCollectionSourcesOptions()
@@ -514,5 +502,8 @@ namespace OgcApi.Net.Features.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions);
 
+        public abstract ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
+
+        public abstract void SetCollectionOptions(ICollectionsOptions options);
     }
 }

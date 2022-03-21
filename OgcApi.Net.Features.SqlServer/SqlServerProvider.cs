@@ -1,25 +1,22 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NetTopologySuite.Geometries;
-using NetTopologySuite.IO;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Text.Json;
+using NetTopologySuite.IO;
+using NetTopologySuite.Geometries;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
-using System.Text.Json;
 
 namespace OgcApi.Net.Features.SqlServer
 {
     public class SqlServerProvider : SqlDataProvider
     {
-        public SqlServerProvider(IOptionsMonitor<CollectionsOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger)
-            : base(sqlCollectionSourcesOptions, logger)
-        {
-        }
-
+        public SqlServerProvider(ILogger<SqlServerProvider> logger)
+            : base(logger) {}
         public override string SourceType => "SqlServer";
 
         protected override DbConnection GetDbConnection(string connectionString)
@@ -49,15 +46,23 @@ namespace OgcApi.Net.Features.SqlServer
             };
             return geometryReader.Read(geometryStream);
         }
-
-        public static ICollectionSourceOptions CastToCollectionSourceOptions(string element, JsonSerializerOptions options)
+        public override ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options)
         {
-            var collectionOptions = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(element, options);
-            if (collectionOptions != null && collectionOptions.Type == "SqlServer")
-                return collectionOptions;
-            else
-                return null;
+            return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
+        }
 
+        public override void SetCollectionOptions(ICollectionsOptions options)
+        {
+            if (options is CollectionsOptions collectionOptions
+                && collectionOptions?.Items != null
+                && collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+            {
+                CollectionsOptions = new CollectionsOptions()
+                {
+                    Links = collectionOptions.Links,
+                    Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
+                };
+            }
         }
     }
 }

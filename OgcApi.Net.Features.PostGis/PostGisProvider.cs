@@ -1,23 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NetTopologySuite.Geometries;
-using NetTopologySuite.IO;
-using Npgsql;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
+﻿using Npgsql;
+using System.Linq;
+using System.Text.Json;
 using System.Data.Common;
+using NetTopologySuite.IO;
+using NetTopologySuite.Geometries;
+using Microsoft.Extensions.Logging;
+using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
-using System.Text.Json;
 
 namespace OgcApi.Net.Features.PostGis
 {
     public class PostGisProvider : SqlDataProvider
     {
-        public PostGisProvider(IOptionsMonitor<CollectionsOptions> sqlCollectionSourcesOptions, ILogger<PostGisProvider> logger)
-            : base(sqlCollectionSourcesOptions, logger)
-        {
-        }
+        public PostGisProvider(ILogger<PostGisProvider> logger)
+            : base(logger) {}
 
         public override string SourceType => "PostGis";
 
@@ -40,15 +38,23 @@ namespace OgcApi.Net.Features.PostGis
 
             return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
         }
-
-        public static ICollectionSourceOptions CastToCollectionSourceOptions(string element, JsonSerializerOptions options)
+        public override ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options)
         {
-            
-            var collectionOptions = JsonSerializer.Deserialize<SqlCollectionSourceOptions>(element, options);
-            if (collectionOptions != null && collectionOptions.Type == "PostGis")
-                return collectionOptions;
-            else 
-                return null;
+            return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
+        }
+
+        public override void SetCollectionOptions(ICollectionsOptions options)
+        {
+            if (options is CollectionsOptions collectionOptions
+                && collectionOptions?.Items != null
+                && collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+            {
+                CollectionsOptions = new CollectionsOptions()
+                {
+                    Links = collectionOptions.Links,
+                    Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
+                };
+            }
         }
     }
 }
