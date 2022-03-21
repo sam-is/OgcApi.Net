@@ -245,7 +245,7 @@ namespace OgcApi.Features.PostGis.Tests
         {
             var options = GetDefaultOptions();
             var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
 
@@ -253,7 +253,7 @@ namespace OgcApi.Features.PostGis.Tests
         {
             var options = GetOptionsWithUnknownTable();
             var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
 
@@ -261,7 +261,7 @@ namespace OgcApi.Features.PostGis.Tests
         {
             var options = GetOptionsWithApiKey();
             var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
     }

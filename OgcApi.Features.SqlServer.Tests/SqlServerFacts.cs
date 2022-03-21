@@ -50,7 +50,7 @@ namespace OgcApi.Features.SqlServer.Tests
             };
 
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());        
-            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionOptions(options));
+            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
 
         }
 
@@ -58,7 +58,7 @@ namespace OgcApi.Features.SqlServer.Tests
         public void ConstructorNullOptions()
         {
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionOptions(null));
+            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
         }
 
         [Fact]

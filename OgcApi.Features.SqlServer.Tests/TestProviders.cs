@@ -246,7 +246,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetDefaultOptions();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
 
@@ -254,7 +254,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetOptionsWithUnknownTable();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
 
@@ -262,7 +262,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetOptionsWithApiKey();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionOptions(options);
+            provider.SetCollectionsOptions(options);
             return provider;
         }
     }

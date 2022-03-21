@@ -111,8 +111,8 @@ namespace OgcApi.Net.Features.Options
                                                                     case "Storage":
                                                                         var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
                                                                         var type = json.GetProperty("Type").ToString();
-                                                                        var dataprovider = Utils.GetDataProvider(Provider, type);
-                                                                        features.Storage = dataprovider.DeserializeCollectionSourceOptions(json.ToString(), options);
+                                                                        var dataProvider = Utils.GetDataProvider(Provider, type);
+                                                                        features.Storage = dataProvider.DeserializeCollectionSourceOptions(json.ToString(), options);
                                                                         break;
                                                                 }
                                                             }
@@ -141,7 +141,7 @@ namespace OgcApi.Net.Features.Options
             }                  
             var providers = Provider.GetServices(typeof(IDataProvider));
             foreach (IDataProvider provider in providers)
-                provider.SetCollectionOptions(collectionOptions);
+                provider.SetCollectionsOptions(collectionOptions);
             return collectionOptions;
         }
         public override OgcApiOptions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

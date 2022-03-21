@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Linq;
+using System.Text.Json;
+using System.Data.Common;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.Features;
+using Microsoft.Extensions.Logging;
 using OgcApi.Net.Features.Options;
-using System;
-using System.Data.Common;
+using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
-using System.Text.Json;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -500,8 +501,26 @@ namespace OgcApi.Net.Features.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions);
 
-        public abstract ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
+        public ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options)
+        {
+            return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
+        }
 
-        public abstract void SetCollectionOptions(ICollectionsOptions options);
+        public void SetCollectionsOptions(ICollectionsOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (options is CollectionsOptions collectionOptions)
+            {
+                CollectionsOptionsValidator.Validate(collectionOptions);
+                if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+                {
+                    var resultingOptions = new CollectionsOptions();
+                    resultingOptions.Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList();
+                    if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
+                    CollectionsOptions = resultingOptions;
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Resources;
+﻿using OgcApi.Net.Features.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;

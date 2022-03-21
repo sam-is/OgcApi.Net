@@ -11,7 +11,7 @@ namespace OgcApi.Net.Features.DataProviders
     {
         string SourceType { get; }
 
-        void SetCollectionOptions(ICollectionsOptions options);
+        void SetCollectionsOptions(ICollectionsOptions options);
 
         ICollectionsOptions GetCollectionSourcesOptions();
 
