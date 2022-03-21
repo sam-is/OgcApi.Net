@@ -1,5 +1,5 @@
 using Xunit;
-using OgcApi.Net.Features.Tests.Util;
+using OgcApi.Net.Features.Tests.Utils;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options;
 using System.Linq;

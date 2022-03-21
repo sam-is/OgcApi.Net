@@ -9,14 +9,14 @@ using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Features.SqlServer;
 
-namespace OgcApi.Net.Features.Tests.Util
+namespace OgcApi.Net.Features.Tests.Utils
 {
     public static class OptionsUtils
     {
         private static ServiceProvider Provider { get; set; }
         public static IDataProvider GetDataProvider(string dbType)
         {
-            return Utils.GetDataProvider(Provider, dbType);
+            return Net.Features.Utils.GetDataProvider(Provider, dbType);
         }
         private static void SetupServiceCollection()
         {
@@ -32,7 +32,7 @@ namespace OgcApi.Net.Features.Tests.Util
         {
             SetupServiceCollection();
 
-            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Util", "appsettings_test.json"));
+            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Utils", "ogcapisettings.json"));
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
             var converter = new OgcApiOptionsConverter(Provider);
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new());
