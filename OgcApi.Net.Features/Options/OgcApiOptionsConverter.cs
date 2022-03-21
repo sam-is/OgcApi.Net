@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.Interfaces;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Resources;
 using System;

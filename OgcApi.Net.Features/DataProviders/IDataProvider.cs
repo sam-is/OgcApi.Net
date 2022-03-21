@@ -4,8 +4,6 @@ using OgcApi.Net.Features.Features;
 using System;
 using OgcApi.Net.Features.Options.Interfaces;
 using System.Text.Json;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace OgcApi.Net.Features.DataProviders
 {

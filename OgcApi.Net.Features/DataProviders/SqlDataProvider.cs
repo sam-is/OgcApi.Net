@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
@@ -9,7 +8,6 @@ using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
 using System.Text.Json;
-using System.Linq;
 
 namespace OgcApi.Net.Features.DataProviders
 {

@@ -8,7 +8,6 @@ using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Features.SqlServer;
-using OgcApi.Net.Features;
 
 namespace OgcApi.Net.Features.Tests.Util
 {

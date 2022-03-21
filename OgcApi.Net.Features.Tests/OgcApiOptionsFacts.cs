@@ -1,7 +1,6 @@
 using Xunit;
 using OgcApi.Net.Features.Tests.Util;
 using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.SqlServer;
 using OgcApi.Net.Features.Options;
 using System.Linq;
 
@@ -195,7 +194,7 @@ namespace OgcApi.Net.Features.Tests
             Assert.Equal("Collection2", storage.Table);
             Assert.Equal("Geom", storage.GeometryColumn);
             Assert.Equal(3857, storage.GeometrySrid);
-            Assert.Equal("Geometry", storage.GeometryDataType);
+            Assert.Equal("geometry", storage.GeometryDataType);
             Assert.Equal("MultiPolygon", storage.GeometryGeoJsonType);
             Assert.Equal("Id", storage.IdentifierColumn);
             Assert.Equal("Date", storage.DateTimeColumn);

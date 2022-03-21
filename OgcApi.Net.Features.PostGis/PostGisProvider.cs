@@ -9,6 +9,7 @@ using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
+using System;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -45,15 +46,16 @@ namespace OgcApi.Net.Features.PostGis
 
         public override void SetCollectionOptions(ICollectionsOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            CollectionsOptionsValidator.Validate(options as CollectionsOptions);
             if (options is CollectionsOptions collectionOptions
                 && collectionOptions?.Items != null
                 && collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
             {
-                CollectionsOptions = new CollectionsOptions()
-                {
-                    Links = collectionOptions.Links,
-                    Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
-                };
+                CollectionsOptions = new CollectionsOptions();
+                (CollectionsOptions as CollectionsOptions).Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList();
+                if (collectionOptions.Items != null) (CollectionsOptions as CollectionsOptions).Links = collectionOptions.Links;
             }
         }
     }

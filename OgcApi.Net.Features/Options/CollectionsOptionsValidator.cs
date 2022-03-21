@@ -8,8 +8,6 @@ namespace OgcApi.Net.Features.Options
     {
         public static void Validate(CollectionsOptions options)
         {
-            
-
             if (options?.Items == null || options.Items.Count == 0)
                 throw new OptionsValidationException("OgcApiOptions", typeof(CollectionsOptions), new List<string>() { "Collections should not be empty" });
 

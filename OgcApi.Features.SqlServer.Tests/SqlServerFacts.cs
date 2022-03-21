@@ -1,7 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Features.SqlServer.Tests.Utils;
@@ -12,7 +11,6 @@ using OgcApi.Net.Features.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
 using Xunit;
 
 namespace OgcApi.Features.SqlServer.Tests
@@ -50,18 +48,17 @@ namespace OgcApi.Features.SqlServer.Tests
                     }
                 }
             };
-            var optionsMonitor =
-                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
 
-            Assert.Throws<OptionsValidationException>(() =>
-                new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());        
+            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionOptions(options));
+
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new SqlServerProvider(null, new NullLogger<SqlServerProvider>()));
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionOptions(null));
         }
 
         [Fact]
