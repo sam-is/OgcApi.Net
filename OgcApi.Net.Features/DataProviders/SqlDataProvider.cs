@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Text.Json;
-using System.Data.Common;
+﻿using Microsoft.Extensions.Logging;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using Microsoft.Extensions.Logging;
-using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Features;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Features.Options.SqlOptions;
+using System;
+using System.Data.Common;
+using System.Linq;
+using System.Text.Json;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -43,7 +43,7 @@ namespace OgcApi.Net.Features.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
-            
+
             var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
@@ -508,17 +508,24 @@ namespace OgcApi.Net.Features.DataProviders
 
         public void SetCollectionsOptions(ICollectionsOptions options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
-            if (options is CollectionsOptions collectionOptions)
+            switch (options)
             {
-                CollectionsOptionsValidator.Validate(collectionOptions);
-                if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+                case null:
+                    throw new ArgumentNullException(nameof(options));
+                case CollectionsOptions collectionOptions:
                 {
-                    var resultingOptions = new CollectionsOptions();
-                    resultingOptions.Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList();
-                    if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
-                    CollectionsOptions = resultingOptions;
+                    CollectionsOptionsValidator.Validate(collectionOptions);
+                    if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+                    {
+                        var resultingOptions = new CollectionsOptions
+                        {
+                            Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
+                        };
+                        if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
+                        CollectionsOptions = resultingOptions;
+                    }
+
+                    break;
                 }
             }
         }

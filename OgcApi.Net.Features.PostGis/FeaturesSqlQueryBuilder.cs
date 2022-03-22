@@ -4,11 +4,11 @@ using NetTopologySuite.IO;
 using Npgsql;
 using NpgsqlTypes;
 using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options.SqlOptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.PostGis
 {

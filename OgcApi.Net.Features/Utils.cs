@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.Interfaces;
+using System;
+using System.Linq;
 
 namespace OgcApi.Net.Features
 {

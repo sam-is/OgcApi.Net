@@ -1,8 +1,8 @@
-using Xunit;
-using OgcApi.Net.Features.Tests.Utils;
-using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Tests.Utils;
 using System.Linq;
+using Xunit;
 
 namespace OgcApi.Net.Features.Tests
 {
@@ -15,7 +15,7 @@ namespace OgcApi.Net.Features.Tests
 
             Assert.False(string.IsNullOrEmpty(res));
         }
-        
+
         [Fact]
         public void SettingsDeserializationExecuted()
         {
@@ -74,8 +74,8 @@ namespace OgcApi.Net.Features.Tests
 
             Assert.NotNull(options.Collections);
             Assert.NotNull(options.Collections.Links);
-            Assert.NotEmpty(options.Collections.Links); 
-            Assert.Equal(2,options.Collections.Links.Count);
+            Assert.NotEmpty(options.Collections.Links);
+            Assert.Equal(2, options.Collections.Links.Count);
             Assert.Equal("https://api.com/collections/link1.html", options.Collections.Links[0].Href.ToString());
             Assert.Equal("https://api.com/collections/link2.html", options.Collections.Links[1].Href.ToString());
         }
@@ -99,7 +99,7 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(options.Collections.Items[0]);
             Assert.Equal("Collection1", options.Collections.Items[0].Id);
             Assert.Equal("Collection title 1", options.Collections.Items[0].Title);
-            Assert.Equal("Collection description 1", options.Collections.Items[0].Description); 
+            Assert.Equal("Collection description 1", options.Collections.Items[0].Description);
             Assert.Equal("Collection1 ItemType", options.Collections.Items[0].ItemType);
             Assert.NotNull(options.Collections.Items[0].Features);
         }
@@ -165,7 +165,7 @@ namespace OgcApi.Net.Features.Tests
             Assert.Equal(3857, storage.GeometrySrid);
             Assert.Equal("geometry", storage.GeometryDataType);
             Assert.Equal("MultiPolygon", storage.GeometryGeoJsonType);
-            Assert.Equal("id", storage.IdentifierColumn); 
+            Assert.Equal("id", storage.IdentifierColumn);
             Assert.Equal("date", storage.DateTimeColumn);
             Assert.NotNull(storage.Properties);
             Assert.NotEmpty(storage.Properties);
@@ -220,7 +220,7 @@ namespace OgcApi.Net.Features.Tests
             var extent = options.Collections.Items[0].Extent;
             Assert.NotNull(extent);
             Assert.NotNull(extent.Spatial);
-            Assert.NotNull(extent.Spatial.Crs); 
+            Assert.NotNull(extent.Spatial.Crs);
             Assert.Equal("http://www.opengis.net/def/crs/OGC/1.3/CRS84", extent.Spatial.Crs.ToString());
             Assert.NotNull(extent.Spatial.Bbox);
             Assert.NotEmpty(extent.Spatial.Bbox);
@@ -235,7 +235,7 @@ namespace OgcApi.Net.Features.Tests
             Assert.Equal(4, extent.Spatial.Bbox[1][1]);
             Assert.NotNull(extent.Temporal);
             Assert.False(string.IsNullOrEmpty(extent.Temporal.Trs));
-            Assert.Equal("Trs",extent.Temporal.Trs);
+            Assert.Equal("Trs", extent.Temporal.Trs);
             Assert.NotNull(extent.Temporal.Interval);
             Assert.NotEmpty(extent.Temporal.Interval);
             Assert.Equal(2, extent.Temporal.Interval.Length);
@@ -432,8 +432,8 @@ namespace OgcApi.Net.Features.Tests
         public void PostGisProviderOptionsStorageSet()
         {
             var provider = OptionsUtils.GetDataProvider("PostGis");
-            var providerStorage = (provider.GetCollectionSourcesOptions() as CollectionsOptions).Items[0].Features.Storage as SqlCollectionSourceOptions;
-            var apiStorage = (OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList())[0].Features.Storage as SqlCollectionSourceOptions;
+            var providerStorage = (provider.GetCollectionSourcesOptions() as CollectionsOptions)?.Items[0].Features.Storage as SqlCollectionSourceOptions;
+            var apiStorage = OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlCollectionSourceOptions;
 
             Assert.NotNull(apiStorage);
             Assert.NotNull(providerStorage);

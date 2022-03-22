@@ -3,6 +3,7 @@ using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Resources;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,17 +30,17 @@ namespace OgcApi.Net.Features.Options
                     switch (collectionsPropertyName)
                     {
                         case "Links":
-                            collectionOptions.Links = new();
+                            collectionOptions.Links = new List<Link>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    collectionOptions.Links.Add(new() { Href = new(reader.GetString()) });
+                                    collectionOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                 reader.Read();
                             }
                             break;
                         case "Items":
-                            collectionOptions.Items = new();
+                            collectionOptions.Items = new List<CollectionOptions>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
@@ -65,12 +66,12 @@ namespace OgcApi.Net.Features.Options
                                                     collection.Description = reader.GetString();
                                                     break;
                                                 case "Links":
-                                                    collection.Links = new();
+                                                    collection.Links = new List<Link>();
                                                     reader.Read();
                                                     while (reader.TokenType != JsonTokenType.EndArray)
                                                     {
                                                         if (reader.TokenType == JsonTokenType.String)
-                                                            collection.Links.Add(new() { Href = new(reader.GetString()) });
+                                                            collection.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                                         reader.Read();
                                                     }
                                                     break;
@@ -89,17 +90,17 @@ namespace OgcApi.Net.Features.Options
                                                             switch (featurePropertyName)
                                                             {
                                                                 case "Crs":
-                                                                    features.Crs = new();
+                                                                    features.Crs = new List<Uri>();
                                                                     reader.Read();
                                                                     while (reader.TokenType != JsonTokenType.EndArray)
                                                                     {
                                                                         if (reader.TokenType == JsonTokenType.String)
-                                                                            features.Crs.Add(new(reader.GetString()));
+                                                                            features.Crs.Add(new Uri(reader.GetString()));
                                                                         reader.Read();
                                                                     }
                                                                     break;
                                                                 case "StorageCrs":
-                                                                    features.StorageCrs = new(reader.GetString());
+                                                                    features.StorageCrs = new Uri(reader.GetString());
                                                                     break;
                                                                 case "StorageCrsCoordinateEpoch":
                                                                     features.StorageCrsCoordinateEpoch = reader.GetString();
@@ -170,30 +171,30 @@ namespace OgcApi.Net.Features.Options
                                             apiOptions.LandingPage.ContactName = reader.GetString();
                                             break;
                                         case "ContactUrl":
-                                            apiOptions.LandingPage.ContactUrl = new(reader.GetString());
+                                            apiOptions.LandingPage.ContactUrl = new Uri(reader.GetString());
                                             break;
                                         case "ApiDocumentPage":
-                                            apiOptions.LandingPage.ApiDocumentPage = new(reader.GetString());
+                                            apiOptions.LandingPage.ApiDocumentPage = new Uri(reader.GetString());
                                             break;
                                         case "Version":
-                                            apiOptions.LandingPage.Version = new(reader.GetString());
+                                            apiOptions.LandingPage.Version = new string(reader.GetString());
                                             break;
                                         case "ApiDescriptionPage":
-                                            apiOptions.LandingPage.ApiDescriptionPage = new(reader.GetString());
+                                            apiOptions.LandingPage.ApiDescriptionPage = new Uri(reader.GetString());
                                             break;
                                         case "LicenseName":
                                             apiOptions.LandingPage.LicenseName = reader.GetString();
                                             break;
                                         case "LicenseUrl":
-                                            apiOptions.LandingPage.LicenseUrl = new(reader.GetString());
+                                            apiOptions.LandingPage.LicenseUrl = new Uri(reader.GetString());
                                             break;
                                         case "Links":
-                                            apiOptions.LandingPage.Links = new();
+                                            apiOptions.LandingPage.Links = new List<Link>();
                                             reader.Read();
                                             while (reader.TokenType != JsonTokenType.EndArray)
                                             {
                                                 if (reader.TokenType == JsonTokenType.String)
-                                                    apiOptions.LandingPage.Links.Add(new() { Href = new(reader.GetString()) });
+                                                    apiOptions.LandingPage.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                                 reader.Read();
                                             }
                                             break;
@@ -259,7 +260,7 @@ namespace OgcApi.Net.Features.Options
 
             if (value.Collections != null)
             {
-                if (value.Collections.Links !=null && value.Collections.Links.Any())
+                if (value.Collections.Links != null && value.Collections.Links.Any())
                 {
                     writer.WriteStartArray("Links");
                     foreach (var link in value.Collections.Links)
@@ -321,7 +322,7 @@ namespace OgcApi.Net.Features.Options
                                     writer.WriteStartArray("Properties");
                                     foreach (var prop in item.Features.Storage.Properties)
                                         writer.WriteStringValue(prop);
-                                     writer.WriteEndArray();
+                                    writer.WriteEndArray();
                                 }
                                 writer.WriteBoolean("AllowCreate", (item.Features.Storage as SqlCollectionSourceOptions).AllowCreate);
                                 writer.WriteBoolean("AllowReplace", (item.Features.Storage as SqlCollectionSourceOptions).AllowReplace);
