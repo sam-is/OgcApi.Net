@@ -1,10 +1,10 @@
-﻿using OgcApi.Net.Features.Resources;
+﻿using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Features.Resources;
 using System.Collections.Generic;
-using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.Options
 {
-    public class CollectionsOptions  : ICollectionsOptions
+    public class CollectionsOptions : ICollectionsOptions
     {
         public List<Link> Links { get; set; }
 

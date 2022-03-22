@@ -18,7 +18,7 @@ namespace OgcApi.Features.PostGis.Tests.Utils
             createDbSqlConnection.Open();
 
             var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.Features.PostGis.Tests.Utils.DatabaseCreate.sql");
+            using var stream = assembly.GetManifestResourceStream("OgcApi.Features.PostGis.Tests.Utils.DatabaseCreate.sql");
             if (stream == null)
             {
                 throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
@@ -45,7 +45,7 @@ namespace OgcApi.Features.PostGis.Tests.Utils
         private static string GetInstallSqlScript()
         {
             var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.Features.PostGis.Tests.Utils.DatabaseInstall.sql");
+            using var stream = assembly.GetManifestResourceStream("OgcApi.Features.PostGis.Tests.Utils.DatabaseInstall.sql");
 
             if (stream == null)
             {

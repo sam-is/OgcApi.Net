@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using OgcApi.Net.Features.Options.SqlOptions;
+using System.Collections.Generic;
 
 namespace OgcApi.Net.Features.Options
 {
@@ -8,10 +8,10 @@ namespace OgcApi.Net.Features.Options
     {
         public static void Validate(CollectionsOptions options)
         {
-            
+
 
             if (options?.Items == null || options.Items.Count == 0)
-                throw new OptionsValidationException("OgcApiOptions", typeof(CollectionsOptions), new List<string>() { "Collections should not be empty" });
+                throw new OptionsValidationException("OgcApiOptions", typeof(CollectionsOptions), new List<string> { "Collections should not be empty" });
 
             var failureMessages = new List<string>();
             foreach (var item in options.Items)
@@ -21,14 +21,14 @@ namespace OgcApi.Net.Features.Options
 
                 if (item.Features != null)
                 {
-                    if (item.Features.Crs == null || item.Features .Crs.Count == 0)
+                    if (item.Features.Crs == null || item.Features.Crs.Count == 0)
                         failureMessages.Add("Features Crs list should not be empty for the collection");
 
                     if (item.Features.StorageCrs == null)
                         failureMessages.Add("Parameter StorageCrs is required for the collection feature option");
 
-                    if(item.Features.Storage is SqlCollectionSourceOptions storage)
-                    {                     
+                    if (item.Features.Storage is SqlCollectionSourceOptions storage)
+                    {
                         if (string.IsNullOrWhiteSpace(storage.ConnectionString))
                             failureMessages.Add("Parameter ConnectionString is required for the collection feature storage option");
 
@@ -44,8 +44,8 @@ namespace OgcApi.Net.Features.Options
                         if (string.IsNullOrWhiteSpace(storage.IdentifierColumn))
                             failureMessages.Add("Parameter IdentifierColumn is required for the feature storage collection option");
 
-                        if (storage.Type != "SqlServer" 
-                            && storage.Type != "PostGis" 
+                        if (storage.Type != "SqlServer"
+                            && storage.Type != "PostGis"
                             && storage.Type != "SpatiaLite")
                             failureMessages.Add("Parameter Type is must be 'SqlServer', 'PostGis' or 'SpatiaLite'");
 

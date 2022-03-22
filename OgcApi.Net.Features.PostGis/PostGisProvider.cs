@@ -5,8 +5,8 @@ using NetTopologySuite.IO;
 using Npgsql;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options;
-using System.Data.Common;
 using OgcApi.Net.Features.Options.SqlOptions;
+using System.Data.Common;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -31,7 +31,7 @@ namespace OgcApi.Net.Features.PostGis
 
         protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions)
         {
-            var geometryReader = new PostGisReader()
+            var geometryReader = new PostGisReader
             {
                 RepairRings = false
             };
