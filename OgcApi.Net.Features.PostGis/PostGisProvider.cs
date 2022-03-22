@@ -1,17 +1,17 @@
-﻿using Npgsql;
-using System.Data.Common;
-using NetTopologySuite.IO;
+﻿using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
-using Microsoft.Extensions.Logging;
+using NetTopologySuite.IO;
+using Npgsql;
 using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
+using System.Data.Common;
 
 namespace OgcApi.Net.Features.PostGis
 {
     public class PostGisProvider : SqlDataProvider
     {
         public PostGisProvider(ILogger<PostGisProvider> logger)
-            : base(logger) {}
+            : base(logger) { }
 
         public override string SourceType => "PostGis";
 
@@ -27,12 +27,12 @@ namespace OgcApi.Net.Features.PostGis
 
         protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions)
         {
-            var geometryReader = new PostGisReader()
+            var geometryReader = new PostGisReader
             {
                 RepairRings = false
             };
 
             return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
-        }    
+        }
     }
 }
