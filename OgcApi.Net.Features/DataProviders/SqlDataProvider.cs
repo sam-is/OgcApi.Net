@@ -4,10 +4,10 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Features.Options.SqlOptions;
 using System;
 using System.Data.Common;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Options.Interfaces;
 
 namespace OgcApi.Net.Features.DataProviders
 {
@@ -32,7 +32,7 @@ namespace OgcApi.Net.Features.DataProviders
 
             try
             {
-                CollectionsOptions = collectionsOptions.CurrentValue;                
+                CollectionsOptions = collectionsOptions.CurrentValue;
                 CollectionsOptionsValidator.Validate(CollectionsOptions);
             }
             catch (OptionsValidationException ex)
@@ -56,7 +56,7 @@ namespace OgcApi.Net.Features.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
-            
+
             var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {

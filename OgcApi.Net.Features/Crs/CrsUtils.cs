@@ -38,14 +38,19 @@ namespace OgcApi.Net.Features.Crs
                 throw new ArgumentException($"'{nameof(srid)}' cannot be null or whitespace.", nameof(srid));
             }
 
-            if (srid == "4326" || srid == "CRS84")
-                return GeographicCoordinateSystem.WGS84;
-
-            if (srid == "3857")
-                return ProjectedCoordinateSystem.WebMercator;
-
-            var csFactory = new CoordinateSystemFactory();
-            return csFactory.CreateFromWkt(GetWktBySrid(srid));
+            switch (srid)
+            {
+                case "4326":
+                case "CRS84":
+                    return GeographicCoordinateSystem.WGS84;
+                case "3857":
+                    return ProjectedCoordinateSystem.WebMercator;
+                default:
+                {
+                    var csFactory = new CoordinateSystemFactory();
+                    return csFactory.CreateFromWkt(GetWktBySrid(srid));
+                }
+            }
         }
 
         public static CoordinateSystem GetCoordinateSystemByUri(Uri uri)
@@ -129,7 +134,7 @@ namespace OgcApi.Net.Features.Crs
                 return;
 
             var transformationFactory = new CoordinateTransformationFactory();
-            ICoordinateTransformation transformation = transformationFactory.CreateFromCoordinateSystems(srcCrs, dstCrs);
+            var transformation = transformationFactory.CreateFromCoordinateSystems(srcCrs, dstCrs);
             var filter = new CoordinateSequenceFilter(transformation.MathTransform);
 
             geometry.Apply(filter);
@@ -243,7 +248,7 @@ namespace OgcApi.Net.Features.Crs
             var srcCrs = GetCoordinateSystemBySrid(srcCrsUri.Segments.Last());
             var dstCrs = GetCoordinateSystemBySrid(dstCrsUri.Segments.Last());
 
-            foreach (IFeature feature in featureCollection)
+            foreach (var feature in featureCollection)
             {
                 feature.Transform(srcCrs, dstCrs);
             }

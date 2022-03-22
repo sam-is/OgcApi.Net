@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Options;
 
 namespace OgcApi.Net.Features.Options
 {
@@ -17,12 +17,12 @@ namespace OgcApi.Net.Features.Options
                 throw new OptionsValidationException(
                     "OgcApiOptions",
                     typeof(OgcApiOptions),
-                    new List<string>() { "Landing page options must include ApiDescriptionPage or ApiDocumentPage parameter" });
+                    new List<string> { "Landing page options must include ApiDescriptionPage or ApiDocumentPage parameter" });
             }
 
             CollectionsOptions collectionsOptions = options.Collections;
             CollectionsOptionsValidator.Validate(collectionsOptions);
         }
-                    
+
     }
 }

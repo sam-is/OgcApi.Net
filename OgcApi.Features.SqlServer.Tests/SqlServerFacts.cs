@@ -12,7 +12,6 @@ using OgcApi.Net.Features.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
 using Xunit;
 
 namespace OgcApi.Features.SqlServer.Tests
@@ -42,7 +41,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             var options = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>()
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
@@ -320,7 +319,7 @@ namespace OgcApi.Features.SqlServer.Tests
         private static OgcFeature CreateTestFeature(IDataProvider provider)
         {
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -376,7 +375,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var testFeature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -399,7 +398,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -445,7 +444,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -478,7 +477,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Geometry = new Polygon(
                         new LinearRing(
@@ -514,7 +513,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureReplaceFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -555,7 +554,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>

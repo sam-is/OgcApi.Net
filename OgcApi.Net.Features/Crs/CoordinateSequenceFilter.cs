@@ -3,7 +3,7 @@ using ProjNet.CoordinateSystems.Transformations;
 
 namespace OgcApi.Net.Features.Crs
 {
-    class CoordinateSequenceFilter : ICoordinateSequenceFilter
+    internal class CoordinateSequenceFilter : ICoordinateSequenceFilter
     {
         private readonly MathTransform _mathTransform;
 
@@ -15,9 +15,9 @@ namespace OgcApi.Net.Features.Crs
 
         public void Filter(CoordinateSequence seq, int i)
         {
-            double x = seq.GetX(i);
-            double y = seq.GetY(i);
-            double z = seq.GetZ(i);
+            var x = seq.GetX(i);
+            var y = seq.GetY(i);
+            var z = seq.GetZ(i);
             _mathTransform.Transform(ref x, ref y, ref z);
             seq.SetX(i, x);
             seq.SetY(i, y);

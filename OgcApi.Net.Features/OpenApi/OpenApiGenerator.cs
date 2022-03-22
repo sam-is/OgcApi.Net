@@ -29,12 +29,12 @@ namespace OgcApi.Net.Features.OpenApi
                     Title = _apiOptions.LandingPage.Title,
                     Description = _apiOptions.LandingPage.Description,
                     Version = _apiOptions.LandingPage.Version,
-                    Contact = new OpenApiContact()
+                    Contact = new OpenApiContact
                     {
                         Name = _apiOptions.LandingPage.ContactName,
                         Url = _apiOptions.LandingPage.ContactUrl
                     },
-                    License = new OpenApiLicense()
+                    License = new OpenApiLicense
                     {
                         Name = _apiOptions.LandingPage.LicenseName,
                         Url = _apiOptions.LandingPage.LicenseUrl
