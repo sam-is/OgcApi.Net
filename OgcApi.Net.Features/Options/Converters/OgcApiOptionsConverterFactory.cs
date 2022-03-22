@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Features.Options.Converters
 {
     public class OgcApiOptionsConverterFactory : JsonConverterFactory
     {

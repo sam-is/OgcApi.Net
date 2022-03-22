@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.IO.Converters;
 using OgcApi.Net.Features.Features;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Converters;
 using System;
 
 namespace OgcApi.Net.Features
