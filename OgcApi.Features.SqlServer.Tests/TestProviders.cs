@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Moq;
 using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.SqlServer;
 using System.Collections.Generic;
 using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Resources;
 
 namespace OgcApi.Features.SqlServer.Tests
 {
@@ -248,22 +245,25 @@ namespace OgcApi.Features.SqlServer.Tests
         public static SqlServerProvider GetDefaultProvider()
         {
             CollectionsOptions options = GetDefaultOptions();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static SqlServerProvider GetProviderWithErrors()
         {
             CollectionsOptions options = GetOptionsWithUnknownTable();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static SqlServerProvider GetProviderWithApiKey()
         {
             CollectionsOptions options = GetOptionsWithApiKey();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
     }
 }

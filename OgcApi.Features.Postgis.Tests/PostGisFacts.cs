@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using Npgsql;
@@ -13,7 +12,6 @@ using OgcApi.Net.Features.PostGis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
 using Xunit;
 
 namespace OgcApi.Features.PostGis.Tests
@@ -51,18 +49,15 @@ namespace OgcApi.Features.PostGis.Tests
                     }
                 }
             };
-            var optionsMonitor =
-                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-
-            Assert.Throws<OptionsValidationException>(() =>
-                new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>()));
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new PostGisProvider(null, new NullLogger<PostGisProvider>()));
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
         }
 
         [Fact]

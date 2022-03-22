@@ -1,19 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
-using System;
-using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.PostGis
 {
     public static class OgcApiServiceCollectionExtensions
     {
-        public static IServiceCollection AddOgcApiPostGisProvider(
-            this IServiceCollection services, Action<CollectionsOptions> configureOptions)
-        {
-            services.Configure(configureOptions);
-
-            services.AddTransient<IDataProvider, PostGisProvider>();
+        public static IServiceCollection AddOgcApiPostGisProvider(this IServiceCollection services)
+        {        
+            services.AddSingleton<IDataProvider, PostGisProvider>();
 
             return services;
         }

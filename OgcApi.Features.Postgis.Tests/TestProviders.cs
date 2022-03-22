@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Moq;
 using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.Features.PostGis;
 using System.Collections.Generic;
@@ -246,22 +244,25 @@ namespace OgcApi.Features.PostGis.Tests
         public static PostGisProvider GetDefaultProvider()
         {
             var options = GetDefaultOptions();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static PostGisProvider GetProviderWithErrors()
         {
             var options = GetOptionsWithUnknownTable();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static PostGisProvider GetProviderWithApiKey()
         {
             var options = GetOptionsWithApiKey();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-            return new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>());
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
     }
 }

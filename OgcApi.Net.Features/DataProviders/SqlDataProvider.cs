@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using System;
+using System.Linq;
+using System.Text.Json;
+using System.Data.Common;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.Features;
+using Microsoft.Extensions.Logging;
 using OgcApi.Net.Features.Options;
-using System;
-using System.Data.Common;
+using OgcApi.Net.Features.Features;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options.Interfaces;
 
@@ -17,29 +18,15 @@ namespace OgcApi.Net.Features.DataProviders
 
         public const int FeaturesMaximumLimit = 10000;
 
-        protected readonly CollectionsOptions CollectionsOptions;
+        protected ICollectionsOptions CollectionsOptions;
 
         protected readonly ILogger Logger;
 
         public abstract string SourceType { get; }
 
-        protected SqlDataProvider(IOptionsMonitor<CollectionsOptions> collectionsOptions, ILogger logger)
+        protected SqlDataProvider(ILogger logger)
         {
-            if (collectionsOptions == null)
-                throw new ArgumentNullException(nameof(collectionsOptions));
-
             Logger = logger;
-
-            try
-            {
-                CollectionsOptions = collectionsOptions.CurrentValue;                
-                CollectionsOptionsValidator.Validate(CollectionsOptions);
-            }
-            catch (OptionsValidationException ex)
-            {
-                foreach (var failure in ex.Failures) Logger.LogError(failure);
-                throw;
-            }
         }
 
         public ICollectionsOptions GetCollectionSourcesOptions()
@@ -513,5 +500,27 @@ namespace OgcApi.Net.Features.DataProviders
         protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions);
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions);
+
+        public ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options)
+        {
+            return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
+        }
+
+        public void SetCollectionsOptions(ICollectionsOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (options is CollectionsOptions collectionOptions)
+            {
+                CollectionsOptionsValidator.Validate(collectionOptions);
+                if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
+                {
+                    var resultingOptions = new CollectionsOptions();
+                    resultingOptions.Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList();
+                    if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
+                    CollectionsOptions = resultingOptions;
+                }
+            }
+        }
     }
 }

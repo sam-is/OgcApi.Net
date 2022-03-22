@@ -3,7 +3,7 @@
   <PropertyGroup>
 	 <MajorVersion>0</MajorVersion>
 	 <MinorVersion>1</MinorVersion>
-	 <PatchVersion>11</PatchVersion> 
+	 <PatchVersion>13</PatchVersion> 
 	  	 
 	 <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	 <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
