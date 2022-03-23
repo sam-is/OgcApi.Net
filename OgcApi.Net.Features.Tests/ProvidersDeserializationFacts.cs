@@ -32,8 +32,8 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(_fixture.jsonCollectionsOptions.Links);
             Assert.NotNull(_fixture.sqlServerCollectionsOptions.Links);
             Assert.Equal(_fixture.jsonCollectionsOptions.Links.Count, _fixture.sqlServerCollectionsOptions.Links.Count);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0], _fixture.sqlServerCollectionsOptions.Links[0]);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1], _fixture.sqlServerCollectionsOptions.Links[1]);
+            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0].Href, _fixture.sqlServerCollectionsOptions.Links[0].Href);
+            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1].Href, _fixture.sqlServerCollectionsOptions.Links[1].Href);
         }
 
         [Fact]
@@ -44,8 +44,8 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotEmpty(_fixture.jsonCollectionsOptions.Links);
             Assert.NotEmpty(_fixture.postGisCollectionsOptions.Links);
             Assert.Equal(_fixture.jsonCollectionsOptions.Links.Count, _fixture.postGisCollectionsOptions.Links.Count);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0], _fixture.postGisCollectionsOptions.Links[0]);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1], _fixture.postGisCollectionsOptions.Links[1]);
+            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0].Href, _fixture.postGisCollectionsOptions.Links[0].Href);
+            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1].Href, _fixture.postGisCollectionsOptions.Links[1].Href);
         }
 
         [Fact]
@@ -60,10 +60,13 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(_fixture.sqlServerCollectionsOptions.Items[0]);
 
             Assert.Equal(apiOptions[0].Links.Count, _fixture.sqlServerCollectionsOptions.Items[0].Links.Count);
-            Assert.Equal(apiOptions[0].Links[0], _fixture.sqlServerCollectionsOptions.Items[0].Links[0]);
-            Assert.Equal(apiOptions[0].Links[1], _fixture.sqlServerCollectionsOptions.Items[0].Links[1]);
+            Assert.Equal(apiOptions[0].Links[0].Href, _fixture.sqlServerCollectionsOptions.Items[0].Links[0].Href);
+            Assert.Equal(apiOptions[0].Links[1].Href, _fixture.sqlServerCollectionsOptions.Items[0].Links[1].Href);
 
-            Assert.Equal(apiOptions[0].Extent, _fixture.sqlServerCollectionsOptions.Items[0].Extent);
+            Assert.Equal(apiOptions[0].Extent.Spatial.Crs, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Spatial.Crs);
+            Assert.Equal(apiOptions[0].Extent.Spatial.Bbox.Length, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Spatial.Bbox.Length);
+            Assert.Equal(apiOptions[0].Extent.Temporal.Trs, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Temporal.Trs);
+            Assert.Equal(apiOptions[0].Extent.Temporal.Interval.Length, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Temporal.Interval.Length);
             Assert.Equal(apiOptions[0].Id, _fixture.sqlServerCollectionsOptions.Items[0].Id);
             Assert.Equal(apiOptions[0].ItemType, _fixture.sqlServerCollectionsOptions.Items[0].ItemType);
             Assert.Equal(apiOptions[0].Title, _fixture.sqlServerCollectionsOptions.Items[0].Title);
@@ -87,10 +90,14 @@ namespace OgcApi.Net.Features.Tests
             Assert.NotNull(_fixture.postGisCollectionsOptions.Items[0]);
 
             Assert.Equal(apiOptions[0].Links.Count, _fixture.postGisCollectionsOptions.Items[0].Links.Count);
-            Assert.Equal(apiOptions[0].Links[0], _fixture.postGisCollectionsOptions.Items[0].Links[0]);
-            Assert.Equal(apiOptions[0].Links[1], _fixture.postGisCollectionsOptions.Items[0].Links[1]);
+            Assert.Equal(apiOptions[0].Links[0].Href, _fixture.postGisCollectionsOptions.Items[0].Links[0].Href);
+            Assert.Equal(apiOptions[0].Links[1].Href, _fixture.postGisCollectionsOptions.Items[0].Links[1].Href);
 
-            Assert.Equal(apiOptions[0].Extent, _fixture.postGisCollectionsOptions.Items[0].Extent);
+            Assert.Equal(apiOptions[0].Extent.Spatial.Crs, _fixture.postGisCollectionsOptions.Items[0].Extent.Spatial.Crs);
+            Assert.Equal(apiOptions[0].Extent.Spatial.Bbox.Length, _fixture.postGisCollectionsOptions.Items[0].Extent.Spatial.Bbox.Length);
+            Assert.Equal(apiOptions[0].Extent.Temporal.Trs, _fixture.postGisCollectionsOptions.Items[0].Extent.Temporal.Trs);
+            Assert.Equal(apiOptions[0].Extent.Temporal.Interval.Length, _fixture.postGisCollectionsOptions.Items[0].Extent.Temporal.Interval.Length);
+
             Assert.Equal(apiOptions[0].Id, _fixture.postGisCollectionsOptions.Items[0].Id);
             Assert.Equal(apiOptions[0].ItemType, _fixture.postGisCollectionsOptions.Items[0].ItemType);
             Assert.Equal(apiOptions[0].Title, _fixture.postGisCollectionsOptions.Items[0].Title);
