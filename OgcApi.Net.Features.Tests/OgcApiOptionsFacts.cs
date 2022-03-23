@@ -1,8 +1,9 @@
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Tests.Utils;
+using Xunit;
 using System.Linq;
+using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Tests.Utils;
 using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options.SqlOptions;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 namespace OgcApi.Net.Features.Tests
