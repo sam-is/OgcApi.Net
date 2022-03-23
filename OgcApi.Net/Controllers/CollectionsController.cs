@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace OgcApi.Net.Controllers
@@ -99,7 +100,7 @@ namespace OgcApi.Net.Controllers
 
         private Collection GetCollectionMetadata(Uri uri, CollectionOptions collectionOptions)
         {
-            var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+            var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
             var extent = collectionOptions.Extent;
             if (extent == null)
@@ -218,7 +219,7 @@ namespace OgcApi.Net.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (bboxCrs == null)
                 {
@@ -371,7 +372,7 @@ namespace OgcApi.Net.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -462,7 +463,7 @@ namespace OgcApi.Net.Controllers
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -522,7 +523,7 @@ namespace OgcApi.Net.Controllers
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -590,7 +591,7 @@ namespace OgcApi.Net.Controllers
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 try
                 {
@@ -634,7 +635,7 @@ namespace OgcApi.Net.Controllers
                     return Unauthorized();
                 }
 
-                var dataProvider = Utils.GetDataProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.SourceType);
 
                 if (crs != null)
                 {
@@ -676,6 +677,85 @@ namespace OgcApi.Net.Controllers
                 {
                     return Problem();
                 }
+            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpGet("{collectionId}/tiles")]
+        [Produces("application/geo+json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]        
+        public ActionResult GetTileSets(string collectionId)
+        {
+            var baseUri = Utils.GetBaseUrl(Request);
+
+            _logger.LogTrace($"Get collection tileset list with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
+            {
+                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.SourceType);
+
+                var sourcesOptions = dataProvider.GetTileSourcesOptions();
+                var sources = sourcesOptions.Sources.Where(x => x.Id == collectionId);
+                if (sources.Any())
+                {
+                    var result = new TileSets();
+
+                    foreach (var source in sources)
+                    {
+                        var tileSet = new TileSet();
+                        tileSet.Title = source.Id;
+                        tileSet.Crs = source.Crs;
+                        tileSet.TileMatrixSetURI = source.TileMatrixSet;
+                        tileSet.DataType = "vector";
+                        tileSet.TileMatrixSetLimits = dataProvider.GetLimits(collectionId);
+
+                        tileSet.Links = new List<Link>
+                    {
+                        new()
+                        {
+                            Href = Utils.GetBaseUrl(Request, false),
+                            Rel = "self",
+                            Type = "application/json"
+                        },
+                        new()
+                        {
+                            Href = source.TileMatrixSet,
+                            Rel = "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
+                            Type = "application/json"
+                        }
+                    };
+
+                        result.Items.Add(tileSet);
+                    }
+
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+
+            _logger.LogError($"Cannot find options for specified collection {collectionId}");
+            return NotFound();
+        }
+
+        [HttpGet("{collectionId}/tiles/{tileMatrix}/{tileRow}/{tileCol}")]
+        [Produces("application/geo+json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol)
+        {
+            var baseUri = Utils.GetBaseUrl(Request);
+
+            _logger.LogTrace($"Get collection tile with parameters {Request.QueryString}");
+
+            var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+            if (collectionOptions != null)
+            {
+                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.SourceType);
+                return Ok(await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol));
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");

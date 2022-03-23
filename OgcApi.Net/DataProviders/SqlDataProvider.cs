@@ -10,7 +10,7 @@ using OgcApi.Net.Options.SqlOptions;
 
 namespace OgcApi.Net.DataProviders
 {
-    public abstract class SqlDataProvider : IDataProvider
+    public abstract class SqlDataProvider : IFeaturesProvider
     {
         public const int FeaturesMinimumLimit = 1;
 

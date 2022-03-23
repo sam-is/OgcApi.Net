@@ -14,7 +14,7 @@ namespace OgcApi.Net.Features.PostGis
         {
             services.Configure(configureOptions);
 
-            services.AddTransient<IDataProvider, PostGisProvider>();
+            services.AddTransient<IFeaturesProvider, PostGisProvider>();
 
             return services;
         }

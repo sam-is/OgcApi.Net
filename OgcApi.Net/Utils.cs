@@ -19,9 +19,9 @@ namespace OgcApi.Net
             return new Uri(url);
         }
 
-        public static IDataProvider GetDataProvider(IServiceProvider serviceProvider, string dataProviderType)
+        public static IFeaturesProvider GetFeaturesProvider(IServiceProvider serviceProvider, string dataProviderType)
         {
-            var dataProviders = serviceProvider.GetServices<IDataProvider>();
+            var dataProviders = serviceProvider.GetServices<IFeaturesProvider>();
             foreach (var dataProvider in dataProviders)
             {
                 if (dataProvider.SourceType == dataProviderType)
@@ -29,13 +29,26 @@ namespace OgcApi.Net
                     return dataProvider;
                 }
             }
-            throw new InvalidOperationException($"Data provider {dataProviderType} is not registered");
+            throw new InvalidOperationException($"Features provider {dataProviderType} is not registered");
+        }
+
+        public static ITilesProvider GetTilesProvider(IServiceProvider serviceProvider, string dataProviderType)
+        {
+            var dataProviders = serviceProvider.GetServices<ITilesProvider>();
+            foreach (var dataProvider in dataProviders)
+            {
+                if (dataProvider.SourceType == dataProviderType)
+                {
+                    return dataProvider;
+                }
+            }
+            throw new InvalidOperationException($"Tiles provider {dataProviderType} is not registered");
         }
 
         public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider,
             string collectionId)
         {
-            var dataProviders = serviceProvider.GetServices<IDataProvider>();
+            var dataProviders = serviceProvider.GetServices<IFeaturesProvider>();
             foreach (var dataProvider in dataProviders)
             {
                 var collectionSourcesOptions = dataProvider.GetCollectionSourcesOptions();

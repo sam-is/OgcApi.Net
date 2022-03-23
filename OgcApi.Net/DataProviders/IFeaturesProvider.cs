@@ -6,7 +6,7 @@ using OgcApi.Net.Features;
 
 namespace OgcApi.Net.DataProviders
 {
-    public interface IDataProvider
+    public interface IFeaturesProvider
     {
         string SourceType { get; }
 

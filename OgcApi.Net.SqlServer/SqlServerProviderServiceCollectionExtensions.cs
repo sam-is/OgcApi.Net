@@ -12,7 +12,7 @@ namespace OgcApi.Net.SqlServer
         {
             services.Configure(configureOptions);
 
-            services.AddTransient<IDataProvider, SqlServerProvider>();
+            services.AddTransient<IFeaturesProvider, SqlServerProvider>();
 
             return services;
         }

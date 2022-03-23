@@ -316,7 +316,7 @@ namespace OgcApi.Features.SqlServer.Tests
                 endDateTime: new DateTime(2022, 1, 1)));
         }
 
-        private static OgcFeature CreateTestFeature(IDataProvider provider)
+        private static OgcFeature CreateTestFeature(IFeaturesProvider provider)
         {
             var feature =
                 new OgcFeature()
@@ -347,7 +347,7 @@ namespace OgcApi.Features.SqlServer.Tests
             return feature;
         }
 
-        private static void DeleteTestFeature(IDataProvider provider, string featureId)
+        private static void DeleteTestFeature(IFeaturesProvider provider, string featureId)
         {
             provider.DeleteFeature("PolygonsForInsert", featureId);
         }
