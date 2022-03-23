@@ -17,7 +17,6 @@ namespace OgcApi.Net.Features
             {
                 options.JsonSerializerOptions.Converters.Add(new OgcGeoJsonConverterFactory());
                 options.JsonSerializerOptions.Converters.Add(new GeoJsonConverterFactory());
-                options.JsonSerializerOptions.Converters.Add(new OgcApiOptionsConverterFactory(mvcBuilder.Services.BuildServiceProvider()));
             }).AddApplicationPart(typeof(OgcFeaturesApiMvcBuilderExtensions).Assembly);
         }
     }
