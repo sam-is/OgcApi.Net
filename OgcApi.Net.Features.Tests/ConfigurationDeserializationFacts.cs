@@ -5,7 +5,7 @@ namespace OgcApi.Net.Features.Tests
 {
     public class ConfigurationDeserializationFacts : IClassFixture<ConfigurationOptionsFixture>
     {
-        private readonly ConfigurationOptionsFixture _fixture;
+        private readonly ConfigurationOptionsFixture _fixture;  
 
         public ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixture)
         {
