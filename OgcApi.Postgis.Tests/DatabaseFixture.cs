@@ -1,6 +1,6 @@
 ﻿using OgcApi.Features.PostGis.Tests.Utils;
 
-namespace OgcApi.Features.Postgis.Tests
+namespace OgcApi.Features.PostGis.Tests
 {
     public class DatabaseFixture
     {

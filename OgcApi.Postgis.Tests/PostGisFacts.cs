@@ -1,10 +1,8 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using Npgsql;
-using OgcApi.Features.Postgis.Tests;
 using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
@@ -40,9 +38,9 @@ namespace OgcApi.Features.PostGis.Tests
         [Fact]
         public void ConstructorWrongOptions()
         {
-            var options = new SqlCollectionSourcesOptions
+            var options = new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
@@ -50,18 +48,15 @@ namespace OgcApi.Features.PostGis.Tests
                     }
                 }
             };
-            var optionsMonitor =
-                Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-
-            Assert.Throws<OptionsValidationException>(() =>
-                new PostGisProvider(optionsMonitor, new NullLogger<PostGisProvider>()));
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new PostGisProvider(null, new NullLogger<PostGisProvider>()));
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
+            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
         }
 
         [Fact]
@@ -320,7 +315,7 @@ namespace OgcApi.Features.PostGis.Tests
         private static OgcFeature CreateTestFeature(IFeaturesProvider provider)
         {
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -376,7 +371,7 @@ namespace OgcApi.Features.PostGis.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var testFeature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -399,7 +394,7 @@ namespace OgcApi.Features.PostGis.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -445,7 +440,7 @@ namespace OgcApi.Features.PostGis.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -478,7 +473,7 @@ namespace OgcApi.Features.PostGis.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Geometry = new Polygon(
                         new LinearRing(
@@ -514,7 +509,7 @@ namespace OgcApi.Features.PostGis.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureReplaceFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -555,7 +550,7 @@ namespace OgcApi.Features.PostGis.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>

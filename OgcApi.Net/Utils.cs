@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
-using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options;
+using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options.Interfaces;
 using System;
 using System.Linq;
 
@@ -45,8 +45,7 @@ namespace OgcApi.Net
             throw new InvalidOperationException($"Tiles provider {dataProviderType} is not registered");
         }
 
-        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider,
-            string collectionId)
+        public static ICollectionSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider, string collectionId)
         {
             var dataProviders = serviceProvider.GetServices<IFeaturesProvider>();
             foreach (var dataProvider in dataProviders)
@@ -54,7 +53,7 @@ namespace OgcApi.Net
                 var collectionSourcesOptions = dataProvider.GetCollectionSourcesOptions();
                 var collectionSourceOptions = collectionSourcesOptions.GetSourceById(collectionId);
                 if (collectionSourceOptions != null)
-                    return collectionSourceOptions;
+                    return collectionSourceOptions.Features.Storage;
             }
             throw new InvalidOperationException($"Collection source with id {collectionId} is not found");
         }

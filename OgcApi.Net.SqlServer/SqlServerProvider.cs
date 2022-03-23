@@ -1,10 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
-using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options.SqlOptions;
+using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.Features.Options.SqlOptions;
 using System.Data;
 using System.Data.Common;
 
@@ -12,11 +11,8 @@ namespace OgcApi.Net.SqlServer
 {
     public class SqlServerProvider : SqlDataProvider
     {
-        public SqlServerProvider(IOptionsMonitor<SqlCollectionSourcesOptions> sqlCollectionSourcesOptions, ILogger<SqlServerProvider> logger)
-            : base(sqlCollectionSourcesOptions, logger)
-        {
-        }
-
+        public SqlServerProvider(ILogger<SqlServerProvider> logger)
+            : base(logger) { }
         public override string SourceType => "SqlServer";
 
         protected override DbConnection GetDbConnection(string connectionString)

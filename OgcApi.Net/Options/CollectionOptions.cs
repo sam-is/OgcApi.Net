@@ -1,16 +1,15 @@
-﻿using OgcApi.Net.Resources;
+﻿using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Features.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OgcApi.Net.Options
 {
-    public class CollectionOptions
+    public class CollectionOptions : ICollectionOptions
     {
         public string Id { get; set; }
-
         public string Title { get; set; }
-
         public string Description { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -22,23 +21,9 @@ namespace OgcApi.Net.Options
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string ItemType { get; set; }
 
-        public List<Uri> Crs { get; set; }
-
-        public Uri StorageCrs { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string StorageCrsCoordinateEpoch { get; set; }
-
-        public string SourceType { get; set; }
-
         public Func<string, Uri> FeatureHtmlPage { get; set; }
 
-        public bool AllowCreate { get; set; }
+        public CollectionOptionsFeatures Features { get; set; }
 
-        public bool AllowReplace { get; set; }
-
-        public bool AllowUpdate { get; set; }
-
-        public bool AllowDelete { get; set; }
     }
 }

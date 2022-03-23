@@ -1,150 +1,243 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Moq;
+﻿using System;
+using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Features.SqlServer.Tests.Utils;
-using OgcApi.Net.Options.SqlOptions;
-using OgcApi.Net.SqlServer;
+using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.SqlServer;
 using System.Collections.Generic;
 
 namespace OgcApi.Features.SqlServer.Tests
 {
     public static class TestProviders
     {
-        private static SqlCollectionSourcesOptions GetDefaultOptions()
+        private static CollectionsOptions GetDefaultOptions()
         {
-            return new SqlCollectionSourcesOptions()
+            return new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>()
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
-                        Id = "Polygons",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Polygons",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        DateTimeColumn = "Date",
-                        Properties = new List<string>()
+                        Id ="Polygons",
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name",
-                            "Number",
-                            "S",
-                            "Date"
+                            Crs = new List<Uri>
+                            {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "Polygons",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                DateTimeColumn = "Date",
+                                Properties = new List<string>
+                                {
+                                    "Name",
+                                    "Number",
+                                    "S",
+                                    "Date"
+                                }
+                            }
                         }
                     },
                     new()
                     {
-                        Id = "LineStrings",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "LineStrings",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Id ="LineStrings",
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name"
+                            Crs = new List<Uri>
+                            {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "LineStrings",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                Properties = new List<string>
+                                {
+                                    "Name"
+                                }
+                            }
                         }
                     },
                     new()
                     {
-                        Id = "Points",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Points",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Id ="Points",
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name"
+                            Crs = new List<Uri>
+                            {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "Points",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                Properties = new List<string>
+                                {
+                                    "Name"
+                                }
+                            }
                         }
                     },
                     new()
                     {
-                        Id = "Empty",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "EmptyTable",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Id ="Empty",
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name"
+                            Crs = new List<Uri>
+                            {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "EmptyTable",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                Properties = new List<string>
+                                {
+                                    "Name"
+                                }
+                            }
                         }
                     },
                     new()
                     {
                         Id = "PolygonsForInsert",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "PolygonsForInsert",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        DateTimeColumn = "Date",
-                        Properties = new List<string>()
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name",
-                            "Number",
-                            "S",
-                            "Date"
+                            Crs = new List<Uri>
+                            {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "PolygonsForInsert",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                DateTimeColumn = "Date",
+                                Properties = new List<string>
+                                {
+                                    "Name",
+                                    "Number",
+                                    "S",
+                                    "Date"
+                                }
+                            }
                         }
-                    },
-                }
-            };
-        }
-
-        private static SqlCollectionSourcesOptions GetOptionsWithUnknownTable()
-        {
-            return new SqlCollectionSourcesOptions()
-            {
-                Sources = new List<SqlCollectionSourceOptions>()
-                {
-                    new()
-                    {
-                        Id = "Test",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "Test",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857
                     }
                 }
             };
         }
 
-        private static SqlCollectionSourcesOptions GetOptionsWithApiKey()
+        private static CollectionsOptions GetOptionsWithUnknownTable()
         {
-            return new SqlCollectionSourcesOptions()
+            return new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>()
+                Items = new List<CollectionOptions>
+                {
+                    new()
+                    {
+                        Id ="Test",
+                        Features = new CollectionOptionsFeatures
+                        {
+                             Crs = new List<Uri>
+                             {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "Test",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857
+                            }
+
+                        }
+
+                    }
+                }
+            };
+        }
+
+        private static CollectionsOptions GetOptionsWithApiKey()
+        {
+            return new CollectionsOptions
+            {
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
                         Id = "PointsWithApiKey",
-                        ConnectionString = DatabaseUtils.GetConnectionString(),
-                        Schema = "dbo",
-                        Table = "PointsWithApiKey",
-                        IdentifierColumn = "Id",
-                        GeometryColumn = "Geom",
-                        GeometryDataType = "geometry",
-                        GeometrySrid = 3857,
-                        Properties = new List<string>()
+                        Features = new CollectionOptionsFeatures
                         {
-                            "Name"
-                        },
-                        ApiKeyPredicateForGet = "[Key] = @ApiKey"
+                             Crs = new List<Uri>
+                             {
+                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            },
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
+                            {
+                                Type= "SqlServer",
+                                ConnectionString = DatabaseUtils.GetConnectionString(),
+                                Schema = "dbo",
+                                Table = "PointsWithApiKey",
+                                IdentifierColumn = "Id",
+                                GeometryColumn = "Geom",
+                                GeometryDataType = "geometry",
+                                GeometrySrid = 3857,
+                                Properties = new List<string>
+                                {
+                                    "Name"
+                                },
+                                ApiKeyPredicateForGet = "[Key] = @ApiKey"
+                            }
+                        }
                     }
                 }
             };
@@ -152,23 +245,26 @@ namespace OgcApi.Features.SqlServer.Tests
 
         public static SqlServerProvider GetDefaultProvider()
         {
-            SqlCollectionSourcesOptions options = GetDefaultOptions();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            CollectionsOptions options = GetDefaultOptions();
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static SqlServerProvider GetProviderWithErrors()
         {
-            SqlCollectionSourcesOptions options = GetOptionsWithUnknownTable();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            CollectionsOptions options = GetOptionsWithUnknownTable();
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
 
         public static SqlServerProvider GetProviderWithApiKey()
         {
-            SqlCollectionSourcesOptions options = GetOptionsWithApiKey();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>());
+            CollectionsOptions options = GetOptionsWithApiKey();
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            provider.SetCollectionsOptions(options);
+            return provider;
         }
     }
 }

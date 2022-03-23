@@ -1,7 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Features.SqlServer.Tests.Utils;
@@ -39,9 +38,9 @@ namespace OgcApi.Features.SqlServer.Tests
         [Fact]
         public void ConstructorWrongOptions()
         {
-            var options = new SqlCollectionSourcesOptions
+            var options = new CollectionsOptions
             {
-                Sources = new List<SqlCollectionSourceOptions>
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
@@ -49,18 +48,17 @@ namespace OgcApi.Features.SqlServer.Tests
                     }
                 }
             };
-            var optionsMonitor =
-                Mock.Of<IOptionsMonitor<SqlCollectionSourcesOptions>>(mock => mock.CurrentValue == options);
 
-            Assert.Throws<OptionsValidationException>(() =>
-                new SqlServerProvider(optionsMonitor, new NullLogger<SqlServerProvider>()));
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
+
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new SqlServerProvider(null, new NullLogger<SqlServerProvider>()));
+            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
+            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
         }
 
         [Fact]
@@ -319,7 +317,7 @@ namespace OgcApi.Features.SqlServer.Tests
         private static OgcFeature CreateTestFeature(IFeaturesProvider provider)
         {
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -375,7 +373,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var testFeature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -398,7 +396,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -444,7 +442,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -477,7 +475,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var featureBeforeUpdate = provider.GetFeature("PolygonsForInsert", testFeatureId);
 
             var featureUpdateFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Geometry = new Polygon(
                         new LinearRing(
@@ -513,7 +511,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var testFeatureId = (string)testFeature.Id;
 
             var featureReplaceFrom =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>
@@ -554,7 +552,7 @@ namespace OgcApi.Features.SqlServer.Tests
             var provider = TestProviders.GetDefaultProvider();
 
             var feature =
-                new OgcFeature()
+                new OgcFeature
                 {
                     Attributes = new AttributesTable(
                         new Dictionary<string, object>

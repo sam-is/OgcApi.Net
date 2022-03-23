@@ -37,7 +37,7 @@ This implementation supports automatic API generation from metadata descriptions
 2. Install necessary NuGet packages
 3. Add controllers in ConfigureServices method:
 ```csharp
-services.AddControllers().AddOgñFeaturesControllers();
+services.AddControllers().AddOgcFeaturesControllers();
 ```
 This implementation uses attribute routing. All API endpoints will be accessible by the path /api/ogc.
 

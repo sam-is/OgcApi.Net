@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using OgcApi.Net.Features.Options.Interfaces;
+using System.Collections.Generic;
 
 namespace OgcApi.Net.Options.SqlOptions
 {
     public class SqlCollectionSourceOptions : ICollectionSourceOptions
     {
-        public string Id { get; set; }
+        public string Type { get; set; }
 
         public string ConnectionString { get; set; }
 
@@ -25,6 +26,14 @@ namespace OgcApi.Net.Options.SqlOptions
         public string IdentifierColumn { get; set; }
 
         public List<string> Properties { get; set; }
+
+        public bool AllowCreate { get; set; }
+
+        public bool AllowReplace { get; set; }
+
+        public bool AllowUpdate { get; set; }
+
+        public bool AllowDelete { get; set; }
 
         public string ApiKeyPredicateForGet { get; set; }
 

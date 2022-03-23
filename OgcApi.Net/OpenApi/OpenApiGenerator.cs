@@ -29,12 +29,12 @@ namespace OgcApi.Net.OpenApi
                     Title = _apiOptions.LandingPage.Title,
                     Description = _apiOptions.LandingPage.Description,
                     Version = _apiOptions.LandingPage.Version,
-                    Contact = new OpenApiContact()
+                    Contact = new OpenApiContact
                     {
                         Name = _apiOptions.LandingPage.ContactName,
                         Url = _apiOptions.LandingPage.ContactUrl
                     },
-                    License = new OpenApiLicense()
+                    License = new OpenApiLicense
                     {
                         Name = _apiOptions.LandingPage.LicenseName,
                         Url = _apiOptions.LandingPage.LicenseUrl
@@ -815,7 +815,7 @@ namespace OgcApi.Net.OpenApi
                 }
             };
 
-            if (collection.AllowReplace)
+            if (collection.Features.Storage.AllowReplace)
             {
                 result.Add(OperationType.Put, new OpenApiOperation
                 {
@@ -909,7 +909,7 @@ namespace OgcApi.Net.OpenApi
                 });
             }
 
-            if (collection.AllowDelete)
+            if (collection.Features.Storage.AllowDelete)
             {
                 result.Add(OperationType.Delete, new OpenApiOperation
                 {
@@ -982,7 +982,7 @@ namespace OgcApi.Net.OpenApi
                 });
             }
 
-            if (collection.AllowUpdate)
+            if (collection.Features.Storage.AllowUpdate)
             {
                 result.Add(OperationType.Patch, new OpenApiOperation
                 {
@@ -1249,7 +1249,7 @@ namespace OgcApi.Net.OpenApi
                 }
             };
 
-            if (collection.AllowCreate)
+            if (collection.Features.Storage.AllowCreate)
             {
                 result.Add(OperationType.Post, new OpenApiOperation
                 {
