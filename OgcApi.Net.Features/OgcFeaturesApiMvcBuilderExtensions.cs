@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.IO.Converters;
 using OgcApi.Net.Features.Features;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Converters;
 using System;
 
 namespace OgcApi.Net.Features
@@ -17,7 +17,6 @@ namespace OgcApi.Net.Features
             {
                 options.JsonSerializerOptions.Converters.Add(new OgcGeoJsonConverterFactory());
                 options.JsonSerializerOptions.Converters.Add(new GeoJsonConverterFactory());
-                options.JsonSerializerOptions.Converters.Add(new OgcApiOptionsConverterFactory(mvcBuilder.Services.BuildServiceProvider()));
             }).AddApplicationPart(typeof(OgcFeaturesApiMvcBuilderExtensions).Assembly);
         }
     }

@@ -23,7 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Utils\ogcapisettings.json">
+    <Resource Include="ogcsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ogcsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Text.Json;
+using OgcApi.Net.Features.Options.Converters;
 
 namespace OgcApi.Net.Features.Options
 {
@@ -21,12 +22,13 @@ namespace OgcApi.Net.Features.Options
             var provider = scope.ServiceProvider;
             var jsonOgcApiSettings = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
             var reader = new Utf8JsonReader(jsonOgcApiSettings);
-            var converter = new OgcApiOptionsConverter(provider);
-            var jsonOptions = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
-            options.LandingPage = jsonOptions.LandingPage;
-            options.UseApiKeyAuthorization = jsonOptions.UseApiKeyAuthorization;
-            options.Conformance = jsonOptions.Conformance;
-            options.Collections = jsonOptions.Collections;
+            var serializerOptions = new JsonSerializerOptions();
+            var collectionOptionsConverter = new OgcApiOptionsConverter(provider);
+
+            options.LandingPage = collectionOptionsConverter.ReadLandingPage(ref reader);
+            options.Conformance = collectionOptionsConverter.ReadConformance(ref reader, serializerOptions);
+            options.UseApiKeyAuthorization = collectionOptionsConverter.ReadUseApiKeyAuthorization(ref reader);
+            options.Collections = collectionOptionsConverter.ReadCollections(ref reader, serializerOptions);
         }
     }
 }
