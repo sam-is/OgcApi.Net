@@ -8,13 +8,12 @@ using OgcApi.Features.Postgis.Tests;
 using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
-using OgcApi.Net.Options;
+using OgcApi.Net.Options.SqlOptions;
 using OgcApi.Net.PostGis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using OgcApi.Net.Options.SqlOptions;
 
 namespace OgcApi.Features.PostGis.Tests
 {

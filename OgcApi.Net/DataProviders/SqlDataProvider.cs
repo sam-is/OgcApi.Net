@@ -4,9 +4,9 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.SqlOptions;
 using System;
 using System.Data.Common;
-using OgcApi.Net.Options.SqlOptions;
 
 namespace OgcApi.Net.DataProviders
 {

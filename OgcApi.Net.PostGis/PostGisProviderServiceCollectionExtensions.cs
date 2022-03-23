@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options;
-using System;
 using OgcApi.Net.Options.SqlOptions;
 using OgcApi.Net.PostGis;
+using System;
 
 namespace OgcApi.Net.Features.PostGis
 {

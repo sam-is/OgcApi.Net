@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OgcApi.Net.Options.TileOptions
 {
-    class TileSourcesOptionsValidator
+    public class TileSourcesOptionsValidator
     {
         public static void Validate(TileSourcesOptions options)
         {

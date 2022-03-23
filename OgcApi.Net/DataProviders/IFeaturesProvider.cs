@@ -1,8 +1,8 @@
 ﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using System;
-using OgcApi.Net.Options;
 using OgcApi.Net.Features;
+using OgcApi.Net.Options;
+using System;
 
 namespace OgcApi.Net.DataProviders
 {

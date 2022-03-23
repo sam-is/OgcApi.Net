@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.MbTiles;
-using OgcApi.Net.Options;
+using OgcApi.Net.Options.TileOptions;
 using System;
 using System.Collections.Generic;
 

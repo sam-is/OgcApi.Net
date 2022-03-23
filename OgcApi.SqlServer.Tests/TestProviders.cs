@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.SqlServer.Tests.Utils;
-using OgcApi.Net.Options;
+using OgcApi.Net.Options.SqlOptions;
 using OgcApi.Net.SqlServer;
 using System.Collections.Generic;
-using OgcApi.Net.Options.SqlOptions;
 
 namespace OgcApi.Features.SqlServer.Tests
 {

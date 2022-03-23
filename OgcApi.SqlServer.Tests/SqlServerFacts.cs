@@ -7,11 +7,11 @@ using NetTopologySuite.Geometries;
 using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
+using OgcApi.Net.Options.SqlOptions;
 using OgcApi.Net.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OgcApi.Net.Options.SqlOptions;
 using Xunit;
 
 namespace OgcApi.Features.SqlServer.Tests

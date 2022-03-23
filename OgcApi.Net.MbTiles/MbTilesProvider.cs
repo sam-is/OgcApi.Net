@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options;
+using OgcApi.Net.Options.TileOptions;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
@@ -10,13 +10,32 @@ using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles
 {
-    public class MbTilesProvider : TilesDataProvider 
+    public class MbTilesProvider : ITilesProvider
     {
-        public override string SourceType => "Spatialite";
-   
+        public string SourceType => "MbTiles";
+
+        protected readonly TileSourcesOptions TilesOptions;
+
+        protected readonly ILogger Logger;
+
+
         public MbTilesProvider(IOptionsMonitor<TileSourcesOptions> tileSourcesOptions, ILogger logger)
-    : base(tileSourcesOptions, logger)
         {
+            if (tileSourcesOptions == null)
+                throw new ArgumentNullException(nameof(tileSourcesOptions));
+
+            Logger = logger;
+
+            try
+            {
+                TilesOptions = tileSourcesOptions.CurrentValue;
+                TileSourcesOptionsValidator.Validate(TilesOptions);
+            }
+            catch (OptionsValidationException ex)
+            {
+                foreach (var failure in ex.Failures) Logger.LogError(failure);
+                throw;
+            }
 
         }
 
@@ -32,7 +51,7 @@ namespace OgcApi.Net.MbTiles
             return command;
         }
 
-        public override List<TileMatrixLimits> GetLimits(string collectionId)
+        public List<TileMatrixLimits> GetLimits(string collectionId)
         {
             var tileOptions = (MbTilesSourceOptions)TilesOptions.GetSourceById(collectionId);
             if (tileOptions == null)
@@ -49,15 +68,13 @@ namespace OgcApi.Net.MbTiles
 
                 var command = GetDbCommand(@"SELECT zoom_level, MIN(tile_column), MAX(tile_column), MIN((1 << zoom_level) - 1 - tile_row), MAX((1 << zoom_level) - 1 - tile_row) FROM tiles GROUP BY zoom_level ORDER BY zoom_level", connection);
 
-                List <TileMatrixLimits> result = new();
-                using (var reader = command.ExecuteReader())
-
+                List<TileMatrixLimits> result = new();
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        result.Add(new TileMatrixLimits { TileMatrix = reader.GetInt32(0), MinTileCol = reader.GetInt32(1), MaxTileCol = reader.GetInt32(2), MinTileRow = reader.GetInt32(3), MaxTileRow = reader.GetInt32(4) });
-                    }
+                    result.Add(new TileMatrixLimits { TileMatrix = reader.GetInt32(0), MinTileCol = reader.GetInt32(1), MaxTileCol = reader.GetInt32(2), MinTileRow = reader.GetInt32(3), MaxTileRow = reader.GetInt32(4) });
                 }
+
                 return result;
             }
             catch (Exception ex)
@@ -67,7 +84,7 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public override async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileCol, int tileRow, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileCol, int tileRow, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)TilesOptions.GetSourceById(collectionId);
             if (tileOptions == null)
@@ -79,7 +96,7 @@ namespace OgcApi.Net.MbTiles
 
             try
             {
-                using var connection = GetDbConnection(tileOptions.ConnectionString);
+                await using var connection = GetDbConnection(tileOptions.ConnectionString);
                 connection.Open();
 
                 var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
@@ -96,5 +113,9 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
+        public TileSourcesOptions GetTileSourcesOptions()
+        {
+            return TilesOptions;
+        }
     }
 }

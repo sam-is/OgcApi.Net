@@ -2,9 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options;
 using System;
 using System.Linq;
-using OgcApi.Net.Options;
 
 namespace OgcApi.Net
 {

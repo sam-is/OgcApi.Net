@@ -4,8 +4,8 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
 using OgcApi.Net.DataProviders;
-using System.Data.Common;
 using OgcApi.Net.Options.SqlOptions;
+using System.Data.Common;
 
 namespace OgcApi.Net.PostGis
 {

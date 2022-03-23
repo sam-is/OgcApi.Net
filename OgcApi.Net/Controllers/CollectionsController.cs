@@ -686,11 +686,9 @@ namespace OgcApi.Net.Controllers
         [HttpGet("{collectionId}/tiles")]
         [Produces("application/geo+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]        
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetTileSets(string collectionId)
         {
-            var baseUri = Utils.GetBaseUrl(Request);
-
             _logger.LogTrace($"Get collection tileset list with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
@@ -706,28 +704,30 @@ namespace OgcApi.Net.Controllers
 
                     foreach (var source in sources)
                     {
-                        var tileSet = new TileSet();
-                        tileSet.Title = source.Id;
-                        tileSet.Crs = source.Crs;
-                        tileSet.TileMatrixSetURI = source.TileMatrixSet;
-                        tileSet.DataType = "vector";
-                        tileSet.TileMatrixSetLimits = dataProvider.GetLimits(collectionId);
+                        var tileSet = new TileSet
+                        {
+                            Title = source.Id,
+                            Crs = source.Crs,
+                            TileMatrixSetURI = source.TileMatrixSet,
+                            DataType = "vector",
+                            TileMatrixSetLimits = dataProvider.GetLimits(collectionId),
 
-                        tileSet.Links = new List<Link>
-                    {
-                        new()
-                        {
-                            Href = Utils.GetBaseUrl(Request, false),
-                            Rel = "self",
-                            Type = "application/json"
-                        },
-                        new()
-                        {
-                            Href = source.TileMatrixSet,
-                            Rel = "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
-                            Type = "application/json"
-                        }
-                    };
+                            Links = new List<Link>
+                            {
+                                new()
+                                {
+                                    Href = Utils.GetBaseUrl(Request, false),
+                                    Rel = "self",
+                                    Type = "application/json"
+                                },
+                                new()
+                                {
+                                    Href = source.TileMatrixSet,
+                                    Rel = "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
+                                    Type = "application/json"
+                                }
+                            }
+                        };
 
                         result.Items.Add(tileSet);
                     }
@@ -747,8 +747,6 @@ namespace OgcApi.Net.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol)
         {
-            var baseUri = Utils.GetBaseUrl(Request);
-
             _logger.LogTrace($"Get collection tile with parameters {Request.QueryString}");
 
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);

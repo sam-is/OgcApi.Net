@@ -1,8 +1,9 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.MbTiles;
-using OgcApi.Net.Options;
+using OgcApi.Net.Options.TileOptions;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -79,6 +80,12 @@ namespace OgcApi.MbTiles.Tests
         }
 
         [Fact]
+        public void GetTileFileNotExists()
+        {
+            Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
+        }
+
+        [Fact]
         public void GetLimits()
         {
             var limits = TestProviders.GetDefaultProvider().GetLimits("data");
@@ -112,5 +119,12 @@ namespace OgcApi.MbTiles.Tests
         {
             Assert.Throws<ArgumentException>(() => TestProviders.GetDefaultProvider().GetLimits("test"));
         }
+
+        [Fact]
+        public void GetLimitsFileNotExists()
+        {
+            Assert.Throws<SqliteException>(() => TestProviders.GetProviderWithErrors().GetLimits("data"));
+        }
+
     }
 }

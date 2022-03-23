@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using System;
 using OgcApi.Net.Options.SqlOptions;
+using System;
 
 namespace OgcApi.Net.SqlServer
 {

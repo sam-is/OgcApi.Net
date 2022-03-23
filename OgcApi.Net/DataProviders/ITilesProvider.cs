@@ -1,5 +1,5 @@
-﻿using OgcApi.Net.Options;
-using OgcApi.Net.Options.SqlOptions;
+﻿
+using OgcApi.Net.Options.TileOptions;
 using OgcApi.Net.Resources;
 using System.Collections.Generic;
 using System.Threading.Tasks;

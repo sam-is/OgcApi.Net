@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Features.PostGis.Tests.Utils;
+using OgcApi.Net.Options.SqlOptions;
 using OgcApi.Net.PostGis;
 using System.Collections.Generic;
-using OgcApi.Net.Options.SqlOptions;
 
 namespace OgcApi.Features.PostGis.Tests
 {
