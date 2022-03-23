@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using System;
+using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.SqlServer;
 using System.Collections.Generic;
-using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Features.SqlServer.Tests
 {
@@ -11,22 +12,22 @@ namespace OgcApi.Features.SqlServer.Tests
     {
         private static CollectionsOptions GetDefaultOptions()
         {
-            return new CollectionsOptions()
+            return new CollectionsOptions
             {
-                Items = new List<CollectionOptions>()
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
                         Id ="Polygons",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                            Crs = new()
+                            Crs = new List<Uri>
                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -37,7 +38,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "Date",
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name",
                                     "Number",
@@ -50,15 +51,15 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="LineStrings",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                            Crs = new()
+                            Crs = new List<Uri>
                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -68,7 +69,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name"
                                 }
@@ -78,15 +79,15 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Points",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                            Crs = new()
+                            Crs = new List<Uri>
                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -96,7 +97,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name"
                                 }
@@ -106,15 +107,15 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Empty",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                            Crs = new()
+                            Crs = new List<Uri>
                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -124,7 +125,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name"
                                 }
@@ -134,15 +135,15 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id = "PolygonsForInsert",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                            Crs = new()
+                            Crs = new List<Uri>
                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -153,7 +154,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "Date",
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name",
                                     "Number",
@@ -169,22 +170,22 @@ namespace OgcApi.Features.SqlServer.Tests
 
         private static CollectionsOptions GetOptionsWithUnknownTable()
         {
-            return new CollectionsOptions()
+            return new CollectionsOptions
             {
-                Items = new List<CollectionOptions>()
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
                         Id ="Test",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                             Crs = new()
-                            {
+                             Crs = new List<Uri>
+                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -205,22 +206,22 @@ namespace OgcApi.Features.SqlServer.Tests
 
         private static CollectionsOptions GetOptionsWithApiKey()
         {
-            return new CollectionsOptions()
+            return new CollectionsOptions
             {
-                Items = new List<CollectionOptions>()
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
                         Id = "PointsWithApiKey",
-                        Features = new()
+                        Features = new CollectionOptionsFeatures
                         {
-                             Crs = new()
-                            {
+                             Crs = new List<Uri>
+                             {
                                 new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
-                            StorageCrs = new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions()
+                            StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new SqlCollectionSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -230,7 +231,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>()
+                                Properties = new List<string>
                                 {
                                     "Name"
                                 },

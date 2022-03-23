@@ -1,8 +1,8 @@
 ﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features.Features;
-using System;
 using OgcApi.Net.Features.Options.Interfaces;
+using System;
 using System.Text.Json;
 
 namespace OgcApi.Net.Features.DataProviders
@@ -30,6 +30,7 @@ namespace OgcApi.Net.Features.DataProviders
         void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null);
 
         void DeleteFeature(string collectionId, string featureId, string apiKey = null);
+
         ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
     }
 }

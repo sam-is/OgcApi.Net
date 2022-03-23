@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Features.Options.Converters;
 
 namespace OgcApi.Net.Features.Options

@@ -3,6 +3,7 @@ using OgcApi.Net.Features.DataProviders;
 using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Resources;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -157,17 +158,17 @@ namespace OgcApi.Net.Features.Options.Converters
                     switch (collectionsPropertyName)
                     {
                         case "Links":
-                            collectionOptions.Links = new();
+                            collectionOptions.Links = new List<Link>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    collectionOptions.Links.Add(new() { Href = new(reader.GetString()) });
+                                    collectionOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                 reader.Read();
                             }
                             break;
                         case "Items":
-                            collectionOptions.Items = new();
+                            collectionOptions.Items = new List<CollectionOptions>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
@@ -193,12 +194,12 @@ namespace OgcApi.Net.Features.Options.Converters
                                                     collection.Description = reader.GetString();
                                                     break;
                                                 case "Links":
-                                                    collection.Links = new();
+                                                    collection.Links = new List<Link>();
                                                     reader.Read();
                                                     while (reader.TokenType != JsonTokenType.EndArray)
                                                     {
                                                         if (reader.TokenType == JsonTokenType.String)
-                                                            collection.Links.Add(new() { Href = new(reader.GetString()) });
+                                                            collection.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                                         reader.Read();
                                                     }
                                                     break;
@@ -217,17 +218,17 @@ namespace OgcApi.Net.Features.Options.Converters
                                                             switch (featurePropertyName)
                                                             {
                                                                 case "Crs":
-                                                                    features.Crs = new();
+                                                                    features.Crs = new List<Uri>();
                                                                     reader.Read();
                                                                     while (reader.TokenType != JsonTokenType.EndArray)
                                                                     {
                                                                         if (reader.TokenType == JsonTokenType.String)
-                                                                            features.Crs.Add(new(reader.GetString()));
+                                                                            features.Crs.Add(new Uri(reader.GetString()));
                                                                         reader.Read();
                                                                     }
                                                                     break;
                                                                 case "StorageCrs":
-                                                                    features.StorageCrs = new(reader.GetString());
+                                                                    features.StorageCrs = new Uri(reader.GetString());
                                                                     break;
                                                                 case "StorageCrsCoordinateEpoch":
                                                                     features.StorageCrsCoordinateEpoch = reader.GetString();

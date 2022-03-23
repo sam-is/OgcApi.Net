@@ -1,7 +1,6 @@
-using Xunit;
-using OgcApi.Net.Features.Tests.Utils;
-using OgcApi.Net.Features.Options.SqlOptions;
 using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Tests.Utils;
 using System.Linq;
 using OgcApi.Net.Features.DataProviders;
 
