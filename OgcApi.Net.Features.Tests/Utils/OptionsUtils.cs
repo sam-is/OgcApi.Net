@@ -23,22 +23,18 @@ namespace OgcApi.Net.Features.Tests.Utils
         {
             return Net.Utils.GetFeaturesProvider(Provider, dbType);
         }
-
-        private static void SetupServiceCollection()
+        public static void SetupServiceCollection()
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging();
             serviceCollection.AddOgcApiPostGisProvider();
-            serviceCollection.AddOgcApiSqlServerProvider();
-            Provider = serviceCollection.BuildServiceProvider();
-
+            serviceCollection.AddOgcApiSqlServerProvider();           
+            Provider = serviceCollection.BuildServiceProvider();        
         }
 
         public static OgcApiOptions GetOptionsFromJson()
         {
-            SetupServiceCollection();
-
-            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Utils", "ogcapisettings.json"));
+            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
             var converter = new OgcApiOptionsConverter(Provider);
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
@@ -167,10 +163,16 @@ namespace OgcApi.Net.Features.Tests.Utils
             };
         }
 
-        public static string SerializeOptions(OgcApiOptions options)
+        public static OgcApiOptions GetOptionsFromConfiguration()
         {
-            SetupServiceCollection();
+            var conf = new ConfigureOgcApiOptions(Provider.GetRequiredService<IServiceScopeFactory>());
+            var options = new OgcApiOptions();
+            conf.Configure(options);
+            return options;
+        }
 
+        public static string SerializeOgcApiOptions(OgcApiOptions options)
+        {
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
             var converter = new OgcApiOptionsConverter(Provider);
@@ -179,5 +181,28 @@ namespace OgcApi.Net.Features.Tests.Utils
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());
         }
+
+        public static string SerializeLandingPageOptions(LandingPageOptions options)
+        {
+            var ms = new MemoryStream();
+            var writer = new Utf8JsonWriter(ms);
+            var converter = new OgcApiOptionsConverter(Provider);
+            converter.WriteLandingPage(writer, options);
+            writer.Flush();
+            ms.Close();
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
+        public static string SerializeCollectionsOptions(CollectionsOptions options)
+        {
+            var ms = new MemoryStream();
+            var writer = new Utf8JsonWriter(ms);
+            var converter = new OgcApiOptionsConverter(Provider);
+            converter.WriteCollections(writer, options, new());
+            writer.Flush();
+            ms.Close();
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+
     }
 }
