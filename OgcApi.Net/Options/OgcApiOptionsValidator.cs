@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using OgcApi.Net.Features.Options;
 using System;
 using System.Collections.Generic;
 

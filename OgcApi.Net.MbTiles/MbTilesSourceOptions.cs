@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OgcApi.Net.Options.Tiles;
+﻿using OgcApi.Net.Options.Tiles;
 using System.Collections.Generic;
 
 namespace OgcApi.Net.MbTiles

@@ -2,7 +2,7 @@
 using OgcApi.Net.Options;
 
 namespace OgcApi.Net.Features.Tests
-{ 
+{
 
     public class JsonOptionsFixture
     {

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
@@ -7,7 +6,6 @@ using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
-using OgcApi.Net.PostGis;
 using System;
 using System.Collections.Generic;
 using System.Linq;

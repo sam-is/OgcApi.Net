@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Converters;
 using System;
 using System.IO;
 using System.Text.Json;
-using OgcApi.Net.Options.Converters;
 
 namespace OgcApi.Net.Features.Options
 {

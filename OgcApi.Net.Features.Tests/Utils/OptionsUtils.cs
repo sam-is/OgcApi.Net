@@ -29,8 +29,8 @@ namespace OgcApi.Net.Features.Tests.Utils
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging();
             serviceCollection.AddOgcApiPostGisProvider();
-            serviceCollection.AddOgcApiSqlServerProvider();           
-            Provider = serviceCollection.BuildServiceProvider();        
+            serviceCollection.AddOgcApiSqlServerProvider();
+            Provider = serviceCollection.BuildServiceProvider();
         }
 
         public static OgcApiOptions GetOptionsFromJson()

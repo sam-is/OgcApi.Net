@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Logging;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Options.Tiles;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using OgcApi.Net.Options.Tiles;
 
 namespace OgcApi.Net.MbTiles
 {
@@ -103,6 +103,6 @@ namespace OgcApi.Net.MbTiles
         public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
         {
             return JsonSerializer.Deserialize<MbTilesSourceOptions>(json, options);
-        }        
+        }
     }
 }

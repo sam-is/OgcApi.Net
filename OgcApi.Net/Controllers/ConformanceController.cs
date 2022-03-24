@@ -5,8 +5,8 @@ using Microsoft.Extensions.Options;
 using OgcApi.Net.Options;
 using OgcApi.Net.Resources;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OgcApi.Net.Controllers
 {
@@ -49,7 +49,7 @@ namespace OgcApi.Net.Controllers
             if (_apiOptions?.Conformance?.ConformsTo == null || _apiOptions.Conformance.ConformsTo.Count == 0)
             {
                 var conformsTo = new List<Uri>();
-                
+
                 if (_apiOptions.Collections.Items.Any(item => item.Features != null))
                 {
                     conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"));

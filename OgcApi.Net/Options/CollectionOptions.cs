@@ -1,5 +1,4 @@
-﻿using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.Interfaces;
+﻿using OgcApi.Net.Features.Options.Interfaces;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Tiles;
 using OgcApi.Net.Resources;

@@ -42,7 +42,7 @@ namespace OgcApi.Net.Features.Options.Features
 
         public string ApiKeyPredicateForDelete { get; set; }
 
-        public List<string> Validate() 
+        public List<string> Validate()
         {
             var failureMessages = new List<string>();
 

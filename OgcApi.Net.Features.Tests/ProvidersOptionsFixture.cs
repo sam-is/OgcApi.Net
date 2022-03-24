@@ -3,7 +3,7 @@ using OgcApi.Net.Features.Tests.Utils;
 using OgcApi.Net.Options;
 
 namespace OgcApi.Net.Features.Tests
-{ 
+{
 
     public class ProvidersOptionsFixture
     {

@@ -1,5 +1,5 @@
-using Xunit;
 using OgcApi.Net.Features.Tests.Utils;
+using Xunit;
 
 namespace OgcApi.Net.Features.Tests
 {

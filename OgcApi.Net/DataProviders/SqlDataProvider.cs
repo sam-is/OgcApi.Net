@@ -26,7 +26,7 @@ namespace OgcApi.Net.DataProviders
         protected SqlDataProvider(ILogger logger)
         {
             Logger = logger;
-        }        
+        }
 
         public Envelope GetBbox(string collectionId, string apiKey = null)
         {
@@ -498,6 +498,6 @@ namespace OgcApi.Net.DataProviders
         public IFeaturesSourceOptions DeserializeFeaturesSourceOptions(string json, JsonSerializerOptions options)
         {
             return JsonSerializer.Deserialize<SqlFeaturesSourceOptions>(json, options);
-        }        
+        }
     }
 }

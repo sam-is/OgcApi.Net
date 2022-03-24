@@ -1,13 +1,13 @@
-using Xunit;
-using System.Linq;
 using OgcApi.Net.Features.Options.Features;
+using System.Linq;
+using Xunit;
 
 namespace OgcApi.Net.Features.Tests
-{ 
+{
     public class ProvidersDeserializationFacts : IClassFixture<ProvidersOptionsFixture>
     {
         private readonly ProvidersOptionsFixture _fixture;
-        public ProvidersDeserializationFacts(ProvidersOptionsFixture fixture )
+        public ProvidersDeserializationFacts(ProvidersOptionsFixture fixture)
         {
             _fixture = fixture;
         }

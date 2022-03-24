@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Moq;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using System;
