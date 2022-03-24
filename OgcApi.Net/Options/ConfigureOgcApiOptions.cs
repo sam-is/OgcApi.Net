@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OgcApi.Net.Options;
 using System;
 using System.IO;
 using System.Text.Json;

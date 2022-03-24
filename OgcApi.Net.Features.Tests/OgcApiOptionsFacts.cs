@@ -1,6 +1,6 @@
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.Tests.Utils;
+using OgcApi.Net.Options;
 using System.Linq;
 using Xunit;
 
@@ -118,7 +118,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void FirstCollectionOptionsFeaturesDeserializationValid()
+        public void FirstCollectionFeaturesOptionsDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -135,7 +135,7 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void SecondCollectionOptionsFeaturesDeserializationValid()
+        public void SecondCollectionFeaturesOptionsDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
 
@@ -152,10 +152,10 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void FirstCollectionOptionsFeaturesStorageDeserializationValid()
+        public void FirstCollectionFeaturesOptionsStorageDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
-            var storage = options.Collections.Items[0].Features.Storage as SqlCollectionSourceOptions;
+            var storage = options.Collections.Items[0].Features.Storage as SqlFeaturesSourceOptions;
             Assert.NotNull(storage);
             Assert.Equal("PostGis", storage.Type);
             Assert.Equal("Host=127.0.0.1;User Id=user;Password=user;Database=pgdb;Port=5432", storage.ConnectionString);
@@ -183,10 +183,10 @@ namespace OgcApi.Net.Features.Tests
         }
 
         [Fact]
-        public void SecondCollectionOptionsFeaturesStorageDeserializationValid()
+        public void SecondCollectionFeaturesOptionsStorageDeserializationValid()
         {
             var options = OptionsUtils.GetOptionsFromJson();
-            var storage = options.Collections.Items[1].Features.Storage as SqlCollectionSourceOptions;
+            var storage = options.Collections.Items[1].Features.Storage as SqlFeaturesSourceOptions;
             Assert.NotNull(storage);
             Assert.Equal("SqlServer", storage.Type);
             Assert.Equal("data source=127.0.0.1,1433;user id=user;password=user;initial catalog=dbo;Persist Security Info=true", storage.ConnectionString);
@@ -308,7 +308,7 @@ namespace OgcApi.Net.Features.Tests
         {
             var options = OptionsUtils.GetOptionsFromJson().Collections;
             var provider = OptionsUtils.GetDataProvider("SqlServer");
-            var providerOptions = provider.GetCollectionSourcesOptions() as CollectionsOptions;
+            var providerOptions = provider.CollectionsOptions as CollectionsOptions;
 
             Assert.NotNull(options.Links);
             Assert.NotNull(providerOptions.Links);
@@ -322,7 +322,7 @@ namespace OgcApi.Net.Features.Tests
         {
             var options = OptionsUtils.GetOptionsFromJson().Collections;
             var provider = OptionsUtils.GetDataProvider("PostGis");
-            var providerOptions = provider.GetCollectionSourcesOptions() as CollectionsOptions;
+            var providerOptions = provider.CollectionsOptions as CollectionsOptions;
 
             Assert.NotNull(options.Links);
             Assert.NotNull(providerOptions.Links);
@@ -338,7 +338,7 @@ namespace OgcApi.Net.Features.Tests
         {
             var apiOptions = OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList();
             var provider = OptionsUtils.GetDataProvider("SqlServer");
-            var providerOptions = provider.GetCollectionSourcesOptions() as CollectionsOptions;
+            var providerOptions = provider.CollectionsOptions as CollectionsOptions;
 
             Assert.NotNull(apiOptions);
             Assert.Single(apiOptions);
@@ -367,7 +367,7 @@ namespace OgcApi.Net.Features.Tests
         {
             var apiOptions = OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList();
             var provider = OptionsUtils.GetDataProvider("PostGis");
-            var providerOptions = provider.GetCollectionSourcesOptions() as CollectionsOptions;
+            var providerOptions = provider.CollectionsOptions as CollectionsOptions;
 
             Assert.NotNull(apiOptions);
             Assert.Single(apiOptions);
@@ -395,8 +395,8 @@ namespace OgcApi.Net.Features.Tests
         public void SqlServerProviderOptionsStorageSet()
         {
             var provider = OptionsUtils.GetDataProvider("SqlServer");
-            var providerStorage = (provider.GetCollectionSourcesOptions() as CollectionsOptions).Items[0].Features.Storage as SqlCollectionSourceOptions;
-            var apiStorage = (OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList())[0].Features.Storage as SqlCollectionSourceOptions;
+            var providerStorage = (provider.CollectionsOptions as CollectionsOptions).Items[0].Features.Storage as SqlFeaturesSourceOptions;
+            var apiStorage = (OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList())[0].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(apiStorage);
             Assert.NotNull(providerStorage);
@@ -432,8 +432,8 @@ namespace OgcApi.Net.Features.Tests
         public void PostGisProviderOptionsStorageSet()
         {
             var provider = OptionsUtils.GetDataProvider("PostGis");
-            var providerStorage = (provider.GetCollectionSourcesOptions() as CollectionsOptions)?.Items[0].Features.Storage as SqlCollectionSourceOptions;
-            var apiStorage = OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlCollectionSourceOptions;
+            var providerStorage = (provider.CollectionsOptions as CollectionsOptions)?.Items[0].Features.Storage as SqlFeaturesSourceOptions;
+            var apiStorage = OptionsUtils.GetOptionsFromJson().Collections.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(apiStorage);
             Assert.NotNull(providerStorage);

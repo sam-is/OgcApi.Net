@@ -1,18 +1,19 @@
-﻿using OgcApi.Net.Features.Options.Interfaces;
+﻿using OgcApi.Net.Features.Options.Features;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Options.Features
 {
-    public class CollectionOptionsFeatures
+    public class CollectionFeaturesOptions
     {
         public List<Uri> Crs { get; set; }
+
         public Uri StorageCrs { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string StorageCrsCoordinateEpoch { get; set; }
 
-        public ICollectionSourceOptions Storage { get; set; }
+        public IFeaturesSourceOptions Storage { get; set; }
     }
 }

@@ -3,8 +3,8 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
 using NpgsqlTypes;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.Features.Options.Features;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,11 +18,11 @@ namespace OgcApi.Net.PostGis
 
         private readonly List<NpgsqlParameter> _sqlParameters = new();
 
-        private readonly SqlCollectionSourceOptions _collectionOptions;
+        private readonly SqlFeaturesSourceOptions _collectionOptions;
 
         private readonly List<string> _predicateConditions = new();
 
-        public FeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions)
+        public FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
         {
             _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
         }

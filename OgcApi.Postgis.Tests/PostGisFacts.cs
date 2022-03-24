@@ -6,7 +6,7 @@ using Npgsql;
 using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
-using OgcApi.Net.Options.SqlOptions;
+using OgcApi.Net.Options;
 using OgcApi.Net.PostGis;
 using System;
 using System.Collections.Generic;
@@ -48,15 +48,13 @@ namespace OgcApi.Features.PostGis.Tests
                     }
                 }
             };
-            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
+            Assert.Throws<OptionsValidationException>(() => CollectionsOptionsValidator.Validate(options));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
+            Assert.Throws<OptionsValidationException>(() => CollectionsOptionsValidator.Validate(null));
         }
 
         [Fact]

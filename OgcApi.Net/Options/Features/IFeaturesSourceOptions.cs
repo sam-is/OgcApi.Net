@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.Options.Interfaces
+namespace OgcApi.Net.Features.Options.Features
 {
-    public interface ICollectionSourceOptions
+    public interface IFeaturesSourceOptions
     {
         public string Type { get; set; }
 
@@ -17,5 +17,7 @@ namespace OgcApi.Net.Features.Options.Interfaces
         public bool AllowUpdate { get; set; }
 
         public bool AllowDelete { get; set; }
+
+        List<string> Validate();
     }
 }

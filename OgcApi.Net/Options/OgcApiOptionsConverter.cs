@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Resources;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.Options.Tiles;
+using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +23,7 @@ namespace OgcApi.Net.Features.Options
 
         private CollectionsOptions GetCollectionStorageOptions(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
-            var collectionOptions = new CollectionsOptions();
+            var collectionsOptions = new CollectionsOptions();
             while (reader.TokenType != JsonTokenType.EndObject)
             {
                 if (reader.TokenType == JsonTokenType.PropertyName)
@@ -30,17 +33,17 @@ namespace OgcApi.Net.Features.Options
                     switch (collectionsPropertyName)
                     {
                         case "Links":
-                            collectionOptions.Links = new List<Link>();
+                            collectionsOptions.Links = new List<Link>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    collectionOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
+                                    collectionsOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                 reader.Read();
                             }
                             break;
                         case "Items":
-                            collectionOptions.Items = new List<CollectionOptions>();
+                            collectionsOptions.Items = new List<CollectionOptions>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
@@ -79,7 +82,7 @@ namespace OgcApi.Net.Features.Options
                                                     collection.ItemType = reader.GetString();
                                                     break;
                                                 case "Features":
-                                                    var features = new CollectionOptionsFeatures();
+                                                    var features = new CollectionFeaturesOptions();
                                                     reader.Read();
                                                     while (reader.TokenType != JsonTokenType.EndObject)
                                                     {
@@ -108,14 +111,37 @@ namespace OgcApi.Net.Features.Options
                                                                 case "Storage":
                                                                     var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
                                                                     var type = json.GetProperty("Type").ToString();
-                                                                    var dataProvider = Utils.GetDataProvider(Provider, type);
-                                                                    features.Storage = dataProvider.DeserializeCollectionSourceOptions(json.ToString(), options);
+                                                                    var dataProvider = Utils.GetFeaturesProvider(Provider, type);
+                                                                    features.Storage = dataProvider.DeserializeFeaturesSourceOptions(json.ToString(), options);
                                                                     break;
                                                             }
                                                         }
                                                         reader.Read();
                                                     }
                                                     collection.Features = features;
+                                                    break;
+                                                case "Tiles":
+                                                    var tiles = new CollectionTilesOptions();
+                                                    reader.Read();
+                                                    while (reader.TokenType != JsonTokenType.EndObject)
+                                                    {
+                                                        if (reader.TokenType == JsonTokenType.PropertyName)
+                                                        {
+                                                            var tilesPropertyName = reader.GetString()!;
+                                                            reader.Read();
+                                                            switch (tilesPropertyName)
+                                                            {
+                                                                case "Storage":
+                                                                    var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+                                                                    var type = json.GetProperty("Type").ToString();
+                                                                    var dataProvider = Utils.GetTilesProvider(Provider, type);
+                                                                    tiles.Storage = dataProvider.DeserializeTilesSourceOptions(json.ToString(), options);
+                                                                    break;
+                                                            }
+                                                        }
+                                                        reader.Read();
+                                                    }
+                                                    collection.Tiles = tiles;
                                                     break;
                                                 case "Extent":
                                                     collection.Extent = JsonSerializer.Deserialize<Extent>(ref reader, options);
@@ -124,7 +150,7 @@ namespace OgcApi.Net.Features.Options
                                         }
                                         reader.Read();
                                     }
-                                    collectionOptions.Items.Add(collection);
+                                    collectionsOptions.Items.Add(collection);
 
                                 }
                                 reader.Read();
@@ -134,12 +160,33 @@ namespace OgcApi.Net.Features.Options
 
                 }
                 reader.Read();
+            }            
+
+            var featuresProviders = Provider.GetServices(typeof(IFeaturesProvider));
+            foreach (IFeaturesProvider provider in featuresProviders)
+            {
+                var resultingOptions = new CollectionsOptions
+                {
+                    Items = collectionsOptions.Items.Where(item => item.Features?.Storage.Type == provider.SourceType).ToList()
+                };
+                if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
+                provider.CollectionsOptions = resultingOptions;                
+            }                
+
+            var tilesProviders = Provider.GetServices(typeof(ITilesProvider));
+            foreach (ITilesProvider provider in tilesProviders)
+            {
+                var resultingOptions = new CollectionsOptions
+                {
+                    Items = collectionsOptions.Items.Where(item => item.Tiles?.Storage.Type == provider.SourceType).ToList()
+                };
+                if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
+                provider.CollectionsOptions = resultingOptions;
             }
-            var providers = Provider.GetServices(typeof(IDataProvider));
-            foreach (IDataProvider provider in providers)
-                provider.SetCollectionsOptions(collectionOptions);
-            return collectionOptions;
+
+            return collectionsOptions;
         }
+
         public override OgcApiOptions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var apiOptions = new OgcApiOptions();
@@ -307,16 +354,16 @@ namespace OgcApi.Net.Features.Options
                             if (item.Features.Storage != null)
                             {
                                 writer.WriteStartObject("Storage");
-                                writer.WriteString("Type", (item.Features.Storage as SqlCollectionSourceOptions).Type);
-                                writer.WriteString("ConnectionString", (item.Features.Storage as SqlCollectionSourceOptions).ConnectionString);
-                                writer.WriteString("Schema", (item.Features.Storage as SqlCollectionSourceOptions).Schema);
-                                writer.WriteString("Table", (item.Features.Storage as SqlCollectionSourceOptions).Table);
-                                writer.WriteString("GeometryColumn", (item.Features.Storage as SqlCollectionSourceOptions).GeometryColumn);
-                                writer.WriteString("GeometryDataType", (item.Features.Storage as SqlCollectionSourceOptions).GeometryDataType);
-                                writer.WriteString("GeometryGeoJsonType", (item.Features.Storage as SqlCollectionSourceOptions).GeometryGeoJsonType);
-                                writer.WriteNumber("GeometrySrid", (item.Features.Storage as SqlCollectionSourceOptions).GeometrySrid);
-                                writer.WriteString("DateTimeColumn", (item.Features.Storage as SqlCollectionSourceOptions).DateTimeColumn);
-                                writer.WriteString("IdentifierColumn", (item.Features.Storage as SqlCollectionSourceOptions).IdentifierColumn);
+                                writer.WriteString("Type", (item.Features.Storage as SqlFeaturesSourceOptions).Type);
+                                writer.WriteString("ConnectionString", (item.Features.Storage as SqlFeaturesSourceOptions).ConnectionString);
+                                writer.WriteString("Schema", (item.Features.Storage as SqlFeaturesSourceOptions).Schema);
+                                writer.WriteString("Table", (item.Features.Storage as SqlFeaturesSourceOptions).Table);
+                                writer.WriteString("GeometryColumn", (item.Features.Storage as SqlFeaturesSourceOptions).GeometryColumn);
+                                writer.WriteString("GeometryDataType", (item.Features.Storage as SqlFeaturesSourceOptions).GeometryDataType);
+                                writer.WriteString("GeometryGeoJsonType", (item.Features.Storage as SqlFeaturesSourceOptions).GeometryGeoJsonType);
+                                writer.WriteNumber("GeometrySrid", (item.Features.Storage as SqlFeaturesSourceOptions).GeometrySrid);
+                                writer.WriteString("DateTimeColumn", (item.Features.Storage as SqlFeaturesSourceOptions).DateTimeColumn);
+                                writer.WriteString("IdentifierColumn", (item.Features.Storage as SqlFeaturesSourceOptions).IdentifierColumn);
                                 if (item.Features.Storage.Properties != null && item.Features.Storage.Properties.Any())
                                 {
                                     writer.WriteStartArray("Properties");
@@ -324,14 +371,14 @@ namespace OgcApi.Net.Features.Options
                                         writer.WriteStringValue(prop);
                                     writer.WriteEndArray();
                                 }
-                                writer.WriteBoolean("AllowCreate", (item.Features.Storage as SqlCollectionSourceOptions).AllowCreate);
-                                writer.WriteBoolean("AllowReplace", (item.Features.Storage as SqlCollectionSourceOptions).AllowReplace);
-                                writer.WriteBoolean("AllowUpdate", (item.Features.Storage as SqlCollectionSourceOptions).AllowUpdate);
-                                writer.WriteBoolean("AllowDelete", (item.Features.Storage as SqlCollectionSourceOptions).AllowDelete);
-                                writer.WriteString("ApiKeyPredicateForGet", (item.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForGet);
-                                writer.WriteString("ApiKeyPredicateForCreate", (item.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForCreate);
-                                writer.WriteString("ApiKeyPredicateForUpdate", (item.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForUpdate);
-                                writer.WriteString("ApiKeyPredicateForDelete", (item.Features.Storage as SqlCollectionSourceOptions).ApiKeyPredicateForDelete);
+                                writer.WriteBoolean("AllowCreate", (item.Features.Storage as SqlFeaturesSourceOptions).AllowCreate);
+                                writer.WriteBoolean("AllowReplace", (item.Features.Storage as SqlFeaturesSourceOptions).AllowReplace);
+                                writer.WriteBoolean("AllowUpdate", (item.Features.Storage as SqlFeaturesSourceOptions).AllowUpdate);
+                                writer.WriteBoolean("AllowDelete", (item.Features.Storage as SqlFeaturesSourceOptions).AllowDelete);
+                                writer.WriteString("ApiKeyPredicateForGet", (item.Features.Storage as SqlFeaturesSourceOptions).ApiKeyPredicateForGet);
+                                writer.WriteString("ApiKeyPredicateForCreate", (item.Features.Storage as SqlFeaturesSourceOptions).ApiKeyPredicateForCreate);
+                                writer.WriteString("ApiKeyPredicateForUpdate", (item.Features.Storage as SqlFeaturesSourceOptions).ApiKeyPredicateForUpdate);
+                                writer.WriteString("ApiKeyPredicateForDelete", (item.Features.Storage as SqlFeaturesSourceOptions).ApiKeyPredicateForDelete);
                                 writer.WriteEndObject();
                             }
                             writer.WriteEndObject();

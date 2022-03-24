@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.MbTiles;
-using OgcApi.Net.Options.TileOptions;
+using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
 
@@ -10,35 +10,51 @@ namespace OgcApi.MbTiles.Tests
 {
     public static class TestProviders
     {
-        private static TileSourcesOptions GetDefaultOptions()
+        private static CollectionsOptions GetDefaultOptions()
         {
-            return new TileSourcesOptions()
+            return new CollectionsOptions
             {
-                Sources = new List<TileSourceOptions>()
+                Items = new List<CollectionOptions>
                 {
-                    new MbTilesSourceOptions()
+                    new()
                     {
-                        Id = "data",
-                        TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
-                        Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                        ConnectionString = "Data Source=Data\\data.mbtiles"
+                        Title = "data",
+                        Id =  "data",
+                        Tiles = new()
+                        {
+                            TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                            Storage = new MbTilesSourceOptions()
+                            {
+                                Type = "MbTiles",
+                                ConnectionString = "Data Source=Data\\data.mbtiles"
+                            }
+                        }
                     }
                 }
             };
         }
 
-        private static TileSourcesOptions GetOptionsWithUnknownDataFile()
+        private static CollectionsOptions GetOptionsWithUnknownDataFile()
         {
-            return new TileSourcesOptions()
+            return new CollectionsOptions
             {
-                Sources = new List<TileSourceOptions>()
+                Items = new List<CollectionOptions>
                 {
-                    new MbTilesSourceOptions()
+                    new()
                     {
-                        Id = "data",
-                        TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
-                        Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                        ConnectionString = "Data Source=Data\\test.mbtiles"
+                        Title = "data",
+                        Id =  "data",
+                        Tiles = new()
+                        {
+                            TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                            Storage = new MbTilesSourceOptions()
+                            {
+                                Type = "MbTiles",
+                                ConnectionString = "Data Source=Data\\test.mbtiles"
+                            }
+                        }
                     }
                 }
             };
@@ -46,16 +62,12 @@ namespace OgcApi.MbTiles.Tests
 
         public static MbTilesProvider GetDefaultProvider()
         {
-            TileSourcesOptions options = GetDefaultOptions();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<TileSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new MbTilesProvider(optionsMonitor, new NullLogger<MbTilesProvider>());
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetDefaultOptions() };
         }
 
         public static MbTilesProvider GetProviderWithErrors()
         {
-            TileSourcesOptions options = GetOptionsWithUnknownDataFile();
-            var optionsMonitor = Mock.Of<IOptionsMonitor<TileSourcesOptions>>(mock => mock.CurrentValue == options);
-            return new MbTilesProvider(optionsMonitor, new NullLogger<MbTilesProvider>());
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetOptionsWithUnknownDataFile() };
         }
     }
 }

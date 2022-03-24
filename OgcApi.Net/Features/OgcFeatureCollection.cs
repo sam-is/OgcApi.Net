@@ -1,5 +1,5 @@
 ﻿using NetTopologySuite.Features;
-using OgcApi.Net.Features.Resources;
+using OgcApi.Net.Resources;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

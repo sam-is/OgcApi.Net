@@ -2,8 +2,8 @@
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.Features.Options.Features;
 using System.Data.Common;
 
 namespace OgcApi.Net.PostGis
@@ -20,12 +20,12 @@ namespace OgcApi.Net.PostGis
             return new NpgsqlConnection(connectionString);
         }
 
-        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions)
+        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
         {
             return new FeaturesSqlQueryBuilder(collectionOptions);
         }
 
-        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions)
+        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
         {
             var geometryReader = new PostGisReader
             {

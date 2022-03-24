@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.MbTiles;
-using OgcApi.Net.Options.TileOptions;
+using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -19,30 +19,39 @@ namespace OgcApi.MbTiles.Tests
         }
 
         [Fact]
-        public void ConstructorWrongOptions()
+        public void ValidateWrongOptions()
         {
-            var options = new TileSourcesOptions
+            var options = new CollectionsOptions
             {
-                Sources = new List<TileSourceOptions>
+                Items = new List<CollectionOptions>
                 {
                     new()
                     {
-                        Id = "Polygons"
+                        Title = "test",
+                        Id =  "test",
+                        Tiles = new()
+                        {
+                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
+                            Storage = new MbTilesSourceOptions()
+                            {
+                                Type = "MbTiles"
+                            }
+                        }
                     }
                 }
             };
             var optionsMonitor =
-                Mock.Of<IOptionsMonitor<TileSourcesOptions>>(mock => mock.CurrentValue == options);
+                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
 
             Assert.Throws<OptionsValidationException>(() =>
-                new MbTilesProvider(optionsMonitor, new NullLogger<MbTilesProvider>()));
+                CollectionsOptionsValidator.Validate(options));
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new MbTilesProvider(null, new NullLogger<MbTilesProvider>()));
+            Assert.Throws<OptionsValidationException>(() =>
+                CollectionsOptionsValidator.Validate(null));
         }
 
         [Fact]

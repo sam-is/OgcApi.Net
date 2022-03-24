@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.PostGis;
 
 namespace OgcApi.Net.Features.PostGis
 {
@@ -7,7 +8,7 @@ namespace OgcApi.Net.Features.PostGis
     {
         public static IServiceCollection AddOgcApiPostGisProvider(this IServiceCollection services)
         {
-            services.AddSingleton<IDataProvider, PostGisProvider>();
+            services.AddSingleton<IFeaturesProvider, PostGisProvider>();
 
             return services;
         }

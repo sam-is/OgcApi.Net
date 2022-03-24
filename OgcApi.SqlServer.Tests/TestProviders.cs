@@ -1,9 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Features.SqlServer.Tests.Utils;
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.SqlServer;
+using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.SqlServer;
+using System;
 using System.Collections.Generic;
 
 namespace OgcApi.Features.SqlServer.Tests
@@ -19,7 +20,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Polygons",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -27,7 +28,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -51,7 +52,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="LineStrings",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -59,7 +60,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -79,7 +80,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Points",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -87,7 +88,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -107,7 +108,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Empty",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -115,7 +116,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -135,7 +136,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id = "PolygonsForInsert",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -143,7 +144,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -177,7 +178,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id ="Test",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                              Crs = new List<Uri>
                              {
@@ -185,7 +186,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -213,7 +214,7 @@ namespace OgcApi.Features.SqlServer.Tests
                     new()
                     {
                         Id = "PointsWithApiKey",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                              Crs = new List<Uri>
                              {
@@ -221,7 +222,7 @@ namespace OgcApi.Features.SqlServer.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -247,7 +248,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetDefaultOptions();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionsOptions(options);
+            provider.CollectionsOptions = options;
             return provider;
         }
 
@@ -255,7 +256,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetOptionsWithUnknownTable();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionsOptions(options);
+            provider.CollectionsOptions = options;
             return provider;
         }
 
@@ -263,7 +264,7 @@ namespace OgcApi.Features.SqlServer.Tests
         {
             CollectionsOptions options = GetOptionsWithApiKey();
             var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            provider.SetCollectionsOptions(options);
+            provider.CollectionsOptions = options;
             return provider;
         }
     }

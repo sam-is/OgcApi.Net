@@ -1,5 +1,8 @@
-﻿using OgcApi.Net.Features.Options.Interfaces;
-using OgcApi.Net.Features.Resources;
+﻿using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.Options.Tiles;
+using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -23,7 +26,8 @@ namespace OgcApi.Net.Options
 
         public Func<string, Uri> FeatureHtmlPage { get; set; }
 
-        public CollectionOptionsFeatures Features { get; set; }
+        public CollectionFeaturesOptions Features { get; set; }
 
+        public CollectionTilesOptions Tiles { get; set; }
     }
 }

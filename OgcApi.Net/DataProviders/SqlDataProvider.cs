@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.Features;
-using OgcApi.Net.Features.Options;
+using OgcApi.Net.Features;
+using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.Options.Interfaces;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Options;
 using System;
 using System.Data.Common;
-using System.Linq;
 using System.Text.Json;
 
 namespace OgcApi.Net.DataProviders
@@ -18,7 +17,7 @@ namespace OgcApi.Net.DataProviders
 
         public const int FeaturesMaximumLimit = 10000;
 
-        protected ICollectionsOptions CollectionsOptions;
+        public ICollectionsOptions CollectionsOptions { get; set; }
 
         protected readonly ILogger Logger;
 
@@ -27,12 +26,7 @@ namespace OgcApi.Net.DataProviders
         protected SqlDataProvider(ILogger logger)
         {
             Logger = logger;
-        }
-
-        public ICollectionsOptions GetCollectionSourcesOptions()
-        {
-            return CollectionsOptions;
-        }
+        }        
 
         public Envelope GetBbox(string collectionId, string apiKey = null)
         {
@@ -44,7 +38,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -89,7 +83,7 @@ namespace OgcApi.Net.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -175,7 +169,7 @@ namespace OgcApi.Net.DataProviders
                     $"The source collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -252,7 +246,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -307,7 +301,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -353,7 +347,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -408,7 +402,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -459,7 +453,7 @@ namespace OgcApi.Net.DataProviders
                 throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
             }
 
-            var sourceOptions = (SqlCollectionSourceOptions)collectionOptions.Features?.Storage;
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
             if (sourceOptions == null)
             {
                 Logger.LogTrace(
@@ -497,37 +491,13 @@ namespace OgcApi.Net.DataProviders
 
         protected abstract DbConnection GetDbConnection(string connectionString);
 
-        protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions);
+        protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions);
 
-        protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions);
+        protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
 
-        public ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options)
+        public IFeaturesSourceOptions DeserializeFeaturesSourceOptions(string json, JsonSerializerOptions options)
         {
-            return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
-        }
-
-        public void SetCollectionsOptions(ICollectionsOptions options)
-        {
-            switch (options)
-            {
-                case null:
-                    throw new ArgumentNullException(nameof(options));
-                case CollectionsOptions collectionOptions:
-                {
-                    CollectionsOptionsValidator.Validate(collectionOptions);
-                    if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
-                    {
-                        var resultingOptions = new CollectionsOptions
-                        {
-                            Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
-                        };
-                        if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
-                        CollectionsOptions = resultingOptions;
-                    }
-
-                    break;
-                }
-            }
-        }
+            return JsonSerializer.Deserialize<SqlFeaturesSourceOptions>(json, options);
+        }        
     }
 }

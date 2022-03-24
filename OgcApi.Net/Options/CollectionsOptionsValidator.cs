@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
 using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.Options
+namespace OgcApi.Net.Options
 {
     public static class CollectionsOptionsValidator
     {
@@ -25,36 +24,19 @@ namespace OgcApi.Net.Features.Options
                     if (item.Features.StorageCrs == null)
                         failureMessages.Add("Parameter StorageCrs is required for the collection feature option");
 
-                    if (item.Features.Storage is SqlCollectionSourceOptions storage)
-                    {
-                        if (string.IsNullOrWhiteSpace(storage.ConnectionString))
-                            failureMessages.Add("Parameter ConnectionString is required for the collection feature storage option");
-
-                        if (string.IsNullOrWhiteSpace(storage.Schema))
-                            failureMessages.Add("Parameter Schema is required for the collection feature storage option");
-
-                        if (string.IsNullOrWhiteSpace(storage.Table))
-                            failureMessages.Add("Parameter Table is required for the collection feature storage option");
-
-                        if (string.IsNullOrWhiteSpace(storage.GeometryColumn))
-                            failureMessages.Add("Parameter GeometryColumn is required for the feature storage collection option");
-
-                        if (string.IsNullOrWhiteSpace(storage.IdentifierColumn))
-                            failureMessages.Add("Parameter IdentifierColumn is required for the feature storage collection option");
-
-                        if (storage.Type != "SqlServer"
-                            && storage.Type != "PostGis"
-                            && storage.Type != "SpatiaLite")
-                            failureMessages.Add("Parameter Type is must be 'SqlServer', 'PostGis' or 'SpatiaLite'");
-
-                        if (storage.GeometryDataType != "geometry" && storage.GeometryDataType != "geography")
-                            failureMessages.Add("Parameter DataType must be 'geometry' or 'geography'");
-                    }
-                    else
-                        failureMessages.Add("Features Storage should not be empty");
+                    failureMessages.AddRange(item.Features.Storage.Validate());
                 }
-                else
-                    failureMessages.Add("Features should not be empty");
+
+                if (item.Tiles != null)
+                {
+                    if (item.Tiles.Crs == null)
+                        failureMessages.Add("Crs parameter is required for the collection tiles option");
+
+                    failureMessages.AddRange(item.Tiles.Storage.Validate());
+                }
+
+                if (item.Features == null && item.Tiles == null)
+                    failureMessages.Add("Features and|or tiles are required for the collection");
             }
 
             if (failureMessages.Count > 0)

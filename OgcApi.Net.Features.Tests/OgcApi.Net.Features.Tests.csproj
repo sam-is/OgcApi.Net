@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.Features.PostGis\OgcApi.Net.Features.PostGis.csproj" />
-    <ProjectReference Include="..\OgcApi.Net.Features.SqlServer\OgcApi.Net.Features.SqlServer.csproj" />
-    <ProjectReference Include="..\OgcApi.Net.Features\OgcApi.Net.Features.csproj" />
+    <ProjectReference Include="..\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
+    <ProjectReference Include="..\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
+    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
   <ItemGroup>

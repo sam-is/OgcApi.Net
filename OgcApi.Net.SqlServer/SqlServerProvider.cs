@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.Features.Options.Features;
 using System.Data;
 using System.Data.Common;
 
@@ -27,12 +27,12 @@ namespace OgcApi.Net.SqlServer
             return command;
         }
 
-        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions)
+        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
         {
             return new FeaturesSqlQueryBuilder(collectionOptions);
         }
 
-        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlCollectionSourceOptions collectionSourceOptions)
+        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
         {
             var geometryStream = dataReader.GetStream(ordinal);
             var geometryReader = new SqlServerBytesReader

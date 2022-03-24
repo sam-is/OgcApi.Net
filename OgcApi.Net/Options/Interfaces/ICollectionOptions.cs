@@ -1,8 +1,14 @@
-﻿namespace OgcApi.Net.Features.Options.Interfaces
+﻿using OgcApi.Net.Options.Features;
+using OgcApi.Net.Options.Tiles;
+
+namespace OgcApi.Net.Features.Options.Interfaces
 {
     public interface ICollectionOptions
     {
         public string Id { get; set; }
-        public CollectionOptionsFeatures Features { get; set; }
+
+        public CollectionFeaturesOptions Features { get; set; }
+
+        public CollectionTilesOptions Tiles { get; set; }
     }
 }

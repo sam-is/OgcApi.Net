@@ -1,9 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Features.PostGis.Tests.Utils;
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.PostGis;
+using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.PostGis;
+using System;
 using System.Collections.Generic;
 
 namespace OgcApi.Features.PostGis.Tests
@@ -19,7 +20,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id ="Polygons",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -27,7 +28,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -51,7 +52,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id ="LineStrings",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -59,7 +60,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -79,7 +80,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id ="Points",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -87,7 +88,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -107,7 +108,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id ="Empty",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -115,7 +116,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -135,7 +136,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id = "PolygonsForInsert",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                             Crs = new List<Uri>
                             {
@@ -143,7 +144,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -176,7 +177,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id ="Test",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                              Crs = new List<Uri>
                              {
@@ -184,7 +185,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -212,7 +213,7 @@ namespace OgcApi.Features.PostGis.Tests
                     new()
                     {
                         Id = "PointsWithApiKey",
-                        Features = new CollectionOptionsFeatures
+                        Features = new CollectionFeaturesOptions
                         {
                              Crs = new List<Uri>
                              {
@@ -220,7 +221,7 @@ namespace OgcApi.Features.PostGis.Tests
                                 new("http://www.opengis.net/def/crs/EPSG/0/3857")
                             },
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new SqlCollectionSourceOptions
+                            Storage = new SqlFeaturesSourceOptions
                             {
                                 Type= "PostGis",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
@@ -245,24 +246,30 @@ namespace OgcApi.Features.PostGis.Tests
         public static PostGisProvider GetDefaultProvider()
         {
             var options = GetDefaultOptions();
-            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionsOptions(options);
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>())
+            {
+                CollectionsOptions = options
+            };
             return provider;
         }
 
         public static PostGisProvider GetProviderWithErrors()
         {
             var options = GetOptionsWithUnknownTable();
-            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionsOptions(options);
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>())
+            {
+                CollectionsOptions = options
+            };
             return provider;
         }
 
         public static PostGisProvider GetProviderWithApiKey()
         {
             var options = GetOptionsWithApiKey();
-            var provider = new PostGisProvider(new NullLogger<PostGisProvider>());
-            provider.SetCollectionsOptions(options);
+            var provider = new PostGisProvider(new NullLogger<PostGisProvider>())
+            {
+                CollectionsOptions = options
+            };
             return provider;
         }
     }

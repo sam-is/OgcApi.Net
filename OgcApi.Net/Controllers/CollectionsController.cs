@@ -694,21 +694,16 @@ namespace OgcApi.Net.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
 
-                var sourcesOptions = dataProvider.GetTileSourcesOptions();
-                var sources = sourcesOptions.Sources.Where(x => x.Id == collectionId);
-                if (sources.Any())
+                return Ok(new TileSets()
                 {
-                    var result = new TileSets();
-
-                    foreach (var source in sources)
-                    {
-                        var tileSet = new TileSet
+                    Items = {
+                        new TileSet
                         {
-                            Title = source.Id,
-                            Crs = source.Crs,
-                            TileMatrixSetURI = source.TileMatrixSet,
+                            Title = collectionOptions.Title,
+                            Crs = collectionOptions.Tiles.Crs,
+                            TileMatrixSetURI = collectionOptions.Tiles.TileMatrixSet,
                             DataType = "vector",
                             TileMatrixSetLimits = dataProvider.GetLimits(collectionId),
 
@@ -722,19 +717,14 @@ namespace OgcApi.Net.Controllers
                                 },
                                 new()
                                 {
-                                    Href = source.TileMatrixSet,
+                                    Href = collectionOptions.Tiles.TileMatrixSet,
                                     Rel = "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
                                     Type = "application/json"
                                 }
                             }
-                        };
-
-                        result.Items.Add(tileSet);
+                        }
                     }
-
-                    return Ok(result);
-                }
-                return NotFound();
+                });
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
@@ -752,7 +742,7 @@ namespace OgcApi.Net.Controllers
             var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
             if (collectionOptions != null)
             {
-                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.SourceType);
+                var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
                 return Ok(await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol));
             }
 

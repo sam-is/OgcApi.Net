@@ -1,13 +1,11 @@
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Features.SqlServer.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
-using OgcApi.Net.Options.SqlOptions;
-using OgcApi.Net.SqlServer;
+using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,16 +47,14 @@ namespace OgcApi.Features.SqlServer.Tests
                 }
             };
 
-            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            Assert.Throws<OptionsValidationException>(() => provider.SetCollectionsOptions(options));
+            Assert.Throws<OptionsValidationException>(() => CollectionsOptionsValidator.Validate(options));
 
         }
 
         [Fact]
         public void ConstructorNullOptions()
         {
-            var provider = new SqlServerProvider(new NullLogger<SqlServerProvider>());
-            Assert.Throws<ArgumentNullException>(() => provider.SetCollectionsOptions(null));
+            Assert.Throws<OptionsValidationException>(() => CollectionsOptionsValidator.Validate(null));
         }
 
         [Fact]

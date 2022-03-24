@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.Features.DataProviders;
+using OgcApi.Net.DataProviders;
 
 namespace OgcApi.Net.SqlServer
 {
@@ -7,7 +7,7 @@ namespace OgcApi.Net.SqlServer
     {
         public static IServiceCollection AddOgcApiSqlServerProvider(this IServiceCollection services)
         {
-            services.AddSingleton<IDataProvider, SqlServerProvider>();
+            services.AddSingleton<IFeaturesProvider, SqlServerProvider>();
 
             return services;
         }

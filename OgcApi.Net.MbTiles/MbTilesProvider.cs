@@ -1,12 +1,13 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options.TileOptions;
+using OgcApi.Net.Features.Options.Interfaces;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
+using OgcApi.Net.Options.Tiles;
 
 namespace OgcApi.Net.MbTiles
 {
@@ -14,29 +15,15 @@ namespace OgcApi.Net.MbTiles
     {
         public string SourceType => "MbTiles";
 
-        protected readonly TileSourcesOptions TilesOptions;
+        ICollectionsOptions ITilesProvider.CollectionsOptions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ICollectionsOptions CollectionsOptions;
 
         protected readonly ILogger Logger;
 
-
-        public MbTilesProvider(IOptionsMonitor<TileSourcesOptions> tileSourcesOptions, ILogger logger)
+        public MbTilesProvider(ILogger logger)
         {
-            if (tileSourcesOptions == null)
-                throw new ArgumentNullException(nameof(tileSourcesOptions));
-
             Logger = logger;
-
-            try
-            {
-                TilesOptions = tileSourcesOptions.CurrentValue;
-                TileSourcesOptionsValidator.Validate(TilesOptions);
-            }
-            catch (OptionsValidationException ex)
-            {
-                foreach (var failure in ex.Failures) Logger.LogError(failure);
-                throw;
-            }
-
         }
 
         private SqliteConnection GetDbConnection(string connectionString)
@@ -53,12 +40,12 @@ namespace OgcApi.Net.MbTiles
 
         public List<TileMatrixLimits> GetLimits(string collectionId)
         {
-            var tileOptions = (MbTilesSourceOptions)TilesOptions.GetSourceById(collectionId);
+            var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
                 Logger.LogTrace(
-                    $"The tile source with ID = {collectionId} was not found in the provided options");
-                throw new ArgumentException($"The tile source with ID = {collectionId} does not exists");
+                    $"The tile source for collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
             try
@@ -86,12 +73,12 @@ namespace OgcApi.Net.MbTiles
 
         public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileCol, int tileRow, string apiKey = null)
         {
-            var tileOptions = (MbTilesSourceOptions)TilesOptions.GetSourceById(collectionId);
+            var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
                 Logger.LogTrace(
-                    $"The tile source with ID = {collectionId} was not found in the provided options");
-                throw new ArgumentException($"The tile source with ID = {collectionId} does not exists");
+                    $"The tile source for collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
             try
@@ -113,9 +100,9 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public TileSourcesOptions GetTileSourcesOptions()
+        public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
         {
-            return TilesOptions;
-        }
+            return JsonSerializer.Deserialize<MbTilesSourceOptions>(json, options);
+        }        
     }
 }

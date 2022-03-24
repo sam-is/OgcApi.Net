@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using OgcApi.Net.Features.Features;
+using OgcApi.Net.Features;
+using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.Options.Interfaces;
 using System;
 using System.Text.Json;
@@ -11,9 +12,7 @@ namespace OgcApi.Net.DataProviders
     {
         string SourceType { get; }
 
-        void SetCollectionsOptions(ICollectionsOptions options);
-
-        ICollectionsOptions GetCollectionSourcesOptions();
+        ICollectionsOptions CollectionsOptions { get; set; }
 
         Envelope GetBbox(string collectionId, string apiKey = null);
 
@@ -31,7 +30,7 @@ namespace OgcApi.Net.DataProviders
 
         void DeleteFeature(string collectionId, string featureId, string apiKey = null);
 
-        ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
+        IFeaturesSourceOptions DeserializeFeaturesSourceOptions(string json, JsonSerializerOptions options);
     }
 }
 

@@ -3,7 +3,7 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Features;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,11 +18,11 @@ namespace OgcApi.Net.SqlServer
 
         private readonly List<SqlParameter> _sqlParameters = new();
 
-        private readonly SqlCollectionSourceOptions _collectionOptions;
+        private readonly SqlFeaturesSourceOptions _collectionOptions;
 
         private readonly List<string> _predicateConditions = new();
 
-        public FeaturesSqlQueryBuilder(SqlCollectionSourceOptions collectionOptions)
+        public FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
         {
             _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
         }
