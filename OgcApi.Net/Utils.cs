@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options.Features;
 using System;
 using System.Linq;
 

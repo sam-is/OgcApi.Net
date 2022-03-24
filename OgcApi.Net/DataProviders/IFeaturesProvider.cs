@@ -1,8 +1,8 @@
 ﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Features;
-using OgcApi.Net.Features.Options.Features;
-using OgcApi.Net.Features.Options.Interfaces;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.Options.Interfaces;
 using System;
 using System.Text.Json;
 

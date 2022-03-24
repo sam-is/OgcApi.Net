@@ -1,4 +1,4 @@
-﻿namespace OgcApi.Net.Features.Options.Interfaces
+﻿namespace OgcApi.Net.Options.Interfaces
 {
     public interface ICollectionsOptions
     {

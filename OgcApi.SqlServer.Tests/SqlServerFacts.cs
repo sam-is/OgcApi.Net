@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.SqlServer.Tests
 {
     public class SqlServerFacts : IClassFixture<DatabaseFixture>
     {

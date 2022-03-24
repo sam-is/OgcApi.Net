@@ -684,7 +684,7 @@ namespace OgcApi.Net.Controllers
         }
 
         [HttpGet("{collectionId}/tiles")]
-        [Produces("application/geo+json")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetTileSets(string collectionId)
@@ -732,7 +732,7 @@ namespace OgcApi.Net.Controllers
         }
 
         [HttpGet("{collectionId}/tiles/{tileMatrix}/{tileRow}/{tileCol}")]
-        [Produces("application/geo+json")]
+        [Produces("application/vnd.mapbox-vector-tile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol)
@@ -743,7 +743,9 @@ namespace OgcApi.Net.Controllers
             if (collectionOptions != null)
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
-                return Ok(await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol));
+                return File(await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol), 
+                    "application/vnd.mapbox-vector-tile", 
+                    "tile.mvt");
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");

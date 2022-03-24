@@ -1,4 +1,4 @@
-using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options.Features;
 using Xunit;
 
 namespace OgcApi.Net.Features.Tests

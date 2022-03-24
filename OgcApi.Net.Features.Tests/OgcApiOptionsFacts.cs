@@ -1,6 +1,6 @@
-using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.Tests.Utils;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Features;
 using System.Linq;
 using Xunit;
 

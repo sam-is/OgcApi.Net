@@ -2,16 +2,16 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using Npgsql;
-using OgcApi.Features.PostGis.Tests.Utils;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
+using OgcApi.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Features.PostGis.Tests
+namespace OgcApi.PostGis.Tests
 {
     public class PostGisFacts : IClassFixture<DatabaseFixture>
     {

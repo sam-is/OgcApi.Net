@@ -3,7 +3,7 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Features.Options.Features;
+using OgcApi.Net.Options.Features;
 using System;
 using System.Collections.Generic;
 using System.Data;

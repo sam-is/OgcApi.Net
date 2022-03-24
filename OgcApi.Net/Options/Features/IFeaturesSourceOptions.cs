@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OgcApi.Net.Features.Options.Features
+namespace OgcApi.Net.Options.Features
 {
     public interface IFeaturesSourceOptions
     {

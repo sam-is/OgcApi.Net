@@ -1,6 +1,6 @@
 ﻿using OgcApi.Features.SqlServer.Tests.Utils;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.SqlServer.Tests
 {
     public class DatabaseFixture
     {

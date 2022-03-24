@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using OgcApi.Features.PostGis.Tests.Utils;
-using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.PostGis;
+using OgcApi.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
 
-namespace OgcApi.Features.PostGis.Tests
+namespace OgcApi.PostGis.Tests
 {
     public static class TestProviders
     {

@@ -39,9 +39,6 @@ namespace OgcApi.MbTiles.Tests
                     }
                 }
             };
-            var optionsMonitor =
-                Mock.Of<IOptionsMonitor<CollectionsOptions>>(mock => mock.CurrentValue == options);
-
             Assert.Throws<OptionsValidationException>(() =>
                 CollectionsOptionsValidator.Validate(options));
         }

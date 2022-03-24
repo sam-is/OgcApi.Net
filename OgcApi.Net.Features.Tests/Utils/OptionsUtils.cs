@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;

@@ -1,4 +1,4 @@
-﻿using OgcApi.Net.Features.Options.Interfaces;
+﻿using OgcApi.Net.Options.Interfaces;
 using OgcApi.Net.Resources;
 using System.Collections.Generic;
 

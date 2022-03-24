@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Features.SqlServer.Tests.Utils;
-using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.SqlServer;
 using System;
 using System.Collections.Generic;
 
-namespace OgcApi.Features.SqlServer.Tests
+namespace OgcApi.SqlServer.Tests
 {
     public static class TestProviders
     {

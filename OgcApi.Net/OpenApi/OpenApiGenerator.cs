@@ -376,6 +376,63 @@ namespace OgcApi.Net.OpenApi
                                 }
                             }
                         },
+                        ["Tileset"] = new()
+                        {
+                            Type = "object",
+                            Properties = new Dictionary<string, OpenApiSchema>
+                            {
+                                ["title"] = new() { Type = "string" },
+                                ["tileMatrixSetURI"] = new() { Type = "string" },
+                                ["crs"] = new() { Type = "string" },
+                                ["dataType"] = new() { Type = "string", Enum = new List<IOpenApiAny> { new OpenApiString("vector") } },
+                                ["links"] = new()
+                                {
+                                    Type = "array",
+                                    Items = new OpenApiSchema
+                                    {
+                                        Reference = new OpenApiReference { Id = "Link", Type = ReferenceType.Schema }
+                                    }
+                                },
+                                ["tileMatrixSetLimits"] = new()
+                                {
+                                    Type = "array",
+                                    Items = new OpenApiSchema
+                                    {
+                                        MinItems = 1,
+                                        Type = "object",
+                                        Properties = new Dictionary<string, OpenApiSchema>
+                                        {
+                                            ["tileMatrix"] = new()
+                                            {
+                                                Type = "integer",
+                                                Format = "int32"
+                                            },
+                                            ["minTileRow"] = new()
+                                            {
+                                                Type = "integer",
+                                                Format = "int32"
+                                            },
+                                            ["maxTileRow"] = new()
+                                            {
+                                                Type = "integer",
+                                                Format = "int32"
+                                            },
+                                            ["minTileCol"] = new()
+                                            {
+                                                Type = "integer",
+                                                Format = "int32"
+                                            },
+                                            ["maxTileCol"] = new()
+                                            {
+                                                Type = "integer",
+                                                Format = "int32"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            Required = new HashSet<string> { "tileMatrixSetURI", "crs", "dataType", "links", "tileMatrixSetLimits" }
+                        } 
                     }
                 }
             };
@@ -429,15 +486,153 @@ namespace OgcApi.Net.OpenApi
                     }
                 });
 
-                openApiDocument.Paths.Add($"/collections/{collection.Id}/items", new OpenApiPathItem
+                if (collection.Features != null)
                 {
-                    Operations = GetFeatureCollectionOperations(collection)
-                });
+                    openApiDocument.Paths.Add($"/collections/{collection.Id}/items", new OpenApiPathItem
+                    {
+                        Operations = GetFeatureCollectionOperations(collection)
+                    });
 
-                openApiDocument.Paths.Add($"/collections/{collection.Id}/items/{{featureId}}", new OpenApiPathItem
+                    openApiDocument.Paths.Add($"/collections/{collection.Id}/items/{{featureId}}", new OpenApiPathItem
+                    {
+                        Operations = GetFeatureOperations(collection)
+                    });
+                }
+
+                if (collection.Tiles != null)
                 {
-                    Operations = GetFeatureOperations(collection)
-                });
+                    openApiDocument.Paths.Add($"/collections/{collection.Id}/tiles", new OpenApiPathItem
+                    {
+                        Operations = new Dictionary<OperationType, OpenApiOperation>
+                        {
+                            [OperationType.Get] = new()
+                            {
+                                Tags = new List<OpenApiTag>
+                                {
+                                    new() { Name = collection.Title }
+                                },
+                                Summary = "Provides a list of available tilesets for a resource",
+                                Responses = new OpenApiResponses
+                                {
+                                    ["200"] = new()
+                                    {
+                                        Description = "Success",
+                                        Content = new Dictionary<string, OpenApiMediaType>
+                                        {
+                                            ["application/json"] = new()
+                                            {
+                                                Schema = new OpenApiSchema
+                                                {
+                                                    Type = "array",
+                                                    Items = new OpenApiSchema
+                                                    {
+                                                        Reference = new OpenApiReference { Id = "Tileset", Type = ReferenceType.Schema }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    ["404"] = new()
+                                    {
+                                        Description = "Not Found",
+                                        Content = new Dictionary<string, OpenApiMediaType>
+                                        {
+                                            ["application/json"] = new()
+                                            {
+                                                Schema = new OpenApiSchema
+                                                {
+                                                    Reference = new OpenApiReference { Id = "ProblemDetails", Type = ReferenceType.Schema }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    openApiDocument.Paths.Add($"/collections/{collection.Id}/tiles/{{tileMatrix}}/{{tileRow}}/{{tileCol}}", new OpenApiPathItem
+                    {
+                        Operations = new Dictionary<OperationType, OpenApiOperation>
+                        {
+                            [OperationType.Get] = new()
+                            {
+                                Tags = new List<OpenApiTag>
+                                {
+                                    new() { Name = collection.Title }
+                                },
+                                Summary = "Provides a list of available tilesets for a resource",
+                                Parameters = new List<OpenApiParameter>
+                                {
+                                    new()
+                                    {
+                                        Name = "tileMatrix",
+                                        Description = "Identifier of the tile matrix (representing a zoom level, a.k.a. a scale) listed in the TileMatrixSet definition",
+                                        In = ParameterLocation.Path,
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Type = "integer",
+                                            Format = "int32"
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        Name = "tileRow",
+                                        Description = "A non-negative integer between 0 and the MatrixHeight - 1. If there is a TileMatrixSetLimits the value is limited between MinTileRow and MaxTileRow",
+                                        In = ParameterLocation.Path,
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Type = "integer",
+                                            Format = "int32"
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        Name = "tileCol",
+                                        Description = "A non-negative integer between 0 and the MatrixWidth - 1. If there is a TileMatrixSetLimits the value is limited between MinTileCol and MaxTileCol",
+                                        In = ParameterLocation.Path,
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Type = "integer",
+                                            Format = "int32"
+                                        }
+                                    }
+                                },
+                                Responses = new OpenApiResponses
+                                {
+                                    ["200"] = new()
+                                    {
+                                        Description = "Success",
+                                        Content = new Dictionary<string, OpenApiMediaType>
+                                        {
+                                            ["application/vnd.mapbox-vector-tile"] = new()
+                                            {
+                                                Schema = new()
+                                                {
+                                                    Type = "file"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    ["404"] = new()
+                                    {
+                                        Description = "Not Found",
+                                        Content = new Dictionary<string, OpenApiMediaType>
+                                        {
+                                            ["application/json"] = new()
+                                            {
+                                                Schema = new OpenApiSchema
+                                                {
+                                                    Reference = new OpenApiReference { Id = "ProblemDetails", Type = ReferenceType.Schema }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
 
             if (_apiOptions.UseApiKeyAuthorization)
