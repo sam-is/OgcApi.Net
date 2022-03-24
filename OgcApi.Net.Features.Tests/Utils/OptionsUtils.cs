@@ -4,6 +4,7 @@ using OgcApi.Net.Features.Options;
 using OgcApi.Net.Features.Options.Features;
 using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.Resources;
 using OgcApi.Net.SqlServer;

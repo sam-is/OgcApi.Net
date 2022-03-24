@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options.SqlOptions;
-using OgcApi.Net.Features.Resources;
+using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.Options.Tiles;
+using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Features.Options.Converters
+namespace OgcApi.Net.Options.Converters
 {
     public class OgcApiOptionsConverter : JsonConverter<OgcApiOptions>
     {
@@ -148,7 +149,7 @@ namespace OgcApi.Net.Features.Options.Converters
         }
         public CollectionsOptions ReadCollections(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
-            var collectionOptions = new CollectionsOptions();
+            var collectionsOptions = new CollectionsOptions();
             while (reader.TokenType != JsonTokenType.EndObject)
             {
                 if (reader.TokenType == JsonTokenType.PropertyName)
@@ -158,17 +159,17 @@ namespace OgcApi.Net.Features.Options.Converters
                     switch (collectionsPropertyName)
                     {
                         case "Links":
-                            collectionOptions.Links = new List<Link>();
+                            collectionsOptions.Links = new List<Link>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    collectionOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
+                                    collectionsOptions.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                 reader.Read();
                             }
                             break;
                         case "Items":
-                            collectionOptions.Items = new List<CollectionOptions>();
+                            collectionsOptions.Items = new List<CollectionOptions>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
@@ -207,7 +208,7 @@ namespace OgcApi.Net.Features.Options.Converters
                                                     collection.ItemType = reader.GetString();
                                                     break;
                                                 case "Features":
-                                                    var features = new CollectionOptionsFeatures();
+                                                    var features = new CollectionFeaturesOptions();
                                                     reader.Read();
                                                     while (reader.TokenType != JsonTokenType.EndObject)
                                                     {
@@ -236,14 +237,43 @@ namespace OgcApi.Net.Features.Options.Converters
                                                                 case "Storage":
                                                                     var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
                                                                     var type = json.GetProperty("Type").ToString();
-                                                                    var dataProvider = Utils.GetDataProvider(Provider, type);
-                                                                    features.Storage = dataProvider.DeserializeCollectionSourceOptions(json.ToString(), options);
+                                                                    var dataProvider = Utils.GetFeaturesProvider(Provider, type);
+                                                                    features.Storage = dataProvider.DeserializeFeaturesSourceOptions(json.ToString(), options);
                                                                     break;
                                                             }
                                                         }
                                                         reader.Read();
                                                     }
                                                     collection.Features = features;
+                                                    break;
+                                                case "Tiles":
+                                                    var tiles = new CollectionTilesOptions();
+                                                    reader.Read();
+                                                    while (reader.TokenType != JsonTokenType.EndObject)
+                                                    {
+                                                        if (reader.TokenType == JsonTokenType.PropertyName)
+                                                        {
+                                                            var tilesPropertyName = reader.GetString()!;
+                                                            reader.Read();
+                                                            switch (tilesPropertyName)
+                                                            {
+                                                                case "Crs":
+                                                                    tiles.Crs = new Uri(reader.GetString());
+                                                                    break;
+                                                                case "TileMatrixSet":
+                                                                    tiles.TileMatrixSet = new Uri(reader.GetString());
+                                                                    break;
+                                                                case "Storage":
+                                                                    var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+                                                                    var type = json.GetProperty("Type").ToString();
+                                                                    var dataProvider = Utils.GetTilesProvider(Provider, type);
+                                                                    tiles.Storage = dataProvider.DeserializeTilesSourceOptions(json.ToString(), options);
+                                                                    break;
+                                                            }
+                                                        }
+                                                        reader.Read();
+                                                    }
+                                                    collection.Tiles = tiles;
                                                     break;
                                                 case "Extent":
                                                     collection.Extent = JsonSerializer.Deserialize<Extent>(ref reader, options);
@@ -252,7 +282,7 @@ namespace OgcApi.Net.Features.Options.Converters
                                         }
                                         reader.Read();
                                     }
-                                    collectionOptions.Items.Add(collection);
+                                    collectionsOptions.Items.Add(collection);
 
                                 }
                                 reader.Read();
@@ -263,10 +293,30 @@ namespace OgcApi.Net.Features.Options.Converters
                 }
                 reader.Read();
             }
-            var providers = Provider.GetServices(typeof(IDataProvider));
-            foreach (IDataProvider provider in providers)
-                provider.SetCollectionsOptions(collectionOptions);
-            return collectionOptions;
+
+            var featuresProviders = Provider.GetServices(typeof(IFeaturesProvider));
+            foreach (IFeaturesProvider provider in featuresProviders)
+            {
+                var resultingOptions = new CollectionsOptions
+                {
+                    Items = collectionsOptions.Items.Where(item => item.Features?.Storage.Type == provider.SourceType).ToList()
+                };
+                if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
+                provider.CollectionsOptions = resultingOptions;
+            }
+
+            var tilesProviders = Provider.GetServices(typeof(ITilesProvider));
+            foreach (ITilesProvider provider in tilesProviders)
+            {
+                var resultingOptions = new CollectionsOptions
+                {
+                    Items = collectionsOptions.Items.Where(item => item.Tiles?.Storage.Type == provider.SourceType).ToList()
+                };
+                if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
+                provider.CollectionsOptions = resultingOptions;
+            }
+
+            return collectionsOptions;
         }
         public void WriteCollections(Utf8JsonWriter writer, CollectionsOptions value, JsonSerializerOptions options)
         {
@@ -315,6 +365,7 @@ namespace OgcApi.Net.Features.Options.Converters
                         }
                         writer.WriteString("StorageCrs", item.Features.StorageCrs.ToString());
                         writer.WriteString("StorageCrsCoordinateEpoch", item.Features.StorageCrsCoordinateEpoch);
+                        /* TODO: this must be done another way
                         if (item.Features.Storage is SqlCollectionSourceOptions storage)
                         {
                             writer.WriteStartObject("Storage");
@@ -344,7 +395,7 @@ namespace OgcApi.Net.Features.Options.Converters
                             writer.WriteString("ApiKeyPredicateForUpdate", storage.ApiKeyPredicateForUpdate);
                             writer.WriteString("ApiKeyPredicateForDelete", storage.ApiKeyPredicateForDelete);
                             writer.WriteEndObject();
-                        }
+                        }*/
                         writer.WriteEndObject();
                     }
                     writer.WriteEndObject();

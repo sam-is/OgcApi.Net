@@ -1,6 +1,6 @@
 using Xunit;
 using System.Linq;
-using OgcApi.Net.Features.Options.SqlOptions;
+using OgcApi.Net.Features.Options.Features;
 
 namespace OgcApi.Net.Features.Tests
 { 
@@ -112,8 +112,8 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void SqlServerProviderOptionsStorageSet()
         {
-            var providerStorage = _fixture.sqlServerCollectionsOptions.Items[0].Features.Storage as SqlCollectionSourceOptions;
-            var apiStorage = _fixture.jsonCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList()[0].Features.Storage as SqlCollectionSourceOptions;
+            var providerStorage = _fixture.sqlServerCollectionsOptions.Items[0].Features.Storage as SqlFeaturesSourceOptions;
+            var apiStorage = _fixture.jsonCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList()[0].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(apiStorage);
             Assert.NotNull(providerStorage);
@@ -148,8 +148,8 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void PostGisProviderOptionsStorageSet()
         {
-            var providerStorage = _fixture.jsonCollectionsOptions.Items[0].Features.Storage as SqlCollectionSourceOptions;
-            var apiStorage = _fixture.postGisCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlCollectionSourceOptions;
+            var providerStorage = _fixture.jsonCollectionsOptions.Items[0].Features.Storage as SqlFeaturesSourceOptions;
+            var apiStorage = _fixture.postGisCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(apiStorage);
             Assert.NotNull(providerStorage);

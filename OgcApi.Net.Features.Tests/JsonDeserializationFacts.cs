@@ -1,5 +1,5 @@
+using OgcApi.Net.Features.Options.Features;
 using Xunit;
-using OgcApi.Net.Features.Options.SqlOptions;
 
 namespace OgcApi.Net.Features.Tests
 {
@@ -128,7 +128,7 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void FirstCollectionStorageDeserialization()
         {
-            var storage = _fixture.options.Collections.Items[0].Features.Storage as SqlCollectionSourceOptions;
+            var storage = _fixture.options.Collections.Items[0].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(storage);
             Assert.Equal("PostGis", storage.Type);
@@ -159,7 +159,7 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void SecondCollectionStorageDeserialization()
         {
-            var storage = _fixture.options.Collections.Items[1].Features.Storage as SqlCollectionSourceOptions;
+            var storage = _fixture.options.Collections.Items[1].Features.Storage as SqlFeaturesSourceOptions;
 
             Assert.NotNull(storage);
             Assert.Equal("SqlServer", storage.Type);

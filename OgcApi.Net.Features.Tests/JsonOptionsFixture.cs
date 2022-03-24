@@ -1,5 +1,5 @@
-﻿using OgcApi.Net.Features.Options;
-using OgcApi.Net.Features.Tests.Utils;
+﻿using OgcApi.Net.Features.Tests.Utils;
+using OgcApi.Net.Options;
 
 namespace OgcApi.Net.Features.Tests
 { 

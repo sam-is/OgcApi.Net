@@ -4,7 +4,7 @@ using OgcApi.Net.Options;
 using System;
 using System.IO;
 using System.Text.Json;
-using OgcApi.Net.Features.Options.Converters;
+using OgcApi.Net.Options.Converters;
 
 namespace OgcApi.Net.Features.Options
 {

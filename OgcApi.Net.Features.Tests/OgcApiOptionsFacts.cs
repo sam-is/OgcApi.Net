@@ -11,7 +11,7 @@ namespace OgcApi.Net.Features.Tests
         [Fact]
         public void SettingsSerializationExecuted()
         {
-            var res = OptionsUtils.SerializeOptions(OptionsUtils.GetOptionsFromCode());
+            var res = OptionsUtils.SerializeOgcApiOptions(OptionsUtils.GetOptionsFromCode());
 
             Assert.False(string.IsNullOrEmpty(res));
         }

@@ -1,6 +1,6 @@
-﻿using OgcApi.Net.Features.DataProviders;
-using OgcApi.Net.Features.Options;
+﻿using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features.Tests.Utils;
+using OgcApi.Net.Options;
 
 namespace OgcApi.Net.Features.Tests
 { 
@@ -10,8 +10,8 @@ namespace OgcApi.Net.Features.Tests
         public readonly CollectionsOptions jsonCollectionsOptions;
         public readonly CollectionsOptions sqlServerCollectionsOptions;
         public readonly CollectionsOptions postGisCollectionsOptions;
-        public readonly IDataProvider sqlServerProvider;
-        public readonly IDataProvider postGisProvider;
+        public readonly IFeaturesProvider sqlServerProvider;
+        public readonly IFeaturesProvider postGisProvider;
 
         public ProvidersOptionsFixture()
         {
@@ -20,8 +20,8 @@ namespace OgcApi.Net.Features.Tests
             jsonCollectionsOptions = OptionsUtils.GetOptionsFromJson().Collections;
             sqlServerProvider = OptionsUtils.GetDataProvider("SqlServer");
             postGisProvider = OptionsUtils.GetDataProvider("PostGis");
-            sqlServerCollectionsOptions = sqlServerProvider.GetCollectionSourcesOptions() as CollectionsOptions;
-            postGisCollectionsOptions = postGisProvider.GetCollectionSourcesOptions() as CollectionsOptions;
+            sqlServerCollectionsOptions = sqlServerProvider.CollectionsOptions as CollectionsOptions;
+            postGisCollectionsOptions = postGisProvider.CollectionsOptions as CollectionsOptions;
         }
     }
 }
