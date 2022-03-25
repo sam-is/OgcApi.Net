@@ -32,6 +32,7 @@ namespace OgcApi.Net.Features.DataProviders
         void DeleteFeature(string collectionId, string featureId, string apiKey = null);
 
         ICollectionSourceOptions DeserializeCollectionSourceOptions(string json, JsonSerializerOptions options);
+        void SerializeStorageOptions(Utf8JsonWriter writer, ICollectionSourceOptions storage);
     }
 }
 

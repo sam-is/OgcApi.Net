@@ -506,6 +506,39 @@ namespace OgcApi.Net.Features.DataProviders
             return JsonSerializer.Deserialize<SqlCollectionSourceOptions>(json, options);
         }
 
+        public void SerializeStorageOptions(Utf8JsonWriter writer, ICollectionSourceOptions item)
+        {
+            if (item is SqlCollectionSourceOptions storage)
+            {
+                writer.WriteStartObject("Storage");
+                writer.WriteString("Type", storage.Type);
+                writer.WriteString("ConnectionString", storage.ConnectionString);
+                writer.WriteString("Schema", storage.Schema);
+                writer.WriteString("Table", storage.Table);
+                writer.WriteString("GeometryColumn", storage.GeometryColumn);
+                writer.WriteString("GeometryDataType", storage.GeometryDataType);
+                writer.WriteString("GeometryGeoJsonType", storage.GeometryGeoJsonType);
+                writer.WriteNumber("GeometrySrid", storage.GeometrySrid);
+                writer.WriteString("DateTimeColumn", storage.DateTimeColumn);
+                writer.WriteString("IdentifierColumn", storage.IdentifierColumn);
+                if (storage.Properties != null && storage.Properties.Any())
+                {
+                    writer.WriteStartArray("Properties");
+                    foreach (var prop in item.Properties)
+                        writer.WriteStringValue(prop);
+                    writer.WriteEndArray();
+                }
+                writer.WriteBoolean("AllowCreate", storage.AllowCreate);
+                writer.WriteBoolean("AllowReplace", storage.AllowReplace);
+                writer.WriteBoolean("AllowUpdate", storage.AllowUpdate);
+                writer.WriteBoolean("AllowDelete", storage.AllowDelete);
+                writer.WriteString("ApiKeyPredicateForGet", storage.ApiKeyPredicateForGet);
+                writer.WriteString("ApiKeyPredicateForCreate", storage.ApiKeyPredicateForCreate);
+                writer.WriteString("ApiKeyPredicateForUpdate", storage.ApiKeyPredicateForUpdate);
+                writer.WriteString("ApiKeyPredicateForDelete", storage.ApiKeyPredicateForDelete);
+                writer.WriteEndObject();
+            }
+        }
         public void SetCollectionsOptions(ICollectionsOptions options)
         {
             switch (options)

@@ -270,6 +270,7 @@ namespace OgcApi.Net.Features.Options.Converters
         }
         public void WriteCollections(Utf8JsonWriter writer, CollectionsOptions value, JsonSerializerOptions options)
         {
+
             writer.WriteStartObject();
             if (value.Links != null && value.Links.Any())
             {
@@ -315,36 +316,8 @@ namespace OgcApi.Net.Features.Options.Converters
                         }
                         writer.WriteString("StorageCrs", item.Features.StorageCrs.ToString());
                         writer.WriteString("StorageCrsCoordinateEpoch", item.Features.StorageCrsCoordinateEpoch);
-                        if (item.Features.Storage is SqlCollectionSourceOptions storage)
-                        {
-                            writer.WriteStartObject("Storage");
-                            writer.WriteString("Type", storage.Type);
-                            writer.WriteString("ConnectionString", storage.ConnectionString);
-                            writer.WriteString("Schema", storage.Schema);
-                            writer.WriteString("Table", storage.Table);
-                            writer.WriteString("GeometryColumn", storage.GeometryColumn);
-                            writer.WriteString("GeometryDataType", storage.GeometryDataType);
-                            writer.WriteString("GeometryGeoJsonType", storage.GeometryGeoJsonType);
-                            writer.WriteNumber("GeometrySrid", storage.GeometrySrid);
-                            writer.WriteString("DateTimeColumn", storage.DateTimeColumn);
-                            writer.WriteString("IdentifierColumn", storage.IdentifierColumn);
-                            if (storage.Properties != null && storage.Properties.Any())
-                            {
-                                writer.WriteStartArray("Properties");
-                                foreach (var prop in item.Features.Storage.Properties)
-                                    writer.WriteStringValue(prop);
-                                writer.WriteEndArray();
-                            }
-                            writer.WriteBoolean("AllowCreate", storage.AllowCreate);
-                            writer.WriteBoolean("AllowReplace", storage.AllowReplace);
-                            writer.WriteBoolean("AllowUpdate", storage.AllowUpdate);
-                            writer.WriteBoolean("AllowDelete", storage.AllowDelete);
-                            writer.WriteString("ApiKeyPredicateForGet", storage.ApiKeyPredicateForGet);
-                            writer.WriteString("ApiKeyPredicateForCreate", storage.ApiKeyPredicateForCreate);
-                            writer.WriteString("ApiKeyPredicateForUpdate", storage.ApiKeyPredicateForUpdate);
-                            writer.WriteString("ApiKeyPredicateForDelete", storage.ApiKeyPredicateForDelete);
-                            writer.WriteEndObject();
-                        }
+                        var dataProvider = Utils.GetDataProvider(Provider, item.Features.Storage.Type);
+                        dataProvider.SerializeStorageOptions(writer, item.Features.Storage);
                         writer.WriteEndObject();
                     }
                     writer.WriteEndObject();
