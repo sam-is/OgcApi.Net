@@ -41,24 +41,31 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish OgcApi.Net.Features
+    - name: Publish OgcApi.Net
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:        
-        PROJECT_FILE_PATH: OgcApi.Net.Features/OgcApi.Net.Features.csproj
+        PROJECT_FILE_PATH: OgcApi.Net/OgcApi.Net.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish OgcApi.Net.Features.SqlServer
+    - name: Publish OgcApi.Net.SqlServer
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
-        PROJECT_FILE_PATH: OgcApi.Net.Features.SqlServer/OgcApi.Net.Features.SqlServer.csproj
+        PROJECT_FILE_PATH: OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish OgcApi.Net.Features.PostGis
+    - name: Publish OgcApi.Net.PostGis
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
-        PROJECT_FILE_PATH: OgcApi.Net.Features.PostGis/OgcApi.Net.Features.PostGis.csproj
+        PROJECT_FILE_PATH: OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj
+        VERSION_FILE_PATH: Directory.Build.props
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+    - name: Publish OgcApi.Net.MbTiles
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        PROJECT_FILE_PATH: OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}

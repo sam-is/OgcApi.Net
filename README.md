@@ -23,9 +23,9 @@ This project uses:
 NuGet packages:
 Package | Description | Link
 --- | --- | ---
-OgcApi.Net.Features | OGC API - Features implementation without specific implementations of the data providers | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features)](https://www.nuget.org/packages/OgcApi.Net.Features/)
-OgcApi.Net.Features.SqlServer | Sql Server data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features.SqlServer)](https://www.nuget.org/packages/OgcApi.Net.Features.SqlServer/)
-OgcApi.Net.Features.PostGis | PostgreSQL/PostGis data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Features.PostGis)](https://www.nuget.org/packages/OgcApi.Net.Features.PostGis/)
+OgcApi.Net | OGC API - Features implementation without specific implementations of the data providers | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net)](https://www.nuget.org/packages/OgcApi.Net/)
+OgcApi.Net.SqlServer | Sql Server data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.SqlServer)](https://www.nuget.org/packages/OgcApi.Net.SqlServer/)
+OgcApi.Net.PostGis | PostgreSQL/PostGis data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.PostGis)](https://www.nuget.org/packages/OgcApi.Net.Features.PostGis/)
 
 ## Features API
 
@@ -212,7 +212,7 @@ To do this add:
 services.AddOgcApiSwaggerGen(); 
 ```
 
-Document generation is based on C# xml code documentation in the file OgcApi.Net.Features.xml provided with the NuGet package. 
+Document generation is based on C# xml code documentation in the file OgcApi.Net.xml provided with the NuGet package. 
 Alternative is to supply your own swagger.json for the Swashbuckle.
 
 ### Coordinate systems
