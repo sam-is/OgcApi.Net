@@ -1,7 +1,7 @@
-﻿using OgcApi.Net.Features.Tests.Utils;
+﻿using OgcApi.Options.Tests.Utils;
 using OgcApi.Net.Options;
 
-namespace OgcApi.Net.Features.Tests
+namespace OgcApi.Options.Tests
 {
 
     public class ConfigurationOptionsFixture

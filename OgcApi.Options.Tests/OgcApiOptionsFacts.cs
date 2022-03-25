@@ -1,10 +1,10 @@
-using OgcApi.Net.Features.Tests.Utils;
+using OgcApi.Options.Tests.Utils;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Net.Features.Tests
+namespace OgcApi.Options.Tests
 {
     public class OgcApiOptionsFacts
     {

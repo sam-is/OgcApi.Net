@@ -1,6 +1,6 @@
-﻿using OgcApi.Net.Features.Tests.Utils;
+﻿using OgcApi.Options.Tests.Utils;
 
-namespace OgcApi.Net.Features.Tests
+namespace OgcApi.Options.Tests
 {
 
     public class OgcApiOptionsFixture

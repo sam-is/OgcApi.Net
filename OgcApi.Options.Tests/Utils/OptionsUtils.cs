@@ -12,7 +12,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace OgcApi.Net.Features.Tests.Utils
+namespace OgcApi.Options.Tests.Utils
 {
     public static class OptionsUtils
     {

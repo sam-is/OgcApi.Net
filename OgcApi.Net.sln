@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.MbTiles", "OgcAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.MbTiles.Tests", "OgcApi.MbTiles.Tests\OgcApi.MbTiles.Tests.csproj", "{94136B91-6CD0-4049-B3BE-D85979CD6571}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Features.Tests", "OgcApi.Net.Features.Tests\OgcApi.Net.Features.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Options.Tests", "OgcApi.Options.Tests\OgcApi.Options.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

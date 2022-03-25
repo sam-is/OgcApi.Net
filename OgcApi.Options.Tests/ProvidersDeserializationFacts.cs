@@ -2,7 +2,7 @@ using OgcApi.Net.Options.Features;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Net.Features.Tests
+namespace OgcApi.Options.Tests
 {
     public class ProvidersDeserializationFacts : IClassFixture<ProvidersOptionsFixture>
     {
