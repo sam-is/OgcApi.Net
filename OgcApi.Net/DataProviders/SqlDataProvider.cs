@@ -7,6 +7,7 @@ using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Interfaces;
 using System;
 using System.Data.Common;
+using System.Linq;
 using System.Text.Json;
 
 namespace OgcApi.Net.DataProviders
@@ -495,6 +496,39 @@ namespace OgcApi.Net.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
 
+        public void SerializeFeaturesSourceOptions(Utf8JsonWriter writer, IFeaturesSourceOptions item)
+        {
+            if (item is SqlFeaturesSourceOptions storage)
+            {
+                writer.WriteStartObject("Storage");
+                writer.WriteString("Type", storage.Type);
+                writer.WriteString("ConnectionString", storage.ConnectionString);
+                writer.WriteString("Schema", storage.Schema);
+                writer.WriteString("Table", storage.Table);
+                writer.WriteString("GeometryColumn", storage.GeometryColumn);
+                writer.WriteString("GeometryDataType", storage.GeometryDataType);
+                writer.WriteString("GeometryGeoJsonType", storage.GeometryGeoJsonType);
+                writer.WriteNumber("GeometrySrid", storage.GeometrySrid);
+                writer.WriteString("DateTimeColumn", storage.DateTimeColumn);
+                writer.WriteString("IdentifierColumn", storage.IdentifierColumn);
+                if (storage.Properties != null && storage.Properties.Any())
+                {
+                    writer.WriteStartArray("Properties");
+                    foreach (var prop in item.Properties)
+                        writer.WriteStringValue(prop);
+                    writer.WriteEndArray();
+                }
+                writer.WriteBoolean("AllowCreate", storage.AllowCreate);
+                writer.WriteBoolean("AllowReplace", storage.AllowReplace);
+                writer.WriteBoolean("AllowUpdate", storage.AllowUpdate);
+                writer.WriteBoolean("AllowDelete", storage.AllowDelete);
+                writer.WriteString("ApiKeyPredicateForGet", storage.ApiKeyPredicateForGet);
+                writer.WriteString("ApiKeyPredicateForCreate", storage.ApiKeyPredicateForCreate);
+                writer.WriteString("ApiKeyPredicateForUpdate", storage.ApiKeyPredicateForUpdate);
+                writer.WriteString("ApiKeyPredicateForDelete", storage.ApiKeyPredicateForDelete);
+                writer.WriteEndObject();
+            }
+        }
         public IFeaturesSourceOptions DeserializeFeaturesSourceOptions(string json, JsonSerializerOptions options)
         {
             return JsonSerializer.Deserialize<SqlFeaturesSourceOptions>(json, options);

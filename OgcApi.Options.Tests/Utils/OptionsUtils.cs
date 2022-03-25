@@ -96,7 +96,7 @@ namespace OgcApi.Options.Tests.Utils
                                 StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                                 Storage = new SqlFeaturesSourceOptions
                                 {
-                                    Type = "PostGIS",
+                                    Type = "PostGis",
                                     ConnectionString = "Host=127.0.0.1;User Id=user;Password=user;Database=pgdb;Port=5432",
                                     Schema = "api",
                                     Table = "collection1",
