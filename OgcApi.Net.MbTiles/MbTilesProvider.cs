@@ -104,5 +104,10 @@ namespace OgcApi.Net.MbTiles
         {
             return JsonSerializer.Deserialize<MbTilesSourceOptions>(json, options);
         }
+
+        public void SerializeTilesSourceOptions(Utf8JsonWriter writer, ITilesSourceOptions storage)
+        {
+            JsonSerializer.Serialize(writer, storage as MbTilesSourceOptions);
+        }
     }
 }

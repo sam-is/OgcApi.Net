@@ -19,5 +19,7 @@ namespace OgcApi.Net.DataProviders
         List<TileMatrixLimits> GetLimits(string collectionId);
 
         ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options);
+
+        void SerializeTilesSourceOptions(Utf8JsonWriter writer, ITilesSourceOptions storage);
     }
 }
