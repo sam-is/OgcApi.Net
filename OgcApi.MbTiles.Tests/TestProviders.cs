@@ -3,6 +3,7 @@ using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace OgcApi.MbTiles.Tests
 {
@@ -25,7 +26,7 @@ namespace OgcApi.MbTiles.Tests
                             Storage = new MbTilesSourceOptions()
                             {
                                 Type = "MbTiles",
-                                ConnectionString = "Data Source=Data\\data.mbtiles"
+                                ConnectionString = "Data Source=" + Path.Combine("Data", "data.mbtiles")
                             }
                         }
                     }
@@ -50,7 +51,7 @@ namespace OgcApi.MbTiles.Tests
                             Storage = new MbTilesSourceOptions()
                             {
                                 Type = "MbTiles",
-                                ConnectionString = "Data Source=Data\\test.mbtiles"
+                                ConnectionString = "Data Source=" + Path.Combine("Data", "test.mbtiles")
                             }
                         }
                     }
