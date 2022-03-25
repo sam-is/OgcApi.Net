@@ -366,8 +366,8 @@ namespace OgcApi.Net.Options.Converters
                         }
                         writer.WriteString("StorageCrs", item.Features.StorageCrs.ToString());
                         writer.WriteString("StorageCrsCoordinateEpoch", item.Features.StorageCrsCoordinateEpoch);
-                        var dataProvider = Utils.GetDataProvider(Provider, item.Features.Storage.Type);
-                        dataProvider.SerializeStorageOptions(writer, item.Features.Storage);
+                        var dataProvider = Utils.GetFeaturesProvider(Provider, item.Features.Storage.Type);
+                        dataProvider.SerializeFeaturesSourceOptions(writer, item.Features.Storage);
                         writer.WriteEndObject();
                     }
                     writer.WriteEndObject();

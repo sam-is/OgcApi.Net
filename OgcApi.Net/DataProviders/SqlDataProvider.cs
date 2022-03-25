@@ -7,6 +7,7 @@ using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Interfaces;
 using System;
 using System.Data.Common;
+using System.Linq;
 using System.Text.Json;
 
 namespace OgcApi.Net.DataProviders
@@ -495,9 +496,9 @@ namespace OgcApi.Net.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
 
-        public void SerializeStorageOptions(Utf8JsonWriter writer, IFeatureOptions item)
+        public void SerializeFeaturesSourceOptions(Utf8JsonWriter writer, IFeaturesSourceOptions item)
         {
-            if (item is SqlCollectionSourceOptions storage)
+            if (item is SqlFeaturesSourceOptions storage)
             {
                 writer.WriteStartObject("Storage");
                 writer.WriteString("Type", storage.Type);
@@ -528,28 +529,9 @@ namespace OgcApi.Net.DataProviders
                 writer.WriteEndObject();
             }
         }
-        public void SetCollectionsOptions(ICollectionsOptions options)
+        public IFeaturesSourceOptions DeserializeFeaturesSourceOptions(string json, JsonSerializerOptions options)
         {
-            switch (options)
-            {
-                case null:
-                    throw new ArgumentNullException(nameof(options));
-                case CollectionsOptions collectionOptions:
-                {
-                    CollectionsOptionsValidator.Validate(collectionOptions);
-                    if (collectionOptions.Items.Any(i => i.Features.Storage.Type == SourceType))
-                    {
-                        var resultingOptions = new CollectionsOptions
-                        {
-                            Items = collectionOptions.Items.Where(i => i.Features.Storage.Type == SourceType).ToList()
-                        };
-                        if (collectionOptions.Items != null) resultingOptions.Links = collectionOptions.Links;
-                        CollectionsOptions = resultingOptions;
-                    }
-
-                    break;
-                }
-            }
+            return JsonSerializer.Deserialize<SqlFeaturesSourceOptions>(json, options);
         }
     }
 }
