@@ -24,11 +24,7 @@ namespace OgcApi.Net.Options
             var reader = new Utf8JsonReader(jsonOgcApiSettings);
             var serializerOptions = new JsonSerializerOptions();
             var collectionOptionsConverter = new OgcApiOptionsConverter(provider);
-
-            options.LandingPage = collectionOptionsConverter.ReadLandingPage(ref reader);
-            options.Conformance = collectionOptionsConverter.ReadConformance(ref reader, serializerOptions);
-            options.UseApiKeyAuthorization = collectionOptionsConverter.ReadUseApiKeyAuthorization(ref reader);
-            options.Collections = collectionOptionsConverter.ReadCollections(ref reader, serializerOptions);
+            collectionOptionsConverter.Read(options, ref reader, serializerOptions);
         }
     }
 }

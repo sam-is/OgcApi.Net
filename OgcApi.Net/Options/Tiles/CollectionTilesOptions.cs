@@ -6,7 +6,7 @@ namespace OgcApi.Net.Options.Tiles
     {
         public Uri Crs { get; set; }
 
-        public Uri TileMatrixSet { get; set; } = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad");
+        public Uri TileMatrixSet { get; set; } = new("http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad");
 
         public ITilesSourceOptions Storage { get; set; }
     }

@@ -7,7 +7,7 @@ namespace OgcApi.Net.MbTiles
     {
         public string Type { get; set; }
 
-        public string ConnectionString { set; get; }
+        public string FileName { set; get; }
 
         public List<string> Validate()
         {
@@ -16,8 +16,8 @@ namespace OgcApi.Net.MbTiles
             if (!Type.Equals("MbTiles"))
                 failureMessages.Add("Parameter Type requires \"MbTiles\" value for the \"MbTiles\" tile source option");
 
-            if (string.IsNullOrWhiteSpace(ConnectionString))
-                failureMessages.Add("Parameter ConnectionString is required for the \"MbTiles\" tile source option");
+            if (string.IsNullOrWhiteSpace(FileName))
+                failureMessages.Add("Parameter FileName is required for the \"MbTiles\" tile source option");
 
             return failureMessages;
         }

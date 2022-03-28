@@ -3,14 +3,14 @@ using OgcApi.Net.Options;
 
 namespace OgcApi.Options.Tests
 {
-
     public class JsonOptionsFixture
     {
-        public readonly OgcApiOptions options;
+        public readonly OgcApiOptions Options;
+
         public JsonOptionsFixture()
         {
             OptionsUtils.SetupServiceCollection();
-            options = OptionsUtils.GetOptionsFromJson();
+            Options = OptionsUtils.GetOptionsFromJson();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using OgcApi.Net.PostGis;
 
 namespace OgcApi.Options.Tests.Utils
 {
@@ -34,6 +34,15 @@ namespace OgcApi.Options.Tests.Utils
         public static OgcApiOptions GetOptionsFromJson()
         {
             var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
+            var reader = new Utf8JsonReader(jsonReadOnlySpan);
+            var converter = new OgcApiOptionsConverter(Provider);
+            var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
+            return options;
+        }
+
+        public static OgcApiOptions GetOptionsFromJsonWithoutConformance()
+        {
+            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettingsWithoutConformance.json"));
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
             var converter = new OgcApiOptionsConverter(Provider);
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
@@ -185,8 +194,7 @@ namespace OgcApi.Options.Tests.Utils
         {
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
-            var converter = new OgcApiOptionsConverter(Provider);
-            converter.WriteLandingPage(writer, options);
+            OgcApiOptionsConverter.WriteLandingPage(writer, options);
             writer.Flush();
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());
@@ -197,7 +205,7 @@ namespace OgcApi.Options.Tests.Utils
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
             var converter = new OgcApiOptionsConverter(Provider);
-            converter.WriteCollections(writer, options, new());
+            converter.WriteCollections(writer, options, new JsonSerializerOptions());
             writer.Flush();
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());
