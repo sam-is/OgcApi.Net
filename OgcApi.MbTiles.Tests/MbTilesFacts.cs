@@ -54,7 +54,7 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public async void GetTile()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 162, 82);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162);
             Assert.NotNull(tile);
         }
 
