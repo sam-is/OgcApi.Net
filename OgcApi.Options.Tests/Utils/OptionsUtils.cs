@@ -40,10 +40,9 @@ namespace OgcApi.Options.Tests.Utils
             return options;
         }
 
-
         public static OgcApiOptions GetOptionsFromJsonWithoutConformance()
         {
-            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
+            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettingsWithoutConformance.json"));
             var reader = new Utf8JsonReader(jsonReadOnlySpan);
             var converter = new OgcApiOptionsConverter(Provider);
             var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());

@@ -263,7 +263,6 @@ namespace OgcApi.Options.Tests
         [Fact]
         public void DeserializeOptionsWithoutConformance()
         {
-            OptionsUtils.SetupServiceCollection();
             Assert.NotNull(OptionsUtils.GetOptionsFromJsonWithoutConformance());
         }
     }
