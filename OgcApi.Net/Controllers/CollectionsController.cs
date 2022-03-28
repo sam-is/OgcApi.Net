@@ -18,7 +18,7 @@ using System.Web;
 
 namespace OgcApi.Net.Controllers
 {
-    [EnableCors]
+    [EnableCors("OgcApi")]
     [ApiController]
     [Route("api/ogc/collections")]
     [ApiExplorerSettings(GroupName = "ogc")]
