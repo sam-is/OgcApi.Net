@@ -14,13 +14,21 @@ namespace OgcApi.Net.Options.Converters
     public class OgcApiOptionsConverter : JsonConverter<OgcApiOptions>
     {
         private IServiceProvider Provider { get; set; }
+
         public OgcApiOptionsConverter(IServiceProvider provider)
         {
             Provider = provider;
         }
+
         public override OgcApiOptions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var apiOptions = new OgcApiOptions();
+            Read(apiOptions, ref reader, options);
+            return apiOptions;
+        }
+
+        public void Read(OgcApiOptions apiOptions, ref Utf8JsonReader reader, JsonSerializerOptions options)
+        {
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.PropertyName)
@@ -44,8 +52,8 @@ namespace OgcApi.Net.Options.Converters
                     }
                 }
             }
-            return apiOptions;
         }
+
         public override void Write(Utf8JsonWriter writer, OgcApiOptions value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
@@ -69,7 +77,8 @@ namespace OgcApi.Net.Options.Converters
             }
             writer.WriteEndObject();
         }
-        public LandingPageOptions ReadLandingPage(ref Utf8JsonReader reader)
+
+        private static LandingPageOptions ReadLandingPage(ref Utf8JsonReader reader)
         {
             var landingPage = new LandingPageOptions();
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -90,22 +99,22 @@ namespace OgcApi.Net.Options.Converters
                             landingPage.ContactName = reader.GetString();
                             break;
                         case "ContactUrl":
-                            landingPage.ContactUrl = new Uri(reader.GetString());
+                            landingPage.ContactUrl = new Uri(reader.GetString() ?? string.Empty);
                             break;
                         case "ApiDocumentPage":
-                            landingPage.ApiDocumentPage = new Uri(reader.GetString());
+                            landingPage.ApiDocumentPage = new Uri(reader.GetString() ?? string.Empty);
                             break;
                         case "Version":
                             landingPage.Version = new string(reader.GetString());
                             break;
                         case "ApiDescriptionPage":
-                            landingPage.ApiDescriptionPage = new Uri(reader.GetString());
+                            landingPage.ApiDescriptionPage = new Uri(reader.GetString() ?? string.Empty);
                             break;
                         case "LicenseName":
                             landingPage.LicenseName = reader.GetString();
                             break;
                         case "LicenseUrl":
-                            landingPage.LicenseUrl = new Uri(reader.GetString());
+                            landingPage.LicenseUrl = new Uri(reader.GetString() ?? string.Empty);
                             break;
                         case "Links":
                             landingPage.Links = new List<Link>();
@@ -113,7 +122,7 @@ namespace OgcApi.Net.Options.Converters
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    landingPage.Links.Add(new Link { Href = new Uri(reader.GetString()) });
+                                    landingPage.Links.Add(new Link { Href = new Uri(reader.GetString() ?? string.Empty) });
                                 reader.Read();
                             }
                             break;
@@ -123,31 +132,8 @@ namespace OgcApi.Net.Options.Converters
             }
             return landingPage;
         }
-        public ConformanceOptions ReadConformance(ref Utf8JsonReader reader, JsonSerializerOptions options)
-        {
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.PropertyName && reader.GetString() == "Conformance")
-                {
-                    return (ConformanceOptions)JsonSerializer.Deserialize(ref reader, typeof(ConformanceOptions), options);
-                }
-            }
-            return null;
-        }
-        public bool ReadUseApiKeyAuthorization(ref Utf8JsonReader reader)
-        {
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.PropertyName && reader.GetString() == "UseApiKeyAuthorization")
-                {
-                    reader.Read();
-                    return reader.GetBoolean();
-                }
 
-            }
-            return false;
-        }
-        public CollectionsOptions ReadCollections(ref Utf8JsonReader reader, JsonSerializerOptions options)
+        private CollectionsOptions ReadCollections(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
             var collectionsOptions = new CollectionsOptions();
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -299,7 +285,7 @@ namespace OgcApi.Net.Options.Converters
             {
                 var resultingOptions = new CollectionsOptions
                 {
-                    Items = collectionsOptions.Items.Where(item => item.Features?.Storage.Type == provider.SourceType).ToList()
+                    Items = collectionsOptions.Items.Where(item => item.Features?.Storage.Type == provider?.SourceType).ToList()
                 };
                 if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
                 provider.CollectionsOptions = resultingOptions;
@@ -310,7 +296,7 @@ namespace OgcApi.Net.Options.Converters
             {
                 var resultingOptions = new CollectionsOptions
                 {
-                    Items = collectionsOptions.Items.Where(item => item.Tiles?.Storage.Type == provider.SourceType).ToList()
+                    Items = collectionsOptions.Items.Where(item => item.Tiles?.Storage.Type == provider?.SourceType).ToList()
                 };
                 if (collectionsOptions.Items != null) resultingOptions.Links = collectionsOptions.Links;
                 provider.CollectionsOptions = resultingOptions;
@@ -318,6 +304,7 @@ namespace OgcApi.Net.Options.Converters
 
             return collectionsOptions;
         }
+
         public void WriteCollections(Utf8JsonWriter writer, CollectionsOptions value, JsonSerializerOptions options)
         {
 
@@ -376,7 +363,8 @@ namespace OgcApi.Net.Options.Converters
             }
             writer.WriteEndObject();
         }
-        public void WriteLandingPage(Utf8JsonWriter writer, LandingPageOptions value)
+
+        public static void WriteLandingPage(Utf8JsonWriter writer, LandingPageOptions value)
         {
             writer.WriteStartObject();
             if (value != null)

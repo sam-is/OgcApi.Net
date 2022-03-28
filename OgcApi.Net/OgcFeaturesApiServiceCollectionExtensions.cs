@@ -1,15 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.Options;
-using System;
+using Microsoft.Extensions.Options;
+using OgcApi.Net.OpenApi;
 
 namespace OgcApi.Net
 {
     public static class OgcApiServiceCollectionExtensions
     {
-        public static IServiceCollection AddOgcApi(
-           this IServiceCollection services, Action<OgcApiOptions> configOptions)
+        public static IServiceCollection AddOgcApi(this IServiceCollection services)
         {
-            return services.Configure(configOptions);
+            services.AddSingleton<IConfigureOptions<OgcApiOptions>, ConfigureOgcApiOptions>();
+            return services.AddSingleton<IOpenApiGenerator, OpenApiGenerator>();
         }
     }
 }
