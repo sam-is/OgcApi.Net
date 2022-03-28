@@ -5,6 +5,7 @@ using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
+using OgcApi.Net.Options.Tiles;
 using Xunit;
 
 namespace OgcApi.MbTiles.Tests
@@ -28,7 +29,7 @@ namespace OgcApi.MbTiles.Tests
                     {
                         Title = "test",
                         Id =  "test",
-                        Tiles = new()
+                        Tiles = new CollectionTilesOptions
                         {
                             Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new MbTilesSourceOptions()
@@ -53,7 +54,7 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public async void GetTile()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 162, 82);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162);
             Assert.NotNull(tile);
         }
 

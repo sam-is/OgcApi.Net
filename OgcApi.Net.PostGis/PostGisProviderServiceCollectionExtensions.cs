@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.PostGis;
 
-namespace OgcApi.Net.Features.PostGis
+namespace OgcApi.Net.PostGis
 {
     public static class OgcApiServiceCollectionExtensions
     {

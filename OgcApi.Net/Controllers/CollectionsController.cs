@@ -698,9 +698,10 @@ namespace OgcApi.Net.Controllers
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
 
-                return Ok(new TileSets()
+                return Ok(new TileSets
                 {
-                    Items = {
+                    Items = new List<TileSet>
+                    {
                         new TileSet
                         {
                             Title = collectionOptions.Title,
@@ -733,7 +734,7 @@ namespace OgcApi.Net.Controllers
             return NotFound();
         }
 
-        [HttpGet("{collectionId}/tiles/{tileMatrix}/{tileRow}/{tileCol}")]
+        [HttpGet("{collectionId}/tiles/{tileMatrix:int}/{tileRow:int}/{tileCol:int}")]
         [Produces("application/vnd.mapbox-vector-tile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

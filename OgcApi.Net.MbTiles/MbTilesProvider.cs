@@ -15,23 +15,21 @@ namespace OgcApi.Net.MbTiles
     {
         public string SourceType => "MbTiles";
 
-        ICollectionsOptions ITilesProvider.CollectionsOptions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ICollectionsOptions CollectionsOptions { get; set; }
 
-        public ICollectionsOptions CollectionsOptions;
+        private readonly ILogger<MbTilesProvider> _logger;
 
-        protected readonly ILogger Logger;
-
-        public MbTilesProvider(ILogger logger)
+        public MbTilesProvider(ILogger<MbTilesProvider> logger)
         {
-            Logger = logger;
+            _logger = logger;
         }
 
-        private SqliteConnection GetDbConnection(string connectionString)
+        private static SqliteConnection GetDbConnection(string fileName)
         {
-            return new SqliteConnection(connectionString);
+            return new SqliteConnection($"Data Source={fileName}");
         }
 
-        private SqliteCommand GetDbCommand(string commandText, SqliteConnection dbConnection)
+        private static SqliteCommand GetDbCommand(string commandText, SqliteConnection dbConnection)
         {
             var command = dbConnection.CreateCommand();
             command.CommandText = commandText;
@@ -43,14 +41,14 @@ namespace OgcApi.Net.MbTiles
             var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
-                Logger.LogTrace(
+                _logger.LogTrace(
                     $"The tile source for collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
             try
             {
-                using var connection = GetDbConnection(tileOptions.ConnectionString);
+                using var connection = GetDbConnection(tileOptions.FileName);
                 connection.Open();
 
                 var command = GetDbCommand(@"SELECT zoom_level, MIN(tile_column), MAX(tile_column), MIN((1 << zoom_level) - 1 - tile_row), MAX((1 << zoom_level) - 1 - tile_row) FROM tiles GROUP BY zoom_level ORDER BY zoom_level", connection);
@@ -59,31 +57,38 @@ namespace OgcApi.Net.MbTiles
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    result.Add(new TileMatrixLimits { TileMatrix = reader.GetInt32(0), MinTileCol = reader.GetInt32(1), MaxTileCol = reader.GetInt32(2), MinTileRow = reader.GetInt32(3), MaxTileRow = reader.GetInt32(4) });
+                    result.Add(new TileMatrixLimits
+                    {
+                        TileMatrix = reader.GetInt32(0), 
+                        MinTileCol = reader.GetInt32(1), 
+                        MaxTileCol = reader.GetInt32(2), 
+                        MinTileRow = reader.GetInt32(3), 
+                        MaxTileRow = reader.GetInt32(4)
+                    });
                 }
 
                 return result;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "GetLimits database query completed with an exception");
+                _logger.LogError(ex, "GetLimits database query completed with an exception");
                 throw;
             }
         }
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileCol, int tileRow, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow,  int tileCol, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
-                Logger.LogTrace(
+                _logger.LogTrace(
                     $"The tile source for collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
             try
             {
-                await using var connection = GetDbConnection(tileOptions.ConnectionString);
+                await using var connection = GetDbConnection(tileOptions.FileName);
                 connection.Open();
 
                 var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
@@ -95,7 +100,7 @@ namespace OgcApi.Net.MbTiles
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "GetTileAsync database query completed with an exception");
+                _logger.LogError(ex, "GetTileAsync database query completed with an exception");
                 throw;
             }
         }

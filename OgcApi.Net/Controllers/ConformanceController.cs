@@ -54,17 +54,17 @@ namespace OgcApi.Net.Controllers
 
                 if (_apiOptions.Collections.Items.Any(item => item.Features != null))
                 {
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"));
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"));
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"));
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"));
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"));
                 }
 
                 if (_apiOptions.Collections.Items.Any(item => item.Tiles != null))
                 {
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset"));
-                    conformsTo.Add(new("http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tilesets-list"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset"));
+                    conformsTo.Add(new Uri("http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tilesets-list"));
                 }
 
 
