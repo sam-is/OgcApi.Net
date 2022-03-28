@@ -607,7 +607,7 @@ namespace OgcApi.Net.OpenApi
                                         {
                                             ["application/vnd.mapbox-vector-tile"] = new()
                                             {
-                                                Schema = new()
+                                                Schema = new OpenApiSchema
                                                 {
                                                     Type = "file"
                                                 }

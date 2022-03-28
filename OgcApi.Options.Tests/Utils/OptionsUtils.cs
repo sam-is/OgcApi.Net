@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Features.PostGis;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using OgcApi.Net.PostGis;
 
 namespace OgcApi.Options.Tests.Utils
 {
@@ -197,7 +197,7 @@ namespace OgcApi.Options.Tests.Utils
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
             var converter = new OgcApiOptionsConverter(Provider);
-            converter.WriteCollections(writer, options, new());
+            converter.WriteCollections(writer, options, new JsonSerializerOptions());
             writer.Flush();
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());

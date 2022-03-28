@@ -90,30 +90,30 @@ namespace OgcApi.Net.Options.Converters
                             landingPage.ContactName = reader.GetString();
                             break;
                         case "ContactUrl":
-                            landingPage.ContactUrl = new(reader.GetString());
+                            landingPage.ContactUrl = new Uri(reader.GetString());
                             break;
                         case "ApiDocumentPage":
-                            landingPage.ApiDocumentPage = new(reader.GetString());
+                            landingPage.ApiDocumentPage = new Uri(reader.GetString());
                             break;
                         case "Version":
-                            landingPage.Version = new(reader.GetString());
+                            landingPage.Version = new string(reader.GetString());
                             break;
                         case "ApiDescriptionPage":
-                            landingPage.ApiDescriptionPage = new(reader.GetString());
+                            landingPage.ApiDescriptionPage = new Uri(reader.GetString());
                             break;
                         case "LicenseName":
                             landingPage.LicenseName = reader.GetString();
                             break;
                         case "LicenseUrl":
-                            landingPage.LicenseUrl = new(reader.GetString());
+                            landingPage.LicenseUrl = new Uri(reader.GetString());
                             break;
                         case "Links":
-                            landingPage.Links = new();
+                            landingPage.Links = new List<Link>();
                             reader.Read();
                             while (reader.TokenType != JsonTokenType.EndArray)
                             {
                                 if (reader.TokenType == JsonTokenType.String)
-                                    landingPage.Links.Add(new() { Href = new(reader.GetString()) });
+                                    landingPage.Links.Add(new Link { Href = new Uri(reader.GetString()) });
                                 reader.Read();
                             }
                             break;
