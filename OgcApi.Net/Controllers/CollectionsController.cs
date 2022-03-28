@@ -696,9 +696,10 @@ namespace OgcApi.Net.Controllers
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
 
-                return Ok(new TileSets()
+                return Ok(new TileSets
                 {
-                    Items = {
+                    Items = new List<TileSet>
+                    {
                         new TileSet
                         {
                             Title = collectionOptions.Title,
@@ -743,9 +744,15 @@ namespace OgcApi.Net.Controllers
             if (collectionOptions != null)
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
-                return File(await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol), 
-                    "application/vnd.mapbox-vector-tile", 
-                    "tile.mvt");
+                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol);
+                if (tileContent != null)
+                {
+                    return File(tileContent,
+                        "application/vnd.mapbox-vector-tile",
+                        "tile.mvt");
+                }
+
+                return NoContent();
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
