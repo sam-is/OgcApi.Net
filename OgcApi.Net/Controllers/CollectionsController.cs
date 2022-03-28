@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,6 +18,7 @@ using System.Web;
 
 namespace OgcApi.Net.Controllers
 {
+    [EnableCors("OgcApi")]
     [ApiController]
     [Route("api/ogc/collections")]
     [ApiExplorerSettings(GroupName = "ogc")]
@@ -745,14 +747,11 @@ namespace OgcApi.Net.Controllers
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
                 var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol);
-                if (tileContent != null)
-                {
-                    return File(tileContent,
-                        "application/vnd.mapbox-vector-tile",
-                        "tile.mvt");
-                }
-
-                return NoContent();
+                if (tileContent == null) return NoContent();
+                Response.Headers.Add("Content-Encoding", "gzip");
+                return File(tileContent,
+                    "application/vnd.mapbox-vector-tile",
+                    "tile.mvt");                
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");
