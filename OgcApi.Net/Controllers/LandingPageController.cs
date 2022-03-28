@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,7 @@ using System.Text;
 
 namespace OgcApi.Net.Controllers
 {
+    [EnableCors]
     [ApiController]
     [Route("api/ogc")]
     [ApiExplorerSettings(GroupName = "ogc")]
