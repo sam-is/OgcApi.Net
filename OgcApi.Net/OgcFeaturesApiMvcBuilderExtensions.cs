@@ -7,7 +7,7 @@ namespace OgcApi.Net
 {
     public static class OgcFeaturesApiMvcBuilderExtensions
     {
-        public static IMvcBuilder AddOgсFeaturesControllers(
+        public static IMvcBuilder AddOgcApiControllers(
             this IMvcBuilder mvcBuilder)
         {
             if (mvcBuilder == null) throw new ArgumentNullException(nameof(mvcBuilder));

@@ -40,6 +40,16 @@ namespace OgcApi.Options.Tests.Utils
             return options;
         }
 
+
+        public static OgcApiOptions GetOptionsFromJsonWithoutConformance()
+        {
+            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
+            var reader = new Utf8JsonReader(jsonReadOnlySpan);
+            var converter = new OgcApiOptionsConverter(Provider);
+            var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
+            return options;
+        }
+
         public static OgcApiOptions GetOptionsFromCode()
         {
             return new OgcApiOptions
@@ -185,8 +195,7 @@ namespace OgcApi.Options.Tests.Utils
         {
             var ms = new MemoryStream();
             var writer = new Utf8JsonWriter(ms);
-            var converter = new OgcApiOptionsConverter(Provider);
-            converter.WriteLandingPage(writer, options);
+            OgcApiOptionsConverter.WriteLandingPage(writer, options);
             writer.Flush();
             ms.Close();
             return Encoding.UTF8.GetString(ms.ToArray());

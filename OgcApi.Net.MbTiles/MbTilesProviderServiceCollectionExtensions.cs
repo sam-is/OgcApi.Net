@@ -5,7 +5,7 @@ namespace OgcApi.Net.MbTiles
 {
     public static class MbTilesProviderServiceCollectionExtensions
     {
-        public static IServiceCollection AddOgcApiPostGisProvider(this IServiceCollection services)
+        public static IServiceCollection AddOgcApiMbTilesProvider(this IServiceCollection services)
         {
             services.AddSingleton<ITilesProvider, MbTilesProvider>();
 
