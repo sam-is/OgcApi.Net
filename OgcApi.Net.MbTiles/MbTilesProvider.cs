@@ -57,7 +57,14 @@ namespace OgcApi.Net.MbTiles
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    result.Add(new TileMatrixLimits { TileMatrix = reader.GetInt32(0), MinTileCol = reader.GetInt32(1), MaxTileCol = reader.GetInt32(2), MinTileRow = reader.GetInt32(3), MaxTileRow = reader.GetInt32(4) });
+                    result.Add(new TileMatrixLimits
+                    {
+                        TileMatrix = reader.GetInt32(0), 
+                        MinTileCol = reader.GetInt32(1), 
+                        MaxTileCol = reader.GetInt32(2), 
+                        MinTileRow = reader.GetInt32(3), 
+                        MaxTileRow = reader.GetInt32(4)
+                    });
                 }
 
                 return result;
@@ -69,7 +76,7 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileCol, int tileRow, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow,  int tileCol, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
