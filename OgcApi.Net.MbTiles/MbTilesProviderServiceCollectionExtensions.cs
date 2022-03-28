@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OgcApi.Net.DataProviders;
 
-namespace OgcApi.Net.PostGis
+namespace OgcApi.Net.MbTiles
 {
-    public static class OgcApiServiceCollectionExtensions
+    public static class MbTilesProviderServiceCollectionExtensions
     {
         public static IServiceCollection AddOgcApiPostGisProvider(this IServiceCollection services)
         {
-            services.AddSingleton<IFeaturesProvider, PostGisProvider>();
+            services.AddSingleton<ITilesProvider, MbTilesProvider>();
 
             return services;
         }

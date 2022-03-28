@@ -4,6 +4,7 @@ using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using OgcApi.Net.Options.Tiles;
 
 namespace OgcApi.MbTiles.Tests
 {
@@ -19,14 +20,14 @@ namespace OgcApi.MbTiles.Tests
                     {
                         Title = "data",
                         Id =  "data",
-                        Tiles = new()
+                        Tiles = new CollectionTilesOptions
                         {
                             TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                             Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
                             Storage = new MbTilesSourceOptions()
                             {
                                 Type = "MbTiles",
-                                ConnectionString = "Data Source=" + Path.Combine("Data", "data.mbtiles")
+                                FileName = Path.Combine("Data", "data.mbtiles")
                             }
                         }
                     }
@@ -44,14 +45,14 @@ namespace OgcApi.MbTiles.Tests
                     {
                         Title = "data",
                         Id =  "data",
-                        Tiles = new()
+                        Tiles = new CollectionTilesOptions
                         {
                             TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                             Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
                             Storage = new MbTilesSourceOptions()
                             {
                                 Type = "MbTiles",
-                                ConnectionString = "Data Source=" + Path.Combine("Data", "test.mbtiles")
+                                FileName = "Data Source=" + Path.Combine("Data", "test.mbtiles")
                             }
                         }
                     }
