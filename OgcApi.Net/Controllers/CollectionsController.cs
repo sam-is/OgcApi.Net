@@ -714,7 +714,7 @@ namespace OgcApi.Net.Controllers
                             {
                                 new()
                                 {
-                                    Href = Utils.GetBaseUrl(Request, false),
+                                    Href = new Uri(Utils.GetBaseUrl(Request), $"{collectionId}/tiles"),
                                     Rel = "self",
                                     Type = "application/json"
                                 },

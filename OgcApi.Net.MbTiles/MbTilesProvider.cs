@@ -105,6 +105,28 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
+        public async Task<byte[]> GetTileDirectAsync(string fileName, int tileMatrix, int tileRow, int tileCol)
+        {
+            try
+            {
+                await using var connection = GetDbConnection(fileName);
+                connection.Open();
+
+                var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
+
+                command.Parameters.AddWithValue("$zoom_level", tileMatrix);
+                command.Parameters.AddWithValue("$tile_column", tileCol);
+                command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
+                return (byte[])(await command.ExecuteScalarAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetTileDirectAsync database query completed with an exception");
+                throw;
+            }
+        }
+
+
         public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
         {
             return JsonSerializer.Deserialize<MbTilesSourceOptions>(json, options);

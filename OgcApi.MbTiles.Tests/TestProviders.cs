@@ -69,5 +69,10 @@ namespace OgcApi.MbTiles.Tests
         {
             return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetOptionsWithUnknownDataFile() };
         }
+
+        public static MbTilesProvider GetProvider()
+        {
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>());
+        }
     }
 }
