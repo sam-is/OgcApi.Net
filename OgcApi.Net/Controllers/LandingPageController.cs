@@ -31,7 +31,7 @@ namespace OgcApi.Net.Controllers
             _apiOptions = apiOptions.CurrentValue;
             _openApiGenerator = openApiGenerator;
 
-            _logger = logger.CreateLogger("OGC API Features LandingPageController");
+            _logger = logger.CreateLogger("OgcApi.Net.Controllers.LandingPageController");
 
             try
             {

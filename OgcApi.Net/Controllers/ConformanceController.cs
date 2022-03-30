@@ -25,7 +25,7 @@ namespace OgcApi.Net.Controllers
         {
             _apiOptions = apiOptions.CurrentValue;
 
-            _logger = logger.CreateLogger("OGC API Features ConformanceController");
+            _logger = logger.CreateLogger("OgcApi.Net.Controllers.ConformanceController");
 
             try
             {
