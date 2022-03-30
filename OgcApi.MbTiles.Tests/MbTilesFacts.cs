@@ -1,11 +1,11 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
-using Moq;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
-using OgcApi.Net.Options.Tiles;
+using System.IO;
 using Xunit;
 
 namespace OgcApi.MbTiles.Tests
@@ -59,6 +59,13 @@ namespace OgcApi.MbTiles.Tests
         }
 
         [Fact]
+        public async void GetTileDirect()
+        {
+            var tile = await TestProviders.GetProvider().GetTileDirectAsync(Path.Combine("Data", "data.mbtiles"), 8, 82, 162);
+            Assert.NotNull(tile);
+        }
+
+        [Fact]
         public void GetTileUnknownCollection()
         {
             Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 8, 162, 82));
@@ -90,6 +97,13 @@ namespace OgcApi.MbTiles.Tests
         {
             Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
         }
+
+        [Fact]
+        public void GetTileDirectFileNotExists()
+        {
+            Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProvider().GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
+        }
+
 
         [Fact]
         public void GetLimits()

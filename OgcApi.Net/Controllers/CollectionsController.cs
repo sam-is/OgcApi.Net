@@ -714,7 +714,7 @@ namespace OgcApi.Net.Controllers
                             {
                                 new()
                                 {
-                                    Href = Utils.GetBaseUrl(Request, false),
+                                    Href = new Uri(Utils.GetBaseUrl(Request), $"{collectionId}/tiles"),
                                     Rel = "self",
                                     Type = "application/json"
                                 },
@@ -751,7 +751,7 @@ namespace OgcApi.Net.Controllers
                 Response.Headers.Add("Content-Encoding", "gzip");
                 return File(tileContent,
                     "application/vnd.mapbox-vector-tile",
-                    "tile.mvt");                
+                    "tile.mvt");
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");

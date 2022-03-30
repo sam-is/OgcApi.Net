@@ -432,7 +432,7 @@ namespace OgcApi.Net.OpenApi
                                 }
                             },
                             Required = new HashSet<string> { "tileMatrixSetURI", "crs", "dataType", "links", "tileMatrixSetLimits" }
-                        } 
+                        }
                     }
                 }
             };

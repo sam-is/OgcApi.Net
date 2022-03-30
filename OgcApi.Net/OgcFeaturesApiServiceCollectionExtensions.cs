@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.Options;
 using Microsoft.Extensions.Options;
 using OgcApi.Net.OpenApi;
+using OgcApi.Net.Options;
 
 namespace OgcApi.Net
 {

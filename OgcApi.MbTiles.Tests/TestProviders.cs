@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OgcApi.Net.Options.Tiles;
 
 namespace OgcApi.MbTiles.Tests
 {
@@ -68,6 +68,11 @@ namespace OgcApi.MbTiles.Tests
         public static MbTilesProvider GetProviderWithErrors()
         {
             return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetOptionsWithUnknownDataFile() };
+        }
+
+        public static MbTilesProvider GetProvider()
+        {
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>());
         }
     }
 }

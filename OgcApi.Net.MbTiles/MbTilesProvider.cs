@@ -59,10 +59,10 @@ namespace OgcApi.Net.MbTiles
                 {
                     result.Add(new TileMatrixLimits
                     {
-                        TileMatrix = reader.GetInt32(0), 
-                        MinTileCol = reader.GetInt32(1), 
-                        MaxTileCol = reader.GetInt32(2), 
-                        MinTileRow = reader.GetInt32(3), 
+                        TileMatrix = reader.GetInt32(0),
+                        MinTileCol = reader.GetInt32(1),
+                        MaxTileCol = reader.GetInt32(2),
+                        MinTileRow = reader.GetInt32(3),
                         MaxTileRow = reader.GetInt32(4)
                     });
                 }
@@ -76,7 +76,7 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow,  int tileCol, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
@@ -104,6 +104,28 @@ namespace OgcApi.Net.MbTiles
                 throw;
             }
         }
+
+        public async Task<byte[]> GetTileDirectAsync(string fileName, int tileMatrix, int tileRow, int tileCol)
+        {
+            try
+            {
+                await using var connection = GetDbConnection(fileName);
+                connection.Open();
+
+                var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
+
+                command.Parameters.AddWithValue("$zoom_level", tileMatrix);
+                command.Parameters.AddWithValue("$tile_column", tileCol);
+                command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
+                return (byte[])(await command.ExecuteScalarAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetTileDirectAsync database query completed with an exception");
+                throw;
+            }
+        }
+
 
         public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
         {

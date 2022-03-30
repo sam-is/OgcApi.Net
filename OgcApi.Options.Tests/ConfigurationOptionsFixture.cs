@@ -1,5 +1,5 @@
-﻿using OgcApi.Options.Tests.Utils;
-using OgcApi.Net.Options;
+﻿using OgcApi.Net.Options;
+using OgcApi.Options.Tests.Utils;
 
 namespace OgcApi.Options.Tests
 {
