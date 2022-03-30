@@ -1,14 +1,12 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
-using Moq;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
-using OgcApi.Net.Options.Tiles;
-using Xunit;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.IO;
+using Xunit;
 
 namespace OgcApi.MbTiles.Tests
 {

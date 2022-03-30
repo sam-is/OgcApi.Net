@@ -3,6 +3,7 @@ using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
+using OgcApi.Net.PostGis;
 using OgcApi.Net.Resources;
 using OgcApi.Net.SqlServer;
 using System;
@@ -10,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using OgcApi.Net.PostGis;
 
 namespace OgcApi.Options.Tests.Utils
 {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
+using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OgcApi.Net.Options.Tiles;
 
 namespace OgcApi.MbTiles.Tests
 {
