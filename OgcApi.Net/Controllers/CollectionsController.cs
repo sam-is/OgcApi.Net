@@ -37,7 +37,7 @@ namespace OgcApi.Net.Controllers
             _apiOptions = apiOptions.CurrentValue;
             _serviceProvider = serviceProvider;
 
-            _logger = logger.CreateLogger("OGC API Features CollectionsController");
+            _logger = logger.CreateLogger("OgcApi.Net.Controllers.CollectionsController");
 
             try
             {
@@ -102,24 +102,26 @@ namespace OgcApi.Net.Controllers
 
         private Collection GetCollectionMetadata(Uri uri, CollectionOptions collectionOptions)
         {
-            var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
-
             var extent = collectionOptions.Extent;
             if (extent == null)
             {
-                var envelope = dataProvider.GetBbox(collectionOptions.Id);
-                if (envelope != null)
+                if (collectionOptions.Features != null)
                 {
-                    envelope.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
-
-                    extent = new Extent
+                    var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
+                    var envelope = dataProvider.GetBbox(collectionOptions.Id);
+                    if (envelope != null)
                     {
-                        Spatial = new SpatialExtent
+                        envelope.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
+
+                        extent = new Extent
                         {
-                            Bbox = new[] { new[] { envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY } },
-                            Crs = CrsUtils.DefaultCrs
-                        }
-                    };
+                            Spatial = new SpatialExtent
+                            {
+                                Bbox = new[] { new[] { envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY } },
+                                Crs = CrsUtils.DefaultCrs
+                            }
+                        };
+                    }
                 }
             }
 
@@ -155,9 +157,9 @@ namespace OgcApi.Net.Controllers
                 Description = collectionOptions.Description,
                 Extent = extent,
                 Links = links,
-                Crs = collectionOptions.Features.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
-                StorageCrs = collectionOptions.Features.StorageCrs ?? CrsUtils.DefaultCrs,
-                StorageCrsCoordinateEpoch = collectionOptions.Features.StorageCrsCoordinateEpoch
+                Crs = collectionOptions.Features?.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
+                StorageCrs = collectionOptions.Features?.StorageCrs ?? CrsUtils.DefaultCrs,
+                StorageCrsCoordinateEpoch = collectionOptions.Features?.StorageCrsCoordinateEpoch
             };
             return collection;
         }
@@ -702,7 +704,7 @@ namespace OgcApi.Net.Controllers
                 {
                     Items = new List<TileSet>
                     {
-                        new TileSet
+                        new()
                         {
                             Title = collectionOptions.Title,
                             Crs = collectionOptions.Tiles.Crs,
