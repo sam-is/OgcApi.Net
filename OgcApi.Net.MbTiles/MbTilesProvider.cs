@@ -53,17 +53,17 @@ namespace OgcApi.Net.MbTiles
 
                 var checkMetadataCommand = GetDbCommand(@"SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'metadata'", connection);
                 if (checkMetadataCommand.ExecuteScalar() == null) return null;
-                
+
                 var getParamCommand = GetDbCommand(@"SELECT Value FROM metadata WHERE name = $name", connection);
-                    
+
                 getParamCommand.Parameters.AddWithValue("$name", "minzoom");
-                if (!int.TryParse(getParamCommand.ExecuteScalar().ToString(), out int minZoom)) return null;
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out int minZoom)) return null;
 
                 getParamCommand.Parameters["$name"].Value = "maxzoom";
-                if (!int.TryParse(getParamCommand.ExecuteScalar().ToString(), out int maxZoom)) return null;
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out int maxZoom)) return null;
 
                 getParamCommand.Parameters["$name"].Value = "bounds";
-                var boundsStr = getParamCommand.ExecuteScalar().ToString();
+                var boundsStr = getParamCommand.ExecuteScalar()?.ToString();
                 if (boundsStr == null) return null;
                 string[] coordStrs = boundsStr.Split(',');
                 if (coordStrs.Length != 4) return null;

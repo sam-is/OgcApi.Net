@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles
 {
@@ -30,7 +26,7 @@ namespace OgcApi.Net.MbTiles
 
         public static double TileYToLat(int y, int z)
         {
-            double n = Math.PI - 2.0 * Math.PI * y / (double)(1 << z);
+            var n = Math.PI - 2.0 * Math.PI * y / (1 << z);
             return 180.0 / Math.PI * Math.Atan(0.5 * (Math.Exp(n) - Math.Exp(-n)));
         }
     }
