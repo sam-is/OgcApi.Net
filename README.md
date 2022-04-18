@@ -31,35 +31,6 @@ OgcApi.Net.SqlServer | Sql Server features data provider implementation | [![Nug
 OgcApi.Net.PostGis | PostgreSQL/PostGis features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.PostGis)](https://www.nuget.org/packages/OgcApi.Net.PostGis/)
 OgcApi.Net.MbTiles | MbTiles tiles provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.MbTiles)](https://www.nuget.org/packages/OgcApi.Net.MbTiles/)
 
-## Features API
-
-OGC API - Features is a multi-part standard that offers the capability to create, modify, and query spatial data on the Web. It specifies requirements and recommendations for APIs that want to follow a standard way of sharing feature data.
-OGC API Features provides access to collections of geospatial data based on OpenAPI 3. 
-
-This implementation supports automatic API generation from metadata descriptions. To generate API, you must:
-1. Create ASP.NET Core WebAPI project
-2. Install necessary NuGet packages
-3. Register providers in ConfigureServices method. For example, to publish data from PostgreSQL you must add PostGis provider:
-```csharp
-services.AddOgcApiPostGisProvider();
-```
-4. Register OpenAPI and configure API:
-```csharp
-services.AddOgcApi();
-```
-3. Add controllers in ConfigureServices method:
-```csharp
-services.AddControllers().AddOgcApiControllers();
-```
-This implementation uses attribute routing. All API endpoints will be accessible by the path /api/ogc.
-
-### API configuration
-
-In # OgcApi.Net
-.Net implementation of the OGC API family of standards
-
-[![GitHub](https://img.shields.io/github/license/sam-is/OgcApi.Net)](https://github.com/sam-is/OgcApi.Net/blob/main/LICENSE)
-
 ## API configuration
 
 This implementation supports automatic API generation from metadata descriptions. To generate API, you must:
