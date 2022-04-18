@@ -60,34 +60,6 @@ In # OgcApi.Net
 
 [![GitHub](https://img.shields.io/github/license/sam-is/OgcApi.Net)](https://github.com/sam-is/OgcApi.Net/blob/main/LICENSE)
 
-## Overview
-
-OGC API standards define modular API building blocks to spatially enable Web APIs in a consistent way. The OpenAPI specification is used to define the API building blocks.
-
-Currently, this project implements the following standards:
-
-Standard | Data Providers
---- | ---
-[OGC API - Features - Part 1: Core](http://www.opengis.net/doc/IS/ogcapi-features-1/1.0) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis
-[OGC API - Features - Part 2: Coordinate Reference Systems by Reference](http://www.opengis.net/doc/IS/ogcapi-features-2/1.0) | Independent 
-[OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis 
-[OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles 
-
-This project uses:
-- ASP.NET Core 5.0 for building web API
-- [NetTopologySuite](https://github.com/NetTopologySuite/NetTopologySuite) for the features representation
-- [ProjNET](https://github.com/NetTopologySuite/ProjNet4GeoAPI) for coordinate conversions
-- [OpenAPI.NET](https://github.com/Microsoft/OpenAPI.NET) for OpenAPI documents generation
-
-NuGet packages:
-
-Package | Description | Link
---- | --- | ---
-OgcApi.Net | OGC API - Features implementation without specific implementations of the data providers | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net)](https://www.nuget.org/packages/OgcApi.Net/)
-OgcApi.Net.SqlServer | Sql Server features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.SqlServer)](https://www.nuget.org/packages/OgcApi.Net.SqlServer/)
-OgcApi.Net.PostGis | PostgreSQL/PostGis features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.PostGis)](https://www.nuget.org/packages/OgcApi.Net.PostGis/)
-OgcApi.Net.MbTiles | MbTiles tiles provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.MbTiles)](https://www.nuget.org/packages/OgcApi.Net.MbTiles/)
-
 ## API configuration
 
 This implementation supports automatic API generation from metadata descriptions. To generate API, you must:
