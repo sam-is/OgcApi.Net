@@ -65,12 +65,12 @@ namespace OgcApi.Net.MbTiles
                 getParamCommand.Parameters["$name"].Value = "bounds";
                 var boundsStr = getParamCommand.ExecuteScalar()?.ToString();
                 if (boundsStr == null) return null;
-                string[] coordStrs = boundsStr.Split(',');
+                var coordStrs = boundsStr.Split(',');
                 if (coordStrs.Length != 4) return null;
-                if (!double.TryParse(coordStrs[0], out double lon1)) return null;
-                if (!double.TryParse(coordStrs[1], out double lat1)) return null;
-                if (!double.TryParse(coordStrs[2], out double lon2)) return null;
-                if (!double.TryParse(coordStrs[3], out double lat2)) return null;
+                if (!double.TryParse(coordStrs[0], out var lon1)) return null;
+                if (!double.TryParse(coordStrs[1], out var lat1)) return null;
+                if (!double.TryParse(coordStrs[2], out var lon2)) return null;
+                if (!double.TryParse(coordStrs[3], out var lat2)) return null;
 
                 List<TileMatrixLimits> result = new();
                 for (int i = minZoom; i <= maxZoom; i++)
