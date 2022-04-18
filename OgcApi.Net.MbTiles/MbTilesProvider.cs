@@ -57,10 +57,10 @@ namespace OgcApi.Net.MbTiles
                 var getParamCommand = GetDbCommand(@"SELECT Value FROM metadata WHERE name = $name", connection);
 
                 getParamCommand.Parameters.AddWithValue("$name", "minzoom");
-                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out int minZoom)) return null;
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var minZoom)) return null;
 
                 getParamCommand.Parameters["$name"].Value = "maxzoom";
-                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out int maxZoom)) return null;
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var maxZoom)) return null;
 
                 getParamCommand.Parameters["$name"].Value = "bounds";
                 var boundsStr = getParamCommand.ExecuteScalar()?.ToString();
@@ -75,18 +75,13 @@ namespace OgcApi.Net.MbTiles
                 List<TileMatrixLimits> result = new();
                 for (int i = minZoom; i <= maxZoom; i++)
                 {
-                    var x1 = CoordinateConverter.LongToTileX(lon1, i);
-                    var y1 = CoordinateConverter.LatToTileY(lat1, i);
-                    var x2 = CoordinateConverter.LongToTileX(lon2, i);
-                    var y2 = CoordinateConverter.LatToTileY(lat2, i);
-
                     result.Add(new TileMatrixLimits
                     {
                         TileMatrix = i,
-                        MinTileCol = x1,
-                        MaxTileCol = x2,
-                        MinTileRow = y2,
-                        MaxTileRow = y1
+                        MinTileCol = CoordinateConverter.LongToTileX(lon1, i),
+                        MaxTileCol = CoordinateConverter.LongToTileX(lon2, i),
+                        MinTileRow = CoordinateConverter.LatToTileY(lat2, i),
+                        MaxTileRow = CoordinateConverter.LatToTileY(lat1, i)
                     });
                 }
                 return result;
