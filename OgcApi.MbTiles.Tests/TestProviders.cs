@@ -10,24 +10,28 @@ namespace OgcApi.MbTiles.Tests
 {
     public static class TestProviders
     {
-        private static CollectionsOptions GetDefaultOptions()
+        private static OgcApiOptions GetDefaultOptions()
         {
-            return new CollectionsOptions
+            return new OgcApiOptions
             {
-                Items = new List<CollectionOptions>
+                Collections = new CollectionsOptions
                 {
-                    new()
+                    Items = new List<CollectionOptions>
                     {
-                        Title = "data",
-                        Id =  "data",
-                        Tiles = new CollectionTilesOptions
+                        new()
                         {
-                            TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
-                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                            Storage = new MbTilesSourceOptions()
+                            Title = "data",
+                            Id = "data",
+                            Tiles = new CollectionTilesOptions
                             {
-                                Type = "MbTiles",
-                                FileName = Path.Combine("Data", "data.mbtiles")
+                                TileMatrixSet =
+                                    new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                                Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                                Storage = new MbTilesSourceOptions()
+                                {
+                                    Type = "MbTiles",
+                                    FileName = Path.Combine("Data", "data.mbtiles")
+                                }
                             }
                         }
                     }
@@ -35,24 +39,28 @@ namespace OgcApi.MbTiles.Tests
             };
         }
 
-        private static CollectionsOptions GetOptionsWithUnknownDataFile()
+        private static OgcApiOptions GetOptionsWithUnknownDataFile()
         {
-            return new CollectionsOptions
+            return new OgcApiOptions
             {
-                Items = new List<CollectionOptions>
+                Collections = new CollectionsOptions
                 {
-                    new()
+                    Items = new List<CollectionOptions>
                     {
-                        Title = "data",
-                        Id =  "data",
-                        Tiles = new CollectionTilesOptions
+                        new()
                         {
-                            TileMatrixSet = new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
-                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                            Storage = new MbTilesSourceOptions()
+                            Title = "data",
+                            Id = "data",
+                            Tiles = new CollectionTilesOptions
                             {
-                                Type = "MbTiles",
-                                FileName = "Data Source=" + Path.Combine("Data", "test.mbtiles")
+                                TileMatrixSet =
+                                    new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                                Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                                Storage = new MbTilesSourceOptions()
+                                {
+                                    Type = "MbTiles",
+                                    FileName = "Data Source=" + Path.Combine("Data", "test.mbtiles")
+                                }
                             }
                         }
                     }
@@ -62,17 +70,12 @@ namespace OgcApi.MbTiles.Tests
 
         public static MbTilesProvider GetDefaultProvider()
         {
-            return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetDefaultOptions() };
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>(), GetDefaultOptions());
         }
 
         public static MbTilesProvider GetProviderWithErrors()
         {
-            return new MbTilesProvider(new NullLogger<MbTilesProvider>()) { CollectionsOptions = GetOptionsWithUnknownDataFile() };
-        }
-
-        public static MbTilesProvider GetProvider()
-        {
-            return new MbTilesProvider(new NullLogger<MbTilesProvider>());
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>(), GetOptionsWithUnknownDataFile());
         }
     }
 }

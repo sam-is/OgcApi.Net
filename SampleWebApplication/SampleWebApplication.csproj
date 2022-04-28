@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="ogcapi.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Utils\DatabaseCreate.sql" />
+    <None Remove="Utils\DatabaseInstall.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Utils\DatabaseCreate.sql" />
+    <EmbeddedResource Include="Utils\DatabaseInstall.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ogcapi.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\data.mbtiles">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OgcApiSample.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

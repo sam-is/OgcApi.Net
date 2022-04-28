@@ -1,186 +1,170 @@
+using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
+using OgcApi.Options.Tests.Utils;
 using System.Linq;
 using Xunit;
 
 namespace OgcApi.Options.Tests
 {
-    public class ProvidersDeserializationFacts : IClassFixture<ProvidersOptionsFixture>
+    public class ProvidersDeserializationFacts : IClassFixture<ConfigurationOptionsFixture>
     {
-        private readonly ProvidersOptionsFixture _fixture;
-        public ProvidersDeserializationFacts(ProvidersOptionsFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        private readonly OgcApiOptions _options;
 
-        [Fact]
-        public void SqlServerProviderOptionsSet()
+        public ProvidersDeserializationFacts(ConfigurationOptionsFixture fixture)
         {
-            Assert.NotNull(_fixture.sqlServerProvider);
-            Assert.NotNull(_fixture.sqlServerCollectionsOptions);
-        }
-
-        [Fact]
-        public void PostGisProviderOptionsSet()
-        {
-            Assert.NotNull(_fixture.postGisProvider);
-            Assert.NotNull(_fixture.postGisCollectionsOptions);
+            _options = fixture.Options;
         }
 
         [Fact]
         public void SqlServerProviderOptionsLinksSet()
         {
-            Assert.NotNull(_fixture.jsonCollectionsOptions.Links);
-            Assert.NotNull(_fixture.sqlServerCollectionsOptions.Links);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links.Count, _fixture.sqlServerCollectionsOptions.Links.Count);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0].Href, _fixture.sqlServerCollectionsOptions.Links[0].Href);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1].Href, _fixture.sqlServerCollectionsOptions.Links[1].Href);
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "SqlServer");
+            var actualCollectionOptions =
+                _options.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "SqlServer");
+
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
+
+            Assert.Equal(expectedCollectionOptions.Links.Count, actualCollectionOptions.Links.Count);
+            Assert.Equal(expectedCollectionOptions.Links[0].Href, actualCollectionOptions.Links[0].Href);
+            Assert.Equal(expectedCollectionOptions.Links[1].Href, actualCollectionOptions.Links[1].Href);
         }
 
         [Fact]
         public void PostGisProviderOptionsLinksSet()
         {
-            Assert.NotNull(_fixture.jsonCollectionsOptions.Links);
-            Assert.NotNull(_fixture.postGisCollectionsOptions.Links);
-            Assert.NotEmpty(_fixture.jsonCollectionsOptions.Links);
-            Assert.NotEmpty(_fixture.postGisCollectionsOptions.Links);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links.Count, _fixture.postGisCollectionsOptions.Links.Count);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[0].Href, _fixture.postGisCollectionsOptions.Links[0].Href);
-            Assert.Equal(_fixture.jsonCollectionsOptions.Links[1].Href, _fixture.postGisCollectionsOptions.Links[1].Href);
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "PostGis");
+            var actualCollectionOptions =
+                _options.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "PostGis");
+
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
+
+            Assert.Equal(expectedCollectionOptions.Links.Count, actualCollectionOptions.Links.Count);
+            Assert.Equal(expectedCollectionOptions.Links[0].Href, actualCollectionOptions.Links[0].Href);
+            Assert.Equal(expectedCollectionOptions.Links[1].Href, actualCollectionOptions.Links[1].Href);
         }
 
         [Fact]
         public void SqlServerProviderOptionsItemsSet()
         {
-            var apiOptions = _fixture.jsonCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList();
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "SqlServer");
+            var actualCollectionOptions =
+                _options.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "SqlServer");
 
-            Assert.NotNull(apiOptions);
-            Assert.Single(apiOptions);
-            Assert.NotNull(_fixture.sqlServerCollectionsOptions.Items);
-            Assert.Single(_fixture.sqlServerCollectionsOptions.Items);
-            Assert.NotNull(_fixture.sqlServerCollectionsOptions.Items[0]);
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
 
-            Assert.Equal(apiOptions[0].Links.Count, _fixture.sqlServerCollectionsOptions.Items[0].Links.Count);
-            Assert.Equal(apiOptions[0].Links[0].Href, _fixture.sqlServerCollectionsOptions.Items[0].Links[0].Href);
-            Assert.Equal(apiOptions[0].Links[1].Href, _fixture.sqlServerCollectionsOptions.Items[0].Links[1].Href);
-
-            Assert.Equal(apiOptions[0].Extent.Spatial.Crs, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Spatial.Crs);
-            Assert.Equal(apiOptions[0].Extent.Spatial.Bbox.Length, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Spatial.Bbox.Length);
-            Assert.Equal(apiOptions[0].Extent.Temporal.Trs, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Temporal.Trs);
-            Assert.Equal(apiOptions[0].Extent.Temporal.Interval.Length, _fixture.sqlServerCollectionsOptions.Items[0].Extent.Temporal.Interval.Length);
-            Assert.Equal(apiOptions[0].Id, _fixture.sqlServerCollectionsOptions.Items[0].Id);
-            Assert.Equal(apiOptions[0].ItemType, _fixture.sqlServerCollectionsOptions.Items[0].ItemType);
-            Assert.Equal(apiOptions[0].Title, _fixture.sqlServerCollectionsOptions.Items[0].Title);
-            Assert.Equal(apiOptions[0].Description, _fixture.sqlServerCollectionsOptions.Items[0].Description);
-            Assert.Equal(apiOptions[0].Features.StorageCrs, _fixture.sqlServerCollectionsOptions.Items[0].Features.StorageCrs);
-
-            Assert.Equal(apiOptions[0].Features.Crs.Count, _fixture.sqlServerCollectionsOptions.Items[0].Features.Crs.Count);
-            Assert.Equal(apiOptions[0].Features.Crs[0], _fixture.sqlServerCollectionsOptions.Items[0].Features.Crs[0]);
-            Assert.Equal(apiOptions[0].Features.Crs[1], _fixture.sqlServerCollectionsOptions.Items[0].Features.Crs[1]);
+            Assert.Equal(expectedCollectionOptions.Id, actualCollectionOptions.Id);
+            Assert.Equal(expectedCollectionOptions.Title, actualCollectionOptions.Title);
+            Assert.Equal(expectedCollectionOptions.Description, actualCollectionOptions.Description);
+            Assert.Equal(expectedCollectionOptions.Features.StorageCrs, actualCollectionOptions.Features.StorageCrs);
+            Assert.Equal(expectedCollectionOptions.Features.Crs.Count, actualCollectionOptions.Features.Crs.Count);
+            Assert.Equal(expectedCollectionOptions.Features.Crs[0], actualCollectionOptions.Features.Crs[0]);
+            Assert.Equal(expectedCollectionOptions.Features.Crs[1], actualCollectionOptions.Features.Crs[1]);
         }
 
         [Fact]
         public void PostGisProviderOptionsItemsSet()
         {
-            var apiOptions = _fixture.jsonCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList();
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "PostGis");
+            var actualCollectionOptions =
+                _options.Collections.Items.FirstOrDefault(collection => collection.Features.Storage.Type == "PostGis");
 
-            Assert.NotNull(apiOptions);
-            Assert.Single(apiOptions);
-            Assert.NotNull(_fixture.postGisCollectionsOptions.Items);
-            Assert.Single(_fixture.postGisCollectionsOptions.Items);
-            Assert.NotNull(_fixture.postGisCollectionsOptions.Items[0]);
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
 
-            Assert.Equal(apiOptions[0].Links.Count, _fixture.postGisCollectionsOptions.Items[0].Links.Count);
-            Assert.Equal(apiOptions[0].Links[0].Href, _fixture.postGisCollectionsOptions.Items[0].Links[0].Href);
-            Assert.Equal(apiOptions[0].Links[1].Href, _fixture.postGisCollectionsOptions.Items[0].Links[1].Href);
-
-            Assert.Equal(apiOptions[0].Extent.Spatial.Crs, _fixture.postGisCollectionsOptions.Items[0].Extent.Spatial.Crs);
-            Assert.Equal(apiOptions[0].Extent.Spatial.Bbox.Length, _fixture.postGisCollectionsOptions.Items[0].Extent.Spatial.Bbox.Length);
-            Assert.Equal(apiOptions[0].Extent.Temporal.Trs, _fixture.postGisCollectionsOptions.Items[0].Extent.Temporal.Trs);
-            Assert.Equal(apiOptions[0].Extent.Temporal.Interval.Length, _fixture.postGisCollectionsOptions.Items[0].Extent.Temporal.Interval.Length);
-
-            Assert.Equal(apiOptions[0].Id, _fixture.postGisCollectionsOptions.Items[0].Id);
-            Assert.Equal(apiOptions[0].ItemType, _fixture.postGisCollectionsOptions.Items[0].ItemType);
-            Assert.Equal(apiOptions[0].Title, _fixture.postGisCollectionsOptions.Items[0].Title);
-            Assert.Equal(apiOptions[0].Description, _fixture.postGisCollectionsOptions.Items[0].Description);
-            Assert.Equal(apiOptions[0].Features.StorageCrs, _fixture.postGisCollectionsOptions.Items[0].Features.StorageCrs);
-
-            Assert.Equal(apiOptions[0].Features.Crs.Count, _fixture.postGisCollectionsOptions.Items[0].Features.Crs.Count);
-            Assert.Equal(apiOptions[0].Features.Crs[0], _fixture.postGisCollectionsOptions.Items[0].Features.Crs[0]);
-            Assert.Equal(apiOptions[0].Features.Crs[1], _fixture.postGisCollectionsOptions.Items[0].Features.Crs[1]);
+            Assert.Equal(expectedCollectionOptions.Extent.Spatial.Crs, actualCollectionOptions.Extent.Spatial.Crs);
+            Assert.Equal(expectedCollectionOptions.Extent.Spatial.Bbox.Length, actualCollectionOptions.Extent.Spatial.Bbox.Length);
+            Assert.Equal(expectedCollectionOptions.Extent.Temporal.Trs, actualCollectionOptions.Extent.Temporal.Trs);
+            Assert.Equal(expectedCollectionOptions.Extent.Temporal.Interval.Length, actualCollectionOptions.Extent.Temporal.Interval.Length);
+            Assert.Equal(expectedCollectionOptions.Id, actualCollectionOptions.Id);
+            Assert.Equal(expectedCollectionOptions.Title, actualCollectionOptions.Title);
+            Assert.Equal(expectedCollectionOptions.Description, actualCollectionOptions.Description);
+            Assert.Equal(expectedCollectionOptions.Features.StorageCrs, actualCollectionOptions.Features.StorageCrs);
+            Assert.Equal(expectedCollectionOptions.Features.Crs.Count, actualCollectionOptions.Features.Crs.Count);
+            Assert.Equal(expectedCollectionOptions.Features.Crs[0], actualCollectionOptions.Features.Crs[0]);
+            Assert.Equal(expectedCollectionOptions.Features.Crs[1], actualCollectionOptions.Features.Crs[1]);
         }
 
         [Fact]
         public void SqlServerProviderOptionsStorageSet()
         {
-            var providerStorage = _fixture.sqlServerCollectionsOptions.Items[0].Features.Storage as SqlFeaturesSourceOptions;
-            var apiStorage = _fixture.jsonCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "SqlServer").ToList()[0].Features.Storage as SqlFeaturesSourceOptions;
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.First(collection => collection.Features.Storage.Type == "SqlServer").Features.Storage as SqlFeaturesSourceOptions;
+            var actualCollectionOptions =
+                _options.Collections.Items.First(collection => collection.Features.Storage.Type == "SqlServer").Features.Storage as SqlFeaturesSourceOptions;
 
-            Assert.NotNull(apiStorage);
-            Assert.NotNull(providerStorage);
-            Assert.Equal(apiStorage.Type, providerStorage.Type);
-            Assert.Equal(apiStorage.Table, providerStorage.Table);
-            Assert.Equal(apiStorage.Schema, providerStorage.Schema);
-            Assert.Equal(apiStorage.IdentifierColumn, providerStorage.IdentifierColumn);
-            Assert.Equal(apiStorage.GeometrySrid, providerStorage.GeometrySrid);
-            Assert.Equal(apiStorage.GeometryGeoJsonType, providerStorage.GeometryGeoJsonType);
-            Assert.Equal(apiStorage.GeometryDataType, providerStorage.GeometryDataType);
-            Assert.Equal(apiStorage.GeometryColumn, providerStorage.GeometryColumn);
-            Assert.Equal(apiStorage.DateTimeColumn, providerStorage.DateTimeColumn);
-            Assert.Equal(apiStorage.ConnectionString, providerStorage.ConnectionString);
-            Assert.Equal(apiStorage.ApiKeyPredicateForUpdate, providerStorage.ApiKeyPredicateForUpdate);
-            Assert.Equal(apiStorage.ApiKeyPredicateForGet, providerStorage.ApiKeyPredicateForGet);
-            Assert.Equal(apiStorage.ApiKeyPredicateForDelete, providerStorage.ApiKeyPredicateForDelete);
-            Assert.Equal(apiStorage.ApiKeyPredicateForCreate, providerStorage.ApiKeyPredicateForCreate);
-            Assert.Equal(apiStorage.AllowUpdate, providerStorage.AllowUpdate);
-            Assert.Equal(apiStorage.AllowReplace, providerStorage.AllowReplace);
-            Assert.Equal(apiStorage.AllowDelete, providerStorage.AllowDelete);
-            Assert.Equal(apiStorage.AllowCreate, providerStorage.AllowCreate);
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
 
-            Assert.NotNull(apiStorage.Properties);
-            Assert.NotEmpty(apiStorage.Properties);
-            Assert.NotNull(providerStorage.Properties);
-            Assert.NotEmpty(providerStorage.Properties);
-            Assert.Equal(apiStorage.Properties.Count, providerStorage.Properties.Count);
-            Assert.Equal(apiStorage.Properties[0], providerStorage.Properties[0]);
-            Assert.Equal(apiStorage.Properties[1], providerStorage.Properties[1]);
+            Assert.Equal(expectedCollectionOptions.Type, actualCollectionOptions.Type);
+            Assert.Equal(expectedCollectionOptions.Table, actualCollectionOptions.Table);
+            Assert.Equal(expectedCollectionOptions.Schema, actualCollectionOptions.Schema);
+            Assert.Equal(expectedCollectionOptions.IdentifierColumn, actualCollectionOptions.IdentifierColumn);
+            Assert.Equal(expectedCollectionOptions.GeometrySrid, actualCollectionOptions.GeometrySrid);
+            Assert.Equal(expectedCollectionOptions.GeometryGeoJsonType, actualCollectionOptions.GeometryGeoJsonType);
+            Assert.Equal(expectedCollectionOptions.GeometryDataType, actualCollectionOptions.GeometryDataType);
+            Assert.Equal(expectedCollectionOptions.GeometryColumn, actualCollectionOptions.GeometryColumn);
+            Assert.Equal(expectedCollectionOptions.ConnectionString, actualCollectionOptions.ConnectionString);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForUpdate, actualCollectionOptions.ApiKeyPredicateForUpdate);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForGet, actualCollectionOptions.ApiKeyPredicateForGet);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForCreate, actualCollectionOptions.ApiKeyPredicateForCreate);
+            Assert.Equal(expectedCollectionOptions.AllowUpdate, actualCollectionOptions.AllowUpdate);
+            Assert.Equal(expectedCollectionOptions.AllowReplace, actualCollectionOptions.AllowReplace);
+            Assert.Equal(expectedCollectionOptions.AllowCreate, actualCollectionOptions.AllowCreate);
+
+            Assert.NotNull(expectedCollectionOptions.Properties);
+            Assert.NotEmpty(expectedCollectionOptions.Properties);
+            Assert.NotNull(actualCollectionOptions.Properties);
+            Assert.NotEmpty(actualCollectionOptions.Properties);
+            Assert.Equal(expectedCollectionOptions.Properties.Count, actualCollectionOptions.Properties.Count);
+            Assert.Equal(expectedCollectionOptions.Properties[0], actualCollectionOptions.Properties[0]);
+            Assert.Equal(expectedCollectionOptions.Properties[1], actualCollectionOptions.Properties[1]);
+
         }
 
         [Fact]
         public void PostGisProviderOptionsStorageSet()
         {
-            var providerStorage = _fixture.jsonCollectionsOptions.Items[0].Features.Storage as SqlFeaturesSourceOptions;
-            var apiStorage = _fixture.postGisCollectionsOptions.Items.Where(i => i.Features.Storage.Type == "PostGis").ToList()[0].Features.Storage as SqlFeaturesSourceOptions;
+            var expectedApiOptions = OptionsUtils.GetOptionsFromCode();
+            var expectedCollectionOptions =
+                expectedApiOptions.Collections.Items.First(collection => collection.Features.Storage.Type == "PostGis").Features.Storage as SqlFeaturesSourceOptions;
+            var actualCollectionOptions =
+                _options.Collections.Items.First(collection => collection.Features.Storage.Type == "PostGis").Features.Storage as SqlFeaturesSourceOptions;
 
-            Assert.NotNull(apiStorage);
-            Assert.NotNull(providerStorage);
-            Assert.Equal(apiStorage.Type, providerStorage.Type);
-            Assert.Equal(apiStorage.Table, providerStorage.Table);
-            Assert.Equal(apiStorage.Schema, providerStorage.Schema);
-            Assert.Equal(apiStorage.IdentifierColumn, providerStorage.IdentifierColumn);
-            Assert.Equal(apiStorage.GeometrySrid, providerStorage.GeometrySrid);
-            Assert.Equal(apiStorage.GeometryGeoJsonType, providerStorage.GeometryGeoJsonType);
-            Assert.Equal(apiStorage.GeometryDataType, providerStorage.GeometryDataType);
-            Assert.Equal(apiStorage.GeometryColumn, providerStorage.GeometryColumn);
-            Assert.Equal(apiStorage.DateTimeColumn, providerStorage.DateTimeColumn);
-            Assert.Equal(apiStorage.ConnectionString, providerStorage.ConnectionString);
-            Assert.Equal(apiStorage.ApiKeyPredicateForUpdate, providerStorage.ApiKeyPredicateForUpdate);
-            Assert.Equal(apiStorage.ApiKeyPredicateForGet, providerStorage.ApiKeyPredicateForGet);
-            Assert.Equal(apiStorage.ApiKeyPredicateForDelete, providerStorage.ApiKeyPredicateForDelete);
-            Assert.Equal(apiStorage.ApiKeyPredicateForCreate, providerStorage.ApiKeyPredicateForCreate);
-            Assert.Equal(apiStorage.AllowUpdate, providerStorage.AllowUpdate);
-            Assert.Equal(apiStorage.AllowReplace, providerStorage.AllowReplace);
-            Assert.Equal(apiStorage.AllowDelete, providerStorage.AllowDelete);
-            Assert.Equal(apiStorage.AllowCreate, providerStorage.AllowCreate);
+            Assert.NotNull(expectedCollectionOptions);
+            Assert.NotNull(actualCollectionOptions);
 
-            Assert.NotNull(apiStorage.Properties);
-            Assert.NotEmpty(apiStorage.Properties);
-            Assert.NotNull(providerStorage.Properties);
-            Assert.NotEmpty(providerStorage.Properties);
-            Assert.Equal(apiStorage.Properties.Count, providerStorage.Properties.Count);
-            Assert.Equal(apiStorage.Properties[0], providerStorage.Properties[0]);
-            Assert.Equal(apiStorage.Properties[1], providerStorage.Properties[1]);
+            Assert.Equal(expectedCollectionOptions.Type, actualCollectionOptions.Type);
+            Assert.Equal(expectedCollectionOptions.Table, actualCollectionOptions.Table);
+            Assert.Equal(expectedCollectionOptions.Schema, actualCollectionOptions.Schema);
+            Assert.Equal(expectedCollectionOptions.IdentifierColumn, actualCollectionOptions.IdentifierColumn);
+            Assert.Equal(expectedCollectionOptions.GeometrySrid, actualCollectionOptions.GeometrySrid);
+            Assert.Equal(expectedCollectionOptions.GeometryGeoJsonType, actualCollectionOptions.GeometryGeoJsonType);
+            Assert.Equal(expectedCollectionOptions.GeometryDataType, actualCollectionOptions.GeometryDataType);
+            Assert.Equal(expectedCollectionOptions.ConnectionString, actualCollectionOptions.ConnectionString);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForUpdate, actualCollectionOptions.ApiKeyPredicateForUpdate);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForGet, actualCollectionOptions.ApiKeyPredicateForGet);
+            Assert.Equal(expectedCollectionOptions.ApiKeyPredicateForCreate, actualCollectionOptions.ApiKeyPredicateForCreate);
+            Assert.Equal(expectedCollectionOptions.AllowUpdate, actualCollectionOptions.AllowUpdate);
+            Assert.Equal(expectedCollectionOptions.AllowReplace, actualCollectionOptions.AllowReplace);
+            Assert.Equal(expectedCollectionOptions.AllowCreate, actualCollectionOptions.AllowCreate);
+
+            Assert.NotNull(expectedCollectionOptions.Properties);
+            Assert.NotEmpty(expectedCollectionOptions.Properties);
+            Assert.NotNull(actualCollectionOptions.Properties);
+            Assert.NotEmpty(actualCollectionOptions.Properties);
+            Assert.Equal(expectedCollectionOptions.Properties.Count, actualCollectionOptions.Properties.Count);
         }
     }
 }
-
-

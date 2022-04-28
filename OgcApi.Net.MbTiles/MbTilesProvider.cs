@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options;
 using OgcApi.Net.Options.Interfaces;
 using OgcApi.Net.Options.Tiles;
 using OgcApi.Net.Resources;
@@ -11,17 +13,23 @@ using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles
 {
+    [OgcTilesProvider("MbTiles", typeof(MbTilesSourceOptions))]
     public class MbTilesProvider : ITilesProvider
     {
-        public string SourceType => "MbTiles";
-
-        public ICollectionsOptions CollectionsOptions { get; set; }
-
         private readonly ILogger<MbTilesProvider> _logger;
 
-        public MbTilesProvider(ILogger<MbTilesProvider> logger)
+        private readonly ICollectionsOptions _collectionsOptions;
+
+        public MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<OgcApiOptions> options)
         {
             _logger = logger;
+            _collectionsOptions = options.CurrentValue.Collections;
+        }
+
+        public MbTilesProvider(ILogger<MbTilesProvider> logger, OgcApiOptions options)
+        {
+            _logger = logger;
+            _collectionsOptions = options.Collections;
         }
 
         private static SqliteConnection GetDbConnection(string fileName)
@@ -38,7 +46,7 @@ namespace OgcApi.Net.MbTiles
 
         public List<TileMatrixLimits> GetLimits(string collectionId)
         {
-            var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
+            var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
                 _logger.LogTrace(
@@ -78,7 +86,7 @@ namespace OgcApi.Net.MbTiles
 
         public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
         {
-            var tileOptions = (MbTilesSourceOptions)CollectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
+            var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
             {
                 _logger.LogTrace(
@@ -105,27 +113,18 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public async Task<byte[]> GetTileDirectAsync(string fileName, int tileMatrix, int tileRow, int tileCol)
+        public static async Task<byte[]> GetTileDirectAsync(string fileName, int tileMatrix, int tileRow, int tileCol)
         {
-            try
-            {
-                await using var connection = GetDbConnection(fileName);
-                connection.Open();
+            await using var connection = GetDbConnection(fileName);
+            connection.Open();
 
-                var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
+            var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
 
-                command.Parameters.AddWithValue("$zoom_level", tileMatrix);
-                command.Parameters.AddWithValue("$tile_column", tileCol);
-                command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
-                return (byte[])(await command.ExecuteScalarAsync());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "GetTileDirectAsync database query completed with an exception");
-                throw;
-            }
+            command.Parameters.AddWithValue("$zoom_level", tileMatrix);
+            command.Parameters.AddWithValue("$tile_column", tileCol);
+            command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
+            return (byte[])(await command.ExecuteScalarAsync());
         }
-
 
         public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
         {

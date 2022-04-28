@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OgcApi.Net.DataProviders;
+using OgcApi.Net;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
@@ -8,8 +8,6 @@ using OgcApi.Net.Resources;
 using OgcApi.Net.SqlServer;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Text.Json;
 
 namespace OgcApi.Options.Tests.Utils
@@ -18,35 +16,22 @@ namespace OgcApi.Options.Tests.Utils
     {
         private static ServiceProvider Provider { get; set; }
 
-        public static IFeaturesProvider GetDataProvider(string dbType)
+        public static readonly JsonSerializerOptions SerializerOptions = new()
         {
-            return Net.Utils.GetFeaturesProvider(Provider, dbType);
-        }
-        public static void SetupServiceCollection()
+            Converters = { new FeaturesSourceOptionsConverter() }
+        };
+
+        public static OgcApiOptions GetOptionsFromJsonConfig()
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging();
             serviceCollection.AddOgcApiPostGisProvider();
             serviceCollection.AddOgcApiSqlServerProvider();
+            serviceCollection.AddOgcApi("ogcsettings.json");
+
             Provider = serviceCollection.BuildServiceProvider();
-        }
 
-        public static OgcApiOptions GetOptionsFromJson()
-        {
-            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettings.json"));
-            var reader = new Utf8JsonReader(jsonReadOnlySpan);
-            var converter = new OgcApiOptionsConverter(Provider);
-            var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
-            return options;
-        }
-
-        public static OgcApiOptions GetOptionsFromJsonWithoutConformance()
-        {
-            var jsonReadOnlySpan = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ogcsettingsWithoutConformance.json"));
-            var reader = new Utf8JsonReader(jsonReadOnlySpan);
-            var converter = new OgcApiOptionsConverter(Provider);
-            var options = converter.Read(ref reader, typeof(OgcApiOptions), new JsonSerializerOptions());
-            return options;
+            return Provider.GetRequiredService<OgcApiOptions>();
         }
 
         public static OgcApiOptions GetOptionsFromCode()
@@ -95,6 +80,11 @@ namespace OgcApi.Options.Tests.Utils
                                 Spatial = new SpatialExtent { Bbox = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Crs = new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84") },
                                 Temporal = new TemporalExtent { Interval = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Trs = "Trs" }
                             },
+                            Links = new List<Link>
+                            {
+                                new() { Href = new Uri("https://api.com/collections/collection1/link1.html") },
+                                new() { Href = new Uri("https://api.com/collections/collection1/link2.html") }
+                            },
                             Features = new CollectionFeaturesOptions
                             {
                                 Crs = new List<Uri>
@@ -109,15 +99,15 @@ namespace OgcApi.Options.Tests.Utils
                                     ConnectionString = "Host=127.0.0.1;User Id=user;Password=user;Database=pgdb;Port=5432",
                                     Schema = "api",
                                     Table = "collection1",
-                                    GeometryColumn = "geom",
+                                    GeometryColumn = "Geom",
                                     GeometrySrid = 3857,
                                     GeometryDataType = "geometry",
                                     GeometryGeoJsonType = "MultiPolygon",
                                     IdentifierColumn = "id",
                                     Properties = new List<string>
                                     {
-                                        "prop1",
-                                        "prop2"
+                                        "Prop1",
+                                        "Prop2"
                                     },
                                     AllowCreate = true,
                                     AllowReplace = true,
@@ -133,6 +123,11 @@ namespace OgcApi.Options.Tests.Utils
                             Id = "Collection2",
                             Title = "Collection title 2",
                             Description = "Collection description 2",
+                            Links = new List<Link>
+                            {
+                                new() { Href = new Uri("https://api.com/collections/collection2/link1.html") },
+                                new() { Href = new Uri("https://api.com/collections/collection2/link2.html") }
+                            },
                             Features = new CollectionFeaturesOptions
                             {
                                 Crs = new List<Uri>
@@ -149,13 +144,13 @@ namespace OgcApi.Options.Tests.Utils
                                     Table = "Collection2",
                                     GeometryColumn = "Geom",
                                     GeometrySrid = 3857,
-                                    GeometryDataType = "Geometry",
+                                    GeometryDataType = "geometry",
                                     GeometryGeoJsonType = "MultiPolygon",
                                     IdentifierColumn = "Id",
                                     Properties = new List<string>
                                     {
-                                        "prop1",
-                                        "prop2"
+                                        "Prop1",
+                                        "Prop2"
                                     },
                                     AllowCreate = true,
                                     AllowReplace = true,
@@ -170,46 +165,5 @@ namespace OgcApi.Options.Tests.Utils
                 }
             };
         }
-
-        public static OgcApiOptions GetOptionsFromConfiguration()
-        {
-            var conf = new ConfigureOgcApiOptions(Provider.GetRequiredService<IServiceScopeFactory>());
-            var options = new OgcApiOptions();
-            conf.Configure(options);
-            return options;
-        }
-
-        public static string SerializeOgcApiOptions(OgcApiOptions options)
-        {
-            var ms = new MemoryStream();
-            var writer = new Utf8JsonWriter(ms);
-            var converter = new OgcApiOptionsConverter(Provider);
-            converter.Write(writer, options, new JsonSerializerOptions());
-            writer.Flush();
-            ms.Close();
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
-
-        public static string SerializeLandingPageOptions(LandingPageOptions options)
-        {
-            var ms = new MemoryStream();
-            var writer = new Utf8JsonWriter(ms);
-            OgcApiOptionsConverter.WriteLandingPage(writer, options);
-            writer.Flush();
-            ms.Close();
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
-
-        public static string SerializeCollectionsOptions(CollectionsOptions options)
-        {
-            var ms = new MemoryStream();
-            var writer = new Utf8JsonWriter(ms);
-            var converter = new OgcApiOptionsConverter(Provider);
-            converter.WriteCollections(writer, options, new JsonSerializerOptions());
-            writer.Flush();
-            ms.Close();
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
-
     }
 }

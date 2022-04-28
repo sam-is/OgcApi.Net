@@ -1,30 +1,27 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
-using System.Data;
 using System.Data.Common;
 
 namespace OgcApi.Net.SqlServer
 {
+    [OgcFeaturesProvider("SqlServer", typeof(SqlFeaturesSourceOptions))]
     public class SqlServerProvider : SqlDataProvider
     {
-        public SqlServerProvider(ILogger<SqlServerProvider> logger)
-            : base(logger) { }
-        public override string SourceType => "SqlServer";
+        public SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+            : base(logger, options) { }
+
+        public SqlServerProvider(ILogger<SqlServerProvider> logger, OgcApiOptions options)
+            : base(logger, options) { }
 
         protected override DbConnection GetDbConnection(string connectionString)
         {
             return new SqlConnection(connectionString);
-        }
-
-        protected virtual IDbCommand GetDbCommand(string commandText, IDbConnection dbConnection)
-        {
-            var command = dbConnection.CreateCommand();
-            command.CommandText = commandText;
-            return command;
         }
 
         protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
