@@ -51,7 +51,15 @@ namespace OgcApi.Net.Options.Converters
 
         public override void Write(Utf8JsonWriter writer, IFeaturesSourceOptions value, JsonSerializerOptions options)
         {
-            JsonSerializer.Serialize(writer, value);
+            var optionsType = _providersOptionsTypes[value.Type];
+            if (optionsType != null)
+            {
+                JsonSerializer.Serialize(writer, value, optionsType, options);
+            }
+            else
+            {
+                throw new JsonException($"Cannot find type with {value.Type} OgcFeaturesProviderAttribute value");
+            }
         }
     }
 }

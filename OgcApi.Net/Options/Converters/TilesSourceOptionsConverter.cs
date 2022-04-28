@@ -46,12 +46,20 @@ namespace OgcApi.Net.Options.Converters
                 return JsonSerializer.Deserialize(jsonDocument.RootElement.ToString(), optionsType, options) as ITilesSourceOptions;
             }
 
-            throw new JsonException($"Cannot find type with {storageType} OgcFeaturesProviderAttribute value");
+            throw new JsonException($"Cannot find type with {storageType} OgcTilesProviderAttribute value");
         }
 
         public override void Write(Utf8JsonWriter writer, ITilesSourceOptions value, JsonSerializerOptions options)
         {
-            JsonSerializer.Serialize(writer, value);
+            var optionsType = _providersOptionsTypes[value.Type];
+            if (optionsType != null)
+            {
+                JsonSerializer.Serialize(writer, value, optionsType, options);
+            }
+            else
+            {
+                throw new JsonException($"Cannot find type with {value.Type} OgcTilesProviderAttribute value");
+            }
         }
     }
 }

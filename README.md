@@ -56,53 +56,51 @@ API configuration can be made by configuration file named ogcsettings.json that 
   <summary>Configuration example</summary>
   
 ```json
-{
-  "FeaturesOptions": {
-    "LandingPage": {
-      "Title": "OGC API Implementation",
-      "Description": "The implementation of the OGC API family of standards that being developed to make it easy for anyone to provide geospatial data to the web",
-      "Version": "1.0",
-      "ContactName": "OGC API",
-      "ContactUrl": "https://www.example.com/",
-      "ApiDocumentPage": "/api/ogc/index.html",
-      "ApiDescriptionPage": "/api/ogc/swagger.json"
-    },
-    "Collections": [
-        {
-          "Id": "Test",
-          "Title": "Test collection",
-          "Features": {
-            "Crs": [
-              "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-              "http://www.opengis.net/def/crs/EPSG/0/3857"
-            ],
-            "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
-            "Storage": {
-              "Type": "PostGis",
-              "ConnectionString": "Host=localhost;User Id=postgre;Password=myStrongP@ssword;Database=Tests;Port=5432;Timeout=50;",
-              "Schema": "test",
-              "Table": "test_table",
-              "GeometryColumn": "geom",
-              "GeometrySrid": 3857,
-              "GeometryDataType": "geometry",
-              "GeometryGeoJsonType": "MultiPolygon",
-              "IdentifierColumn": "id",
-              "Properties": [
-                "name",
-				"region"
-              ]
-            }
-          },
-          "Tiles": {
-            "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
-            "Storage": {
-              "Type": "MbTiles",
-              "FileName": "TilesData\\data.mbtiles"
-            }
-          }
+{  
+  "LandingPage": {
+    "Title": "OGC API Implementation",
+    "Description": "The implementation of the OGC API family of standards that being developed to make it easy for anyone to provide geospatial data to the web",
+    "Version": "1.0",
+    "ContactName": "OGC API",
+    "ContactUrl": "https://www.example.com/",
+    "ApiDocumentPage": "/api/ogc/index.html",
+    "ApiDescriptionPage": "/api/ogc/swagger.json"
+  },
+  "Collections": [
+    {
+      "Id": "Test",
+      "Title": "Test collection",
+      "Features": {
+        "Crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+          "http://www.opengis.net/def/crs/EPSG/0/3857"
+        ],
+        "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+        "Storage": {
+          "Type": "PostGis",
+          "ConnectionString": "Host=localhost;User Id=postgre;Password=myStrongP@ssword;Database=Tests;Port=5432;Timeout=50;",
+          "Schema": "test",
+          "Table": "test_table",
+          "GeometryColumn": "geom",
+          "GeometrySrid": 3857,
+          "GeometryDataType": "geometry",
+          "GeometryGeoJsonType": "MultiPolygon",
+          "IdentifierColumn": "id",
+          "Properties": [
+            "name",
+            "region"
+          ]
         }
-     ]
-  }
+      },
+      "Tiles": {
+        "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+        "Storage": {
+          "Type": "MbTiles",
+          "FileName": "TilesData\\data.mbtiles"
+        }
+      }
+    }
+  ]
 }
 ```
 </details>
@@ -363,7 +361,11 @@ services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
 }));
 ```
 
-OpenAPI json definition is available on /api/ogc/swagger.json route in your application. 
+Don't forget to add 
+```csharp
+app.UseCors("OgcApi");
+```
+in Configure method.
 
 ### Coordinate systems
 
