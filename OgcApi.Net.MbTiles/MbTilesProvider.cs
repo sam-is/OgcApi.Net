@@ -59,22 +59,39 @@ namespace OgcApi.Net.MbTiles
                 using var connection = GetDbConnection(tileOptions.FileName);
                 connection.Open();
 
-                var command = GetDbCommand(@"SELECT zoom_level, MIN(tile_column), MAX(tile_column), MIN((1 << zoom_level) - 1 - tile_row), MAX((1 << zoom_level) - 1 - tile_row) FROM tiles GROUP BY zoom_level ORDER BY zoom_level", connection);
+                var checkMetadataCommand = GetDbCommand(@"SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'metadata'", connection);
+                if (checkMetadataCommand.ExecuteScalar() == null) return null;
+
+                var getParamCommand = GetDbCommand(@"SELECT Value FROM metadata WHERE name = $name", connection);
+
+                getParamCommand.Parameters.AddWithValue("$name", "minzoom");
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var minZoom)) return null;
+
+                getParamCommand.Parameters["$name"].Value = "maxzoom";
+                if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var maxZoom)) return null;
+
+                getParamCommand.Parameters["$name"].Value = "bounds";
+                var boundsStr = getParamCommand.ExecuteScalar()?.ToString();
+                if (boundsStr == null) return null;
+                var coordStrs = boundsStr.Split(',');
+                if (coordStrs.Length != 4) return null;
+                if (!double.TryParse(coordStrs[0], out var lon1)) return null;
+                if (!double.TryParse(coordStrs[1], out var lat1)) return null;
+                if (!double.TryParse(coordStrs[2], out var lon2)) return null;
+                if (!double.TryParse(coordStrs[3], out var lat2)) return null;
 
                 List<TileMatrixLimits> result = new();
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
+                for (int i = minZoom; i <= maxZoom; i++)
                 {
                     result.Add(new TileMatrixLimits
                     {
-                        TileMatrix = reader.GetInt32(0),
-                        MinTileCol = reader.GetInt32(1),
-                        MaxTileCol = reader.GetInt32(2),
-                        MinTileRow = reader.GetInt32(3),
-                        MaxTileRow = reader.GetInt32(4)
+                        TileMatrix = i,
+                        MinTileCol = CoordinateConverter.LongToTileX(lon1, i),
+                        MaxTileCol = CoordinateConverter.LongToTileX(lon2, i),
+                        MinTileRow = CoordinateConverter.LatToTileY(lat2, i),
+                        MaxTileRow = CoordinateConverter.LatToTileY(lat1, i)
                     });
                 }
-
                 return result;
             }
             catch (Exception ex)
