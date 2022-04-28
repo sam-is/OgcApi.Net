@@ -5,6 +5,8 @@ using OgcApi.Net.PostGis;
 using OgcApi.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
+using Moq;
 
 namespace OgcApi.PostGis.Tests
 {
@@ -252,17 +254,20 @@ namespace OgcApi.PostGis.Tests
 
         public static PostGisProvider GetDefaultProvider()
         {
-            return new PostGisProvider(new NullLogger<PostGisProvider>(), GetDefaultOptions());
+            return new PostGisProvider(new NullLogger<PostGisProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
         }
 
         public static PostGisProvider GetProviderWithErrors()
         {
-            return new PostGisProvider(new NullLogger<PostGisProvider>(), GetOptionsWithUnknownTable());
+            return new PostGisProvider(new NullLogger<PostGisProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownTable()));
         }
 
         public static PostGisProvider GetProviderWithApiKey()
         {
-            return new PostGisProvider(new NullLogger<PostGisProvider>(), GetOptionsWithApiKey());
+            return new PostGisProvider(new NullLogger<PostGisProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithApiKey()));
         }
     }
 }

@@ -20,13 +20,12 @@ namespace OgcApi.Net
                         Converters = { new FeaturesSourceOptionsConverter(), new TilesSourceOptionsConverter() }
                     });
 
-                if (ogcApiOptions != null)
-                {
-                    options.Collections = ogcApiOptions.Collections;
-                    options.Conformance = ogcApiOptions.Conformance;
-                    options.LandingPage = ogcApiOptions.LandingPage;
-                    options.UseApiKeyAuthorization = ogcApiOptions.UseApiKeyAuthorization;
-                }
+                if (ogcApiOptions == null) return;
+
+                options.Collections = ogcApiOptions.Collections;
+                options.Conformance = ogcApiOptions.Conformance;
+                options.LandingPage = ogcApiOptions.LandingPage;
+                options.UseApiKeyAuthorization = ogcApiOptions.UseApiKeyAuthorization;
             });
 
             return services.AddSingleton<IOpenApiGenerator, OpenApiGenerator>();

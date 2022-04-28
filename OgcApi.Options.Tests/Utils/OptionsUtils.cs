@@ -9,6 +9,7 @@ using OgcApi.Net.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace OgcApi.Options.Tests.Utils
 {
@@ -31,7 +32,7 @@ namespace OgcApi.Options.Tests.Utils
 
             Provider = serviceCollection.BuildServiceProvider();
 
-            return Provider.GetRequiredService<OgcApiOptions>();
+            return Provider.GetRequiredService<IOptions<OgcApiOptions>>().Value;
         }
 
         public static OgcApiOptions GetOptionsFromCode()

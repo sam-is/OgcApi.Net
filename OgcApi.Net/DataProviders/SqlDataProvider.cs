@@ -27,12 +27,6 @@ namespace OgcApi.Net.DataProviders
             CollectionsOptions = options.CurrentValue.Collections;
         }
 
-        protected SqlDataProvider(ILogger logger, OgcApiOptions options)
-        {
-            Logger = logger;
-            CollectionsOptions = options.Collections;
-        }
-
         public Envelope GetBbox(string collectionId, string apiKey = null)
         {
             var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);

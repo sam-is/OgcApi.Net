@@ -16,9 +16,6 @@ namespace OgcApi.Net.SqlServer
         public SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
             : base(logger, options) { }
 
-        public SqlServerProvider(ILogger<SqlServerProvider> logger, OgcApiOptions options)
-            : base(logger, options) { }
-
         protected override DbConnection GetDbConnection(string connectionString)
         {
             return new SqlConnection(connectionString);

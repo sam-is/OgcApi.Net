@@ -16,9 +16,6 @@ namespace OgcApi.Net.PostGis
         public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
             : base(logger, options) { }
 
-        public PostGisProvider(ILogger<PostGisProvider> logger, OgcApiOptions options)
-            : base(logger, options) { }
-
         protected override DbConnection GetDbConnection(string connectionString)
         {
             return new NpgsqlConnection(connectionString);

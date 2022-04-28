@@ -26,12 +26,6 @@ namespace OgcApi.Net.MbTiles
             _collectionsOptions = options.CurrentValue.Collections;
         }
 
-        public MbTilesProvider(ILogger<MbTilesProvider> logger, OgcApiOptions options)
-        {
-            _logger = logger;
-            _collectionsOptions = options.Collections;
-        }
-
         private static SqliteConnection GetDbConnection(string fileName)
         {
             return new SqliteConnection($"Data Source={fileName}");

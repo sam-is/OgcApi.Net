@@ -5,6 +5,8 @@ using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Options;
+using Moq;
 
 namespace OgcApi.MbTiles.Tests
 {
@@ -70,12 +72,14 @@ namespace OgcApi.MbTiles.Tests
 
         public static MbTilesProvider GetDefaultProvider()
         {
-            return new MbTilesProvider(new NullLogger<MbTilesProvider>(), GetDefaultOptions());
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
         }
 
         public static MbTilesProvider GetProviderWithErrors()
         {
-            return new MbTilesProvider(new NullLogger<MbTilesProvider>(), GetOptionsWithUnknownDataFile());
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownDataFile()));
         }
     }
 }

@@ -5,6 +5,8 @@ using OgcApi.Net.SqlServer;
 using OgcApi.SqlServer.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
+using Moq;
 
 namespace OgcApi.SqlServer.Tests
 {
@@ -254,17 +256,20 @@ namespace OgcApi.SqlServer.Tests
 
         public static SqlServerProvider GetDefaultProvider()
         {
-            return new SqlServerProvider(new NullLogger<SqlServerProvider>(), GetDefaultOptions());
+            return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
         }
 
         public static SqlServerProvider GetProviderWithErrors()
         {
-            return new SqlServerProvider(new NullLogger<SqlServerProvider>(), GetOptionsWithUnknownTable());
+            return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownTable()));
         }
 
         public static SqlServerProvider GetProviderWithApiKey()
         {
-            return new SqlServerProvider(new NullLogger<SqlServerProvider>(), GetOptionsWithApiKey());
+            return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithApiKey()));
         }
     }
 }
