@@ -42,7 +42,7 @@ services.AddOgcApiPostGisProvider();
 ```
 4. Register OpenAPI and configure API:
 ```csharp
-services.AddOgcApi();
+services.AddOgcApi("ogcapi.json");
 ```
 3. Add controllers in ConfigureServices method:
 ```csharp
@@ -343,14 +343,24 @@ Tiles API options include:
 To do this add Swagger configuration in Configure method of your Startup class:
 
 ```csharp
-app.UseSwagger(c =>
+app.UseSwaggerUI(swaggerOptions =>
 {
-	c.RouteTemplate = "/api/{documentname}/swagger.json";
-	c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-	{
-		swaggerDoc.Servers = new List<OpenApiServer> { new() { Url = $"https://{httpReq.Host.Value}/api/ogc" } };
-	});
+    swaggerOptions.RoutePrefix = "api";
+    swaggerOptions.SwaggerEndpoint("ogc/swagger.json", "OGC API");
 });
+```
+
+OpenAPI json definition is available on /api/ogc/swagger.json route in your application. 
+
+### CORS support
+
+All OGC API controllers use policy with "OgcApi" name. Policy can be configured in ConfigureServices method:
+
+```csharp
+services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
+{
+    options.AllowAnyMethod().AllowAnyHeader();
+}));
 ```
 
 OpenAPI json definition is available on /api/ogc/swagger.json route in your application. 
