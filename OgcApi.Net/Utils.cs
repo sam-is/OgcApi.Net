@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetTopologySuite.Features;
 using OgcApi.Net.DataProviders;
-using OgcApi.Net.Options.Features;
 using System;
 using System.Linq;
 
@@ -24,7 +23,14 @@ namespace OgcApi.Net
             var dataProviders = serviceProvider.GetServices<IFeaturesProvider>();
             foreach (var dataProvider in dataProviders)
             {
-                if (dataProvider.SourceType == dataProviderType)
+                var providerType = dataProvider.GetType();
+                if (!Attribute.IsDefined(providerType, typeof(OgcFeaturesProviderAttribute))) continue;
+
+                var attribute =
+                    (OgcFeaturesProviderAttribute)Attribute.GetCustomAttribute(providerType,
+                        typeof(OgcFeaturesProviderAttribute));
+
+                if (attribute != null && attribute.Name == dataProviderType)
                 {
                     return dataProvider;
                 }
@@ -37,25 +43,19 @@ namespace OgcApi.Net
             var dataProviders = serviceProvider.GetServices<ITilesProvider>();
             foreach (var dataProvider in dataProviders)
             {
-                if (dataProvider.SourceType == dataProviderType)
+                var providerType = dataProvider.GetType();
+                if (!Attribute.IsDefined(providerType, typeof(OgcTilesProviderAttribute))) continue;
+
+                var attribute =
+                    (OgcTilesProviderAttribute)Attribute.GetCustomAttribute(providerType,
+                        typeof(OgcTilesProviderAttribute));
+
+                if (attribute != null && attribute.Name == dataProviderType)
                 {
                     return dataProvider;
                 }
             }
             throw new InvalidOperationException($"Tiles provider {dataProviderType} is not registered");
-        }
-
-        public static IFeaturesSourceOptions GetCollectionSourceOptions(IServiceProvider serviceProvider, string collectionId)
-        {
-            var dataProviders = serviceProvider.GetServices<IFeaturesProvider>();
-            foreach (var dataProvider in dataProviders)
-            {
-                var collectionSourcesOptions = dataProvider.CollectionsOptions;
-                var collectionSourceOptions = collectionSourcesOptions.GetSourceById(collectionId);
-                if (collectionSourceOptions != null && collectionSourceOptions.Features != null)
-                    return collectionSourceOptions.Features.Storage;
-            }
-            throw new InvalidOperationException($"Collection source with id {collectionId} is not found");
         }
 
         public static string GetFeatureETag(IFeature feature)

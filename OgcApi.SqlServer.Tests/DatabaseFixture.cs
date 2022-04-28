@@ -1,4 +1,4 @@
-﻿using OgcApi.Features.SqlServer.Tests.Utils;
+﻿using OgcApi.SqlServer.Tests.Utils;
 
 namespace OgcApi.SqlServer.Tests
 {

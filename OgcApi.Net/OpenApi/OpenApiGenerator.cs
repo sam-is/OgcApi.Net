@@ -706,7 +706,7 @@ namespace OgcApi.Net.OpenApi
 
         private OpenApiSchema GetFeatureSchema(CollectionOptions collectionOptions)
         {
-            var collectionSourceOptions = Utils.GetCollectionSourceOptions(_serviceProvider, collectionOptions.Id);
+            var collectionSourceOptions = collectionOptions.Features.Storage;
 
             return new OpenApiSchema
             {

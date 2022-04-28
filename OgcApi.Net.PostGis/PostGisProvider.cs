@@ -1,19 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Npgsql;
 using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using System.Data.Common;
 
 namespace OgcApi.Net.PostGis
 {
+    [OgcFeaturesProvider("PostGis", typeof(SqlFeaturesSourceOptions))]
     public class PostGisProvider : SqlDataProvider
     {
-        public PostGisProvider(ILogger<PostGisProvider> logger)
-            : base(logger) { }
-
-        public override string SourceType => "PostGis";
+        public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+            : base(logger, options) { }
 
         protected override DbConnection GetDbConnection(string connectionString)
         {

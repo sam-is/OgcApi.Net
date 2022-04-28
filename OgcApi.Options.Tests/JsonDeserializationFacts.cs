@@ -1,16 +1,17 @@
 using OgcApi.Net.Options.Features;
-using OgcApi.Options.Tests.Utils;
 using Xunit;
 
 namespace OgcApi.Options.Tests
 {
-    public class JsonDeserializationFacts : IClassFixture<JsonOptionsFixture>
+    public class JsonDeserializationFacts : IClassFixture<ConfigurationOptionsFixture>
     {
-        private readonly JsonOptionsFixture _fixture;
-        public JsonDeserializationFacts(JsonOptionsFixture fixture)
+        private readonly ConfigurationOptionsFixture _fixture;
+
+        public JsonDeserializationFacts(ConfigurationOptionsFixture fixture)
         {
             _fixture = fixture;
         }
+
         [Fact]
         public void OgcApiOptionsDeserialization()
         {
@@ -258,12 +259,6 @@ namespace OgcApi.Options.Tests
             Assert.Equal(2, extent.Temporal.Interval[0][1]);
             Assert.Equal(3, extent.Temporal.Interval[1][0]);
             Assert.Equal(4, extent.Temporal.Interval[1][1]);
-        }
-
-        [Fact]
-        public void DeserializeOptionsWithoutConformance()
-        {
-            Assert.NotNull(OptionsUtils.GetOptionsFromJsonWithoutConformance());
         }
     }
 }

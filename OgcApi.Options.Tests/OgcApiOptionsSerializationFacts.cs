@@ -1,34 +1,40 @@
+using OgcApi.Net.Options.Converters;
 using OgcApi.Options.Tests.Utils;
+using System.Text.Json;
 using Xunit;
 
 namespace OgcApi.Options.Tests
 {
-    public class OgcApiOptionsSerializationFacts : IClassFixture<OgcApiOptionsFixture>
+    public class OgcApiOptionsSerializationFacts
     {
-
         [Fact]
         public void OgcApiOptionsSerialization()
         {
-            var json = OptionsUtils.SerializeOgcApiOptions(OptionsUtils.GetOptionsFromCode());
+            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+            var json = JsonSerializer.Serialize(ogcApiOptions, new()
+            {
+                Converters = { new FeaturesSourceOptionsConverter() }
+            });
 
             Assert.False(string.IsNullOrEmpty(json));
         }
+
         [Fact]
         public void LandingPageOptionsSerialization()
         {
-            var json = OptionsUtils.SerializeLandingPageOptions(OptionsUtils.GetOptionsFromCode().LandingPage);
+            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+            var json = JsonSerializer.Serialize(ogcApiOptions.LandingPage, OptionsUtils.SerializerOptions);
 
             Assert.False(string.IsNullOrEmpty(json));
         }
+
         [Fact]
         public void CollectionsOptionsSerialization()
         {
-            var json = OptionsUtils.SerializeCollectionsOptions(OptionsUtils.GetOptionsFromCode().Collections);
+            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+            var json = JsonSerializer.Serialize(ogcApiOptions.Collections, OptionsUtils.SerializerOptions);
 
             Assert.False(string.IsNullOrEmpty(json));
         }
-
     }
 }
-
-

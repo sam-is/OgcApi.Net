@@ -2,19 +2,17 @@
 using System;
 using System.IO;
 
-namespace OgcApi.SqlServer.Tests.Utils
+namespace SampleWebApplication.Utils
 {
     public static class DatabaseUtils
     {
-        public const string DatabaseName = "OgcApiTests";
+        private const string DatabaseName = "OgcApiSamples";
 
-        private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
-
-        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
+        private const string DbConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={0}";
 
         public static void RecreateDatabase()
         {
-            using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
+            using var sqlConnection = new SqlConnection(string.Format(DbConnectionString, "master"));
             sqlConnection.Open();
 
             using var createDatabaseCommand =
@@ -29,7 +27,7 @@ namespace OgcApi.SqlServer.Tests.Utils
         private static string GetInstallSqlScript(string scriptName)
         {
             var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.SqlServer.Tests.Utils.{scriptName}.sql");
+            using var stream = assembly.GetManifestResourceStream($"SampleWebApplication.Utils.{scriptName}.sql");
 
             if (stream == null)
             {
@@ -38,16 +36,6 @@ namespace OgcApi.SqlServer.Tests.Utils
 
             using var streamReader = new StreamReader(stream);
             return streamReader.ReadToEnd();
-        }
-
-        private static string GetConnectionStringTemplate()
-        {
-            return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
-        }
-
-        public static string GetConnectionString()
-        {
-            return string.Format(GetConnectionStringTemplate(), DatabaseName);
         }
     }
 }

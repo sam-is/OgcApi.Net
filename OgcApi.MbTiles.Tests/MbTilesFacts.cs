@@ -61,7 +61,7 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public async void GetTileDirect()
         {
-            var tile = await TestProviders.GetProvider().GetTileDirectAsync(Path.Combine("Data", "data.mbtiles"), 8, 82, 162);
+            var tile = await MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "data.mbtiles"), 8, 82, 162);
             Assert.NotNull(tile);
         }
 
@@ -101,7 +101,7 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public void GetTileDirectFileNotExists()
         {
-            Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProvider().GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
+            Assert.ThrowsAsync<SqliteException>(() => MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
         }
 
 
