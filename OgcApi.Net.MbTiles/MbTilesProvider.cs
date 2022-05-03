@@ -4,11 +4,10 @@ using Microsoft.Extensions.Options;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Interfaces;
-using OgcApi.Net.Options.Tiles;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles
@@ -60,22 +59,24 @@ namespace OgcApi.Net.MbTiles
 
                 getParamCommand.Parameters.AddWithValue("$name", "minzoom");
                 if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var minZoom)) return null;
+                if (tileOptions.MinZoom.HasValue && minZoom < tileOptions.MinZoom.Value) minZoom = tileOptions.MinZoom.Value;
 
                 getParamCommand.Parameters["$name"].Value = "maxzoom";
                 if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var maxZoom)) return null;
+                if (tileOptions.MaxZoom.HasValue && maxZoom > tileOptions.MaxZoom.Value) maxZoom = tileOptions.MaxZoom.Value;
 
                 getParamCommand.Parameters["$name"].Value = "bounds";
                 var boundsStr = getParamCommand.ExecuteScalar()?.ToString();
                 if (boundsStr == null) return null;
                 var coordStrs = boundsStr.Split(',');
                 if (coordStrs.Length != 4) return null;
-                if (!double.TryParse(coordStrs[0], out var lon1)) return null;
-                if (!double.TryParse(coordStrs[1], out var lat1)) return null;
-                if (!double.TryParse(coordStrs[2], out var lon2)) return null;
-                if (!double.TryParse(coordStrs[3], out var lat2)) return null;
+                if (!double.TryParse(coordStrs[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var lon1)) return null;
+                if (!double.TryParse(coordStrs[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var lat1)) return null;
+                if (!double.TryParse(coordStrs[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var lon2)) return null;
+                if (!double.TryParse(coordStrs[3], NumberStyles.Any, CultureInfo.InvariantCulture, out var lat2)) return null;
 
                 List<TileMatrixLimits> result = new();
-                for (int i = minZoom; i <= maxZoom; i++)
+                for (var i = minZoom; i <= maxZoom; i++)
                 {
                     result.Add(new TileMatrixLimits
                     {
@@ -105,17 +106,15 @@ namespace OgcApi.Net.MbTiles
                 throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
+            if (tileOptions.MinZoom.HasValue && tileMatrix < tileOptions.MinZoom.Value)
+                return null;
+
+            if (tileOptions.MaxZoom.HasValue && tileMatrix > tileOptions.MaxZoom.Value)
+                return null;
+
             try
             {
-                await using var connection = GetDbConnection(tileOptions.FileName);
-                connection.Open();
-
-                var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
-
-                command.Parameters.AddWithValue("$zoom_level", tileMatrix);
-                command.Parameters.AddWithValue("$tile_column", tileCol);
-                command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
-                return (byte[])(await command.ExecuteScalarAsync());
+                return await GetTileDirectAsync(tileOptions.FileName, tileMatrix, tileRow, tileCol);
             }
             catch (Exception ex)
             {
@@ -134,17 +133,7 @@ namespace OgcApi.Net.MbTiles
             command.Parameters.AddWithValue("$zoom_level", tileMatrix);
             command.Parameters.AddWithValue("$tile_column", tileCol);
             command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
-            return (byte[])(await command.ExecuteScalarAsync());
-        }
-
-        public ITilesSourceOptions DeserializeTilesSourceOptions(string json, JsonSerializerOptions options)
-        {
-            return JsonSerializer.Deserialize<MbTilesSourceOptions>(json, options);
-        }
-
-        public void SerializeTilesSourceOptions(Utf8JsonWriter writer, ITilesSourceOptions storage)
-        {
-            JsonSerializer.Serialize(writer, storage as MbTilesSourceOptions);
+            return (byte[])await command.ExecuteScalarAsync();
         }
     }
 }

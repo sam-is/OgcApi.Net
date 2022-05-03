@@ -9,6 +9,10 @@ namespace OgcApi.Net.MbTiles
 
         public string FileName { set; get; }
 
+        public int? MinZoom { get; set; }
+
+        public int? MaxZoom { get; set; }
+
         public List<string> Validate()
         {
             var failureMessages = new List<string>();

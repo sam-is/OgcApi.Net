@@ -104,7 +104,6 @@ namespace OgcApi.MbTiles.Tests
             Assert.ThrowsAsync<SqliteException>(() => MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
         }
 
-
         [Fact]
         public void GetLimits()
         {
@@ -146,5 +145,11 @@ namespace OgcApi.MbTiles.Tests
             Assert.Throws<SqliteException>(() => TestProviders.GetProviderWithErrors().GetLimits("data"));
         }
 
+        [Fact]
+        public void GetLimitsWithMinMaxZoom()
+        {
+            var limits = TestProviders.GetProviderWithMinMaxZoom().GetLimits("data");
+            Assert.Equal(5, limits.Count);
+        }
     }
 }
