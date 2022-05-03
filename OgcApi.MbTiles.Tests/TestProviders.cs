@@ -41,6 +41,37 @@ namespace OgcApi.MbTiles.Tests
             };
         }
 
+        private static OgcApiOptions GetOptionsWithMinMaxZoom()
+        {
+            return new OgcApiOptions
+            {
+                Collections = new CollectionsOptions
+                {
+                    Items = new List<CollectionOptions>
+                    {
+                        new()
+                        {
+                            Title = "data",
+                            Id = "data",
+                            Tiles = new CollectionTilesOptions
+                            {
+                                TileMatrixSet =
+                                    new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                                Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                                Storage = new MbTilesSourceOptions()
+                                {
+                                    Type = "MbTiles",
+                                    FileName = Path.Combine("Data", "data.mbtiles"),
+                                    MinZoom = 5,
+                                    MaxZoom = 9,
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
         private static OgcApiOptions GetOptionsWithUnknownDataFile()
         {
             return new OgcApiOptions
@@ -80,6 +111,12 @@ namespace OgcApi.MbTiles.Tests
         {
             return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
                 Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownDataFile()));
+        }
+
+        public static MbTilesProvider GetProviderWithMinMaxZoom()
+        {
+            return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
+                Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithMinMaxZoom()));
         }
     }
 }
