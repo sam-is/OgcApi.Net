@@ -6,6 +6,10 @@ namespace OgcApi.Net.Options.Tiles
     {
         string Type { get; set; }
 
+        int? MinZoom { get; set; }
+
+        int? MaxZoom { get; set; }
+
         List<string> Validate();
     }
 }
