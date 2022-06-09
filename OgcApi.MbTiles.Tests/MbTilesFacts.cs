@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
+using OgcApi.Net.DataProviders;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
@@ -96,6 +97,51 @@ namespace OgcApi.MbTiles.Tests
         public void GetTileFileNotExists()
         {
             Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
+        }
+
+        [Fact]
+        public void GetTileAccessViolationApiKeyNull()
+        {
+            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81));
+        }
+
+        [Fact]
+        public void GetTileAccessViolationApiKeyIncorrect()
+        {
+            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81, "12345"));
+        }
+
+        [Fact]
+        public void GetTileAccessViolationTileMatrixIncorrect()
+        {
+            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 8, 82, 162, "qwerty"));
+        }
+
+
+        [Fact]
+        public void GetTileAccessViolationTileRowIncorrect()
+        {
+            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 41, 81, "qwerty"));
+        }
+
+        [Fact]
+        public void GetTileAccessViolationTileColIncorrect()
+        {
+            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 80, "qwerty"));
+        }
+
+        [Fact]
+        public async void GetTileAccessOk()
+        {
+            var tile = await TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81, "qwerty");
+            Assert.NotNull(tile);
+        }
+
+        [Fact]
+        public async void GetTileAccessDelegateNotSetted()
+        {
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 7, 40, 81, "qwerty");
+            Assert.NotNull(tile);
         }
 
         [Fact]

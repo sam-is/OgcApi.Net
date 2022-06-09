@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using OgcApi.Net.Crs;
+using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
 using OgcApi.Net.Resources;
 using OgcApi.Net.Temporal;
@@ -740,7 +741,8 @@ namespace OgcApi.Net.Controllers
         [Produces("application/vnd.mapbox-vector-tile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol, [FromQuery] string apiKey = null)
         {
             _logger.LogTrace($"Get collection tile with parameters {Request.QueryString}");
 
@@ -748,12 +750,19 @@ namespace OgcApi.Net.Controllers
             if (collectionOptions != null)
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
-                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol);
-                if (tileContent == null) return NoContent();
-                Response.Headers.Add("Content-Encoding", "gzip");
-                return File(tileContent,
-                    "application/vnd.mapbox-vector-tile",
-                    "tile.mvt");
+                try
+                {
+                    var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, apiKey);
+                    if (tileContent == null) return NoContent();
+                    Response.Headers.Add("Content-Encoding", "gzip");
+                    return File(tileContent,
+                        "application/vnd.mapbox-vector-tile",
+                        "tile.mvt");
+                }
+                catch (TileAccessException)
+                {
+                    return Unauthorized();
+                }
             }
 
             _logger.LogError($"Cannot find options for specified collection {collectionId}");

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace OgcApi.Net.MbTiles
 {
     [OgcTilesProvider("MbTiles", typeof(MbTilesSourceOptions))]
+
     public class MbTilesProvider : ITilesProvider
     {
         private readonly ILogger<MbTilesProvider> _logger;
@@ -105,6 +106,14 @@ namespace OgcApi.Net.MbTiles
                     $"The tile source for collection with ID = {collectionId} was not found in the provided options");
                 throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
+
+            if (tileOptions.TileAccessDelegate?.Invoke(collectionId, tileMatrix, tileRow, tileCol, apiKey) ?? false)
+            {
+                _logger.LogTrace(
+                    $"Unauthorized tile request: apiKey = {apiKey},  collectionId = {collectionId}, tileMatrix = {tileMatrix}, tileRow = {tileRow}, tileCol = {tileCol}");
+                throw new TileAccessException("Unauthorized tile request");
+            }
+
 
             if (tileOptions.MinZoom.HasValue && tileMatrix < tileOptions.MinZoom.Value)
                 return null;
