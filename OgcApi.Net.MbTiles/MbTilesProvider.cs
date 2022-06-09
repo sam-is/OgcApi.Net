@@ -107,7 +107,7 @@ namespace OgcApi.Net.MbTiles
                 throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
             }
 
-            if (tileOptions.TileAccessDelegate?.Invoke(collectionId, tileMatrix, tileRow, tileCol, apiKey) ?? false)
+            if (!tileOptions.TileAccessDelegate?.Invoke(collectionId, tileMatrix, tileRow, tileCol, apiKey) ?? false)
             {
                 _logger.LogTrace(
                     $"Unauthorized tile request: apiKey = {apiKey},  collectionId = {collectionId}, tileMatrix = {tileMatrix}, tileRow = {tileRow}, tileCol = {tileCol}");
