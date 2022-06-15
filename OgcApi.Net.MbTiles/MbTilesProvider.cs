@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles
 {
+    [OgcTilesProvider("MbTiles", typeof(MbTilesSourceOptions))]
     public class MbTilesProvider : ITilesProvider
     {
         private readonly ILogger<MbTilesProvider> _logger;

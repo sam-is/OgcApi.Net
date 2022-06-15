@@ -13,8 +13,7 @@ namespace OgcApi.Net.MbTiles
 
         public int? MaxZoom { get; set; }
 
-        TileAccessDelegate _TileAccessDelegate = null;
-        public TileAccessDelegate TileAccessDelegate { get => _TileAccessDelegate; set => _TileAccessDelegate = value; }
+        public TileAccessDelegate TileAccessDelegate { get; set; }
 
         public List<string> Validate()
         {
