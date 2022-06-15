@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
 using OgcApi.Net.MbTiles;
@@ -96,6 +97,56 @@ namespace OgcApi.MbTiles.Tests
         public void GetTileFileNotExists()
         {
             Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
+        }
+
+        [Fact]
+        public async void GetTileAccessViolationApiKeyNull()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81);
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void GetTileAccessViolationApiKeyIncorrect()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "12345");
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void GetTileAccessViolationTileMatrixIncorrect()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 8, 82, 162, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+
+        [Fact]
+        public async void GetTileAccessViolationTileRowIncorrect()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 41, 81, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void GetTileAccessViolationTileColIncorrect()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 80, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void GetTileAccessOk()
+        {
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            Assert.IsType<FileContentResult>(result);
+        }
+
+        [Fact]
+        public async void GetTileAccessDelegateNotSet()
+        {
+            var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            Assert.IsType<FileContentResult>(result);
         }
 
         [Fact]

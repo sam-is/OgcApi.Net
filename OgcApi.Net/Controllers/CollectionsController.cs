@@ -739,8 +739,10 @@ namespace OgcApi.Net.Controllers
         [HttpGet("{collectionId}/tiles/{tileMatrix:int}/{tileRow:int}/{tileCol:int}")]
         [Produces("application/vnd.mapbox-vector-tile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol, [FromQuery] string apiKey = null)
         {
             _logger.LogTrace($"Get collection tile with parameters {Request.QueryString}");
 
@@ -748,7 +750,14 @@ namespace OgcApi.Net.Controllers
             if (collectionOptions != null)
             {
                 var dataProvider = Utils.GetTilesProvider(_serviceProvider, collectionOptions.Tiles.Storage.Type);
-                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol);
+
+                if (!collectionOptions.Tiles.Storage.TileAccessDelegate?.Invoke(collectionId, tileMatrix, tileRow, tileCol, apiKey) ?? false)
+                {
+                    _logger.LogError($"Unauthorized tile request: apiKey = {apiKey},  collectionId = {collectionId}, tileMatrix = {tileMatrix}, tileRow = {tileRow}, tileCol = {tileCol}");
+                    return Unauthorized();
+                }
+
+                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, apiKey);
                 if (tileContent == null) return NoContent();
                 Response.Headers.Add("Content-Encoding", "gzip");
                 return File(tileContent,

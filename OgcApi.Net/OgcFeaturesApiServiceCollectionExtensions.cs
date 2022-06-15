@@ -2,15 +2,17 @@
 using OgcApi.Net.OpenApi;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
+using OgcApi.Net.Options.Tiles;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace OgcApi.Net
 {
     public static class OgcApiServiceCollectionExtensions
     {
-        public static IServiceCollection AddOgcApi(this IServiceCollection services, string settingsFileName)
+        public static IServiceCollection AddOgcApi(this IServiceCollection services, string settingsFileName, TileAccessDelegate tileAccessDelegate = null)
         {
             services.Configure<OgcApiOptions>(options =>
             {
@@ -21,6 +23,10 @@ namespace OgcApi.Net
                     });
 
                 if (ogcApiOptions == null) return;
+                foreach (var item in ogcApiOptions.Collections.Items.Where(x => x.Tiles != null))
+                {
+                    item.Tiles.Storage.TileAccessDelegate = tileAccessDelegate;
+                }
 
                 options.Collections = ogcApiOptions.Collections;
                 options.Conformance = ogcApiOptions.Conformance;
