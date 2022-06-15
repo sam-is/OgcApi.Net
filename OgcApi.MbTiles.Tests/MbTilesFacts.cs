@@ -143,7 +143,7 @@ namespace OgcApi.MbTiles.Tests
         }
 
         [Fact]
-        public async void GetTileAccessDelegateNotSetted()
+        public async void GetTileAccessDelegateNotSet()
         {
             var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
             Assert.IsType<FileContentResult>(result);

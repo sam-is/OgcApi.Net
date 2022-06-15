@@ -78,23 +78,21 @@ namespace OgcApi.MbTiles.Tests
             };
         }
 
-        private static bool TestMBTilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey)
+        private static bool TestMbTilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey)
         {
-            if ((apiKey ?? "").Equals("qwerty") && (collectionId ?? "").Equals("data") && ((tileMatrix >= 0) && (tileMatrix <= 7)))
+            if (!(apiKey ?? "").Equals("qwerty") || !(collectionId ?? "").Equals("data")) return false;
+            return tileMatrix switch
             {
-                switch (tileMatrix)
-                {
-                    case 0: return ((tileRow == 0) && (tileCol == 0));
-                    case 1: return ((tileRow == 0) && (tileCol == 1));
-                    case 2: return ((tileRow == 1) && (tileCol == 2));
-                    case 3: return ((tileRow == 2) && (tileCol == 5));
-                    case 4: return ((tileRow == 5) && (tileCol == 10));
-                    case 5: return ((tileRow == 10) && (tileCol == 20));
-                    case 6: return ((tileRow == 20) && (tileCol == 40));
-                    case 7: return ((tileRow == 40) && (tileCol == 81 || tileCol == 82));
-                }
-            }
-            return false;
+                0 => tileRow == 0 && tileCol == 0,
+                1 => tileRow == 0 && tileCol == 1,
+                2 => tileRow == 1 && tileCol == 2,
+                3 => tileRow == 2 && tileCol == 5,
+                4 => tileRow == 5 && tileCol == 10,
+                5 => tileRow == 10 && tileCol == 20,
+                6 => tileRow == 20 && tileCol == 40,
+                7 => tileRow == 40 && tileCol is 81 or 82,
+                _ => false
+            };
         }
 
         private static OgcApiOptions GetOptionsWithAccessDelegate()
@@ -123,7 +121,7 @@ namespace OgcApi.MbTiles.Tests
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles"),
-                                    TileAccessDelegate = TestMBTilesAccessDelegate
+                                    TileAccessDelegate = TestMbTilesAccessDelegate
                                 }
                             }
                         }
@@ -213,7 +211,7 @@ namespace OgcApi.MbTiles.Tests
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles"),
-                                    TileAccessDelegate = TestMBTilesAccessDelegate
+                                    TileAccessDelegate = TestMbTilesAccessDelegate
                                 }
                             }
                         }
@@ -227,9 +225,13 @@ namespace OgcApi.MbTiles.Tests
 
             var controller = new CollectionsController(options,
                 serviceProvider,
-                serviceProvider.GetService<ILoggerFactory>());
-            controller.ControllerContext = new ControllerContext();
-            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+                serviceProvider.GetService<ILoggerFactory>())
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
 
             return controller;
         }
@@ -273,9 +275,13 @@ namespace OgcApi.MbTiles.Tests
 
             var controller = new CollectionsController(options,
                 serviceProvider,
-                serviceProvider.GetService<ILoggerFactory>());
-            controller.ControllerContext = new ControllerContext();
-            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+                serviceProvider.GetService<ILoggerFactory>())
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
 
             return controller;
         }

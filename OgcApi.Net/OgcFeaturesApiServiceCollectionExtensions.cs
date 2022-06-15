@@ -5,6 +5,7 @@ using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Tiles;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace OgcApi.Net
@@ -22,14 +23,10 @@ namespace OgcApi.Net
                     });
 
                 if (ogcApiOptions == null) return;
-                foreach (var item in ogcApiOptions.Collections.Items)
+                foreach (var item in ogcApiOptions.Collections.Items.Where(x => x.Tiles != null))
                 {
-                    if (item.Tiles is CollectionTilesOptions tiles)
-                    {
-                        tiles.Storage.TileAccessDelegate = tileAccessDelegate;
-                    }
+                    item.Tiles.Storage.TileAccessDelegate = tileAccessDelegate;
                 }
-
 
                 options.Collections = ogcApiOptions.Collections;
                 options.Conformance = ogcApiOptions.Conformance;
