@@ -7,7 +7,7 @@ namespace OgcApi.Net.MbTiles
     {
         public string Type { get; set; }
 
-        public string FileName { get; set;}
+        public string FileName { get; set; }
 
         public int? MinZoom { get; set; }
 
