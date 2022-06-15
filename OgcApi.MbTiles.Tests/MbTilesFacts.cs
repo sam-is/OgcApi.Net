@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
-using OgcApi.Net.DataProviders;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
@@ -100,48 +100,53 @@ namespace OgcApi.MbTiles.Tests
         }
 
         [Fact]
-        public void GetTileAccessViolationApiKeyNull()
+        public async void GetTileAccessViolationApiKeyNull()
         {
-            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81));
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81);
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         [Fact]
-        public void GetTileAccessViolationApiKeyIncorrect()
+        public async void GetTileAccessViolationApiKeyIncorrect()
         {
-            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81, "12345"));
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "12345");
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         [Fact]
-        public void GetTileAccessViolationTileMatrixIncorrect()
+        public async void GetTileAccessViolationTileMatrixIncorrect()
         {
-            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 8, 82, 162, "qwerty"));
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 8, 82, 162, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
 
         [Fact]
-        public void GetTileAccessViolationTileRowIncorrect()
+        public async void GetTileAccessViolationTileRowIncorrect()
         {
-            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 41, 81, "qwerty"));
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 41, 81, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         [Fact]
-        public void GetTileAccessViolationTileColIncorrect()
+        public async void GetTileAccessViolationTileColIncorrect()
         {
-            Assert.ThrowsAsync<TileAccessException>(() => TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 80, "qwerty"));
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 80, "qwerty");
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         [Fact]
         public async void GetTileAccessOk()
         {
-            var tile = await TestProviders.GetProviderWithAccessDelegate().GetTileAsync("data", 7, 40, 81, "qwerty");
-            Assert.NotNull(tile);
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            Assert.IsType<FileContentResult>(result);
         }
 
         [Fact]
         public async void GetTileAccessDelegateNotSetted()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 7, 40, 81, "qwerty");
-            Assert.NotNull(tile);
+            var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            Assert.IsType<FileContentResult>(result);
         }
 
         [Fact]

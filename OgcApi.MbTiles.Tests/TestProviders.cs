@@ -1,6 +1,12 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
+using OgcApi.Net;
+using OgcApi.Net.Controllers;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
@@ -95,6 +101,11 @@ namespace OgcApi.MbTiles.Tests
         {
             return new OgcApiOptions
             {
+                LandingPage = new LandingPageOptions
+                {
+                    ApiDocumentPage = new Uri("https://api.com/index.html"),
+                    ApiDescriptionPage = new Uri("https://api.com/swagger.json")
+                },
                 Collections = new CollectionsOptions
                 {
                     Items = new List<CollectionOptions>
@@ -173,6 +184,100 @@ namespace OgcApi.MbTiles.Tests
         {
             return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
                 Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithMinMaxZoom()));
+        }
+
+        public static CollectionsController GetControllerWithAccessDelegate()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddOgcApi(options =>
+            {
+                options.LandingPage = new LandingPageOptions
+                {
+                    ApiDocumentPage = new Uri("https://api.com/index.html"),
+                    ApiDescriptionPage = new Uri("https://api.com/swagger.json")
+                };
+                options.Collections = new CollectionsOptions
+                {
+                    Items = new List<CollectionOptions>
+                    {
+                        new()
+                        {
+                            Title = "data",
+                            Id = "data",
+                            Tiles = new CollectionTilesOptions
+                            {
+                                TileMatrixSet =
+                                    new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                                Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                                Storage = new MbTilesSourceOptions()
+                                {
+                                    Type = "MbTiles",
+                                    FileName = Path.Combine("Data", "data.mbtiles"),
+                                    TileAccessDelegate = TestMBTilesAccessDelegate
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+            serviceCollection.AddLogging();
+            serviceCollection.AddOgcApiMbTilesProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var options = serviceProvider.GetRequiredService<IOptionsMonitor<OgcApiOptions>>();
+
+            var controller = new CollectionsController(options,
+                serviceProvider,
+                serviceProvider.GetService<ILoggerFactory>());
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+
+            return controller;
+        }
+        public static CollectionsController GetControllerWithoutAccessDelegate()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddOgcApi(options =>
+            {
+                options.LandingPage = new LandingPageOptions
+                {
+                    ApiDocumentPage = new Uri("https://api.com/index.html"),
+                    ApiDescriptionPage = new Uri("https://api.com/swagger.json")
+                };
+                options.Collections = new CollectionsOptions
+                {
+                    Items = new List<CollectionOptions>
+                        {
+                        new()
+                        {
+                            Title = "data",
+                            Id = "data",
+                            Tiles = new CollectionTilesOptions
+                            {
+                                TileMatrixSet =
+                                    new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                                Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                                Storage = new MbTilesSourceOptions()
+                                {
+                                    Type = "MbTiles",
+                                    FileName = Path.Combine("Data", "data.mbtiles")
+                                }
+                            }
+                        }
+                        }
+                };
+            });
+            serviceCollection.AddLogging();
+            serviceCollection.AddOgcApiMbTilesProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var options = serviceProvider.GetRequiredService<IOptionsMonitor<OgcApiOptions>>();
+
+            var controller = new CollectionsController(options,
+                serviceProvider,
+                serviceProvider.GetService<ILoggerFactory>());
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+
+            return controller;
         }
     }
 }
