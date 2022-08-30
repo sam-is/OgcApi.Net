@@ -117,8 +117,8 @@ namespace OgcApi.Net.MbTiles
             var fileName = Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"_{date}.mbtiles";
             if (!File.Exists(fileName))
             {
-                _logger.LogError(ex, "GetTileAsync: file with collection does not exist");
-                throw;
+                _logger.LogError($"GetTileAsync: file for collection with datetime = {datetime} does not exist");
+                throw new ArgumentException($"GetTileAsync: file for collection with datetime = {datetime} does not exist");
             }
 
             try
