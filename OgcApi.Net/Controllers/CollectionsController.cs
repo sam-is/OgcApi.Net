@@ -742,7 +742,7 @@ namespace OgcApi.Net.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol, [FromQuery] string apiKey = null)
+        public async Task<ActionResult> GetTile(string collectionId, int tileMatrix, int tileRow, int tileCol, [FromQuery] string datetime = null, [FromQuery] string apiKey = null)
         {
             _logger.LogTrace($"Get collection tile with parameters {Request.QueryString}");
 
@@ -757,7 +757,7 @@ namespace OgcApi.Net.Controllers
                     return Unauthorized();
                 }
 
-                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, apiKey);
+                var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, datetime, apiKey);
                 if (tileContent == null) return NoContent();
                 Response.Headers.Add("Content-Encoding", "gzip");
                 return File(tileContent,

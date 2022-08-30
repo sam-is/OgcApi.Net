@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace OgcApi.Net.MbTiles
 {
@@ -96,7 +97,7 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string datetime = null, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
@@ -112,9 +113,17 @@ namespace OgcApi.Net.MbTiles
             if (tileOptions.MaxZoom.HasValue && tileMatrix > tileOptions.MaxZoom.Value)
                 return null;
 
+            var date = datetime.Substring(0, 10);
+            var fileName = Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"_{date}.mbtiles";
+            if (!File.Exists(fileName))
+            {
+                _logger.LogError(ex, "GetTileAsync: file with collection does not exist");
+                throw;
+            }
+
             try
             {
-                return await GetTileDirectAsync(tileOptions.FileName, tileMatrix, tileRow, tileCol);
+                return await GetTileDirectAsync(fileName, tileMatrix, tileRow, tileCol);
             }
             catch (Exception ex)
             {
