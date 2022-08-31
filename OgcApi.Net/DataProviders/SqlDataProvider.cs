@@ -2,16 +2,23 @@
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO.VectorTiles;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
+using OgcApi.Net.Crs;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Interfaces;
+using OgcApi.Net.Resources;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace OgcApi.Net.DataProviders
 {
-    public abstract class SqlDataProvider : IFeaturesProvider
+    public abstract class SqlDataProvider : IFeaturesProvider, ITilesProvider
     {
         public const int FeaturesMinimumLimit = 1;
 
@@ -493,5 +500,46 @@ namespace OgcApi.Net.DataProviders
         protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions);
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
+
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
+        {
+            var coordinates = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
+            var bbox = new Envelope(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+            var features = GetFeatures(collectionId, bbox: bbox);
+
+            var tileDefinition = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileMatrix, tileRow, tileCol);
+            var vectorTile = new VectorTile { TileId = tileDefinition.Id };
+            var layer = new Layer();
+
+            foreach (var feature in features)
+            {
+                layer.Features.Add(feature);
+            }
+
+            vectorTile.Layers.Add(layer);
+
+            using var memoryStream = new MemoryStream();
+
+            vectorTile.Write(memoryStream);
+
+            return memoryStream.ToArray();
+        }
+
+        public List<TileMatrixLimits> GetLimits(string collectionId)
+        {
+            var result = new List<TileMatrixLimits>();
+            for (var i = 0; i <= 22; ++i)
+            {
+                result.Add(new TileMatrixLimits
+                {
+                    TileMatrix = i,
+                    MinTileCol = 0,
+                    MaxTileCol = 1 << i,
+                    MinTileRow = 0,
+                    MaxTileRow = 1 << i
+                });
+            }
+            return result;
+        }
     }
 }
