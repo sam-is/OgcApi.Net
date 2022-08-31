@@ -501,7 +501,7 @@ namespace OgcApi.Net.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
+        public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
         {
             var coordinates = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
             var bbox = new Envelope(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
@@ -522,7 +522,7 @@ namespace OgcApi.Net.DataProviders
 
             vectorTile.Write(memoryStream);
 
-            return memoryStream.ToArray();
+            return Task.FromResult(memoryStream.ToArray());
         }
 
         public List<TileMatrixLimits> GetLimits(string collectionId)
