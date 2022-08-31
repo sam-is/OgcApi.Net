@@ -59,6 +59,22 @@ namespace OgcApi.MbTiles.Tests
             Assert.NotNull(tile);
         }
 
+        // тест для datetime (корректная дата)
+        [Fact]
+        public async void GetTileWithDate()
+        {
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162, "2018-02-12T23%3A20%3A52Z");
+            Assert.NotNull(tile);
+        }
+
+        // тест для datetime (НЕкорректная дата)
+        [Fact]
+        public async void GetTileWithIncorrectDate()
+        {
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162, "2017-02-12T23%3A20%3A52Z");
+            Assert.Null(tile);
+        }
+
         [Fact]
         public async void GetTileDirect()
         {
@@ -138,14 +154,14 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public async void GetTileAccessOk()
         {
-            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, apiKey : "qwerty");
             Assert.IsType<FileContentResult>(result);
         }
 
         [Fact]
         public async void GetTileAccessDelegateNotSet()
         {
-            var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, "qwerty");
+            var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, apiKey: "qwerty");
             Assert.IsType<FileContentResult>(result);
         }
 

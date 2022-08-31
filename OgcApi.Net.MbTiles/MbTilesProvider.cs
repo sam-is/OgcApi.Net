@@ -113,12 +113,17 @@ namespace OgcApi.Net.MbTiles
             if (tileOptions.MaxZoom.HasValue && tileMatrix > tileOptions.MaxZoom.Value)
                 return null;
 
-            var date = datetime.Substring(0, 10);
-            var fileName = Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"_{date}.mbtiles";
+            string dateString = "";
+            if (datetime != null)
+            {
+                dateString = "_"+ datetime.Substring(0, 10);
+            }
+
+            var fileName = Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"{dateString}.mbtiles";
             if (!File.Exists(fileName))
             {
-                _logger.LogError($"GetTileAsync: file for collection with datetime = {datetime} does not exist");
-                throw new ArgumentException($"GetTileAsync: file for collection with datetime = {datetime} does not exist");
+                _logger.LogError($"GetTileAsync: file for collection with with datetime = {datetime} ({fileName}) does not exist");
+                return null;
             }
 
             try
