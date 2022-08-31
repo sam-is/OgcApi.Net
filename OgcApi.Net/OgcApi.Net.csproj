@@ -32,6 +32,8 @@
     <PackageReference Include="NetTopologySuite" Version="2.4.0" />
     <PackageReference Include="NetTopologySuite.Features" Version="2.1.0" />
     <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="2.1.1" />
+    <PackageReference Include="NetTopologySuite.IO.VectorTiles" Version="1.0.0" />
+    <PackageReference Include="NetTopologySuite.IO.VectorTiles.Mapbox" Version="1.0.0" />
     <PackageReference Include="ProjNet" Version="2.0.0" />
   </ItemGroup>
 
