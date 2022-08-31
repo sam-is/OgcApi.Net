@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OgcApi.Net.MbTiles
+namespace OgcApi.Net.Crs
 {
     public static class CoordinateConverter
     {
@@ -28,6 +28,14 @@ namespace OgcApi.Net.MbTiles
         {
             var n = Math.PI - 2.0 * Math.PI * y / (1 << z);
             return 180.0 / Math.PI * Math.Atan(0.5 * (Math.Exp(n) - Math.Exp(-n)));
+        }
+        public static double[] TileBounds(int x, int y, int z)
+        {
+            var w = TileXToLong(x, z);
+            var e = TileXToLong(x + 1, z);
+            var n = TileYToLat(y, z);
+            var s = TileYToLat(y + 1, z);
+            return new double[] { w, s, e, n };
         }
     }
 }
