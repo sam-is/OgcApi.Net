@@ -501,7 +501,7 @@ namespace OgcApi.Net.DataProviders
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
 
-        public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
+        public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string datetime = null, string apiKey = null)
         {
             var bbox = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
             var features = GetFeatures(collectionId, bbox: bbox);
