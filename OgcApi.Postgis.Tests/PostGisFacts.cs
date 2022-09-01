@@ -576,5 +576,45 @@ namespace OgcApi.PostGis.Tests
             var provider = TestProviders.GetDefaultProvider();
             Assert.Throws<ArgumentException>(() => provider.DeleteFeature("PolygonsForInsert", "200"));
         }
+
+        [Fact]
+        public void GetTile()
+        {
+            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 1, 1);
+            Assert.NotNull(tile);
+        }
+
+        [Fact]
+        public void GetTileUnknownCollection()
+        {
+            Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
+        }
+
+        [Fact]
+        public void GetTileIncorrectZoomLevel()
+        {
+            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 25, 162, 82);
+            Assert.Null(tile);
+        }
+
+        [Fact]
+        public void GetTileIncorrectTileRow()
+        {
+            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 162, 90);
+            Assert.Null(tile);
+        }
+
+        [Fact]
+        public void GetTileIncorrectTileCol()
+        {
+            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 170, 82);
+            Assert.Null(tile.Result);
+        }
+
+        [Fact]
+        public void GetLimitsUnknownCollection()
+        {
+            Assert.Throws<ArgumentException>(() => TestProviders.GetDefaultProvider().GetLimits("test"));
+        }
     }
 }
