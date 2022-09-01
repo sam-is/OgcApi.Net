@@ -506,8 +506,7 @@ namespace OgcApi.Net.DataProviders
             var bbox = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
             var features = GetFeatures(collectionId, bbox: bbox);
 
-            var tileDefinition = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileMatrix, tileRow, tileCol);
-            var vectorTile = new VectorTile { TileId = tileDefinition.Id };
+            var vectorTile = new VectorTile();
             var layer = new Layer();
 
             foreach (var feature in features)
@@ -518,14 +517,22 @@ namespace OgcApi.Net.DataProviders
             vectorTile.Layers.Add(layer);
 
             using var memoryStream = new MemoryStream();
-
             vectorTile.Write(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
             return Task.FromResult(memoryStream.ToArray());
         }
 
         public List<TileMatrixLimits> GetLimits(string collectionId)
         {
+            var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
+            if (collectionOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+            }
+
             var result = new List<TileMatrixLimits>();
             for (var i = 0; i <= 22; ++i)
             {
