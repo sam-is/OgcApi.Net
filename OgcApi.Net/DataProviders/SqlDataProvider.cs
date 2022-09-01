@@ -503,8 +503,7 @@ namespace OgcApi.Net.DataProviders
 
         public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey = null)
         {
-            var coordinates = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
-            var bbox = new Envelope(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+            var bbox = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
             var features = GetFeatures(collectionId, bbox: bbox);
 
             var tileDefinition = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileMatrix, tileRow, tileCol);
