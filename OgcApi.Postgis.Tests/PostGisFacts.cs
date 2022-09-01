@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
 using Npgsql;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
@@ -8,6 +9,7 @@ using OgcApi.Net.Options;
 using OgcApi.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -591,24 +593,13 @@ namespace OgcApi.PostGis.Tests
         }
 
         [Fact]
-        public async void GetTileIncorrectZoomLevel()
+        public async void GetTileEmptyTile()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 25, 162, 82);
-            Assert.Null(tile);
-        }
-
-        [Fact]
-        public async void GetTileIncorrectTileRow()
-        {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 162, 90);
-            Assert.Null(tile);
-        }
-
-        [Fact]
-        public async void GetTileIncorrectTileCol()
-        {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 170, 82);
-            Assert.Null(tile);
+            var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("LineStrings", 8, 1, 250);
+            using var memoryStream = new MemoryStream(rawTile);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            var tile = new MapboxTileReader().Read(memoryStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(8, 1, 250));
+            Assert.True(tile.IsEmpty);
         }
 
         [Fact]
