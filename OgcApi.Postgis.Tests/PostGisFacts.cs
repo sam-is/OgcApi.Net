@@ -578,9 +578,9 @@ namespace OgcApi.PostGis.Tests
         }
 
         [Fact]
-        public void GetTile()
+        public async void GetTile()
         {
-            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 1, 1);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 1, 1);
             Assert.NotNull(tile);
         }
 
@@ -591,24 +591,24 @@ namespace OgcApi.PostGis.Tests
         }
 
         [Fact]
-        public void GetTileIncorrectZoomLevel()
+        public async void GetTileIncorrectZoomLevel()
         {
-            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 25, 162, 82);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 25, 162, 82);
             Assert.Null(tile);
         }
 
         [Fact]
-        public void GetTileIncorrectTileRow()
+        public async void GetTileIncorrectTileRow()
         {
-            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 162, 90);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 162, 90);
             Assert.Null(tile);
         }
 
         [Fact]
-        public void GetTileIncorrectTileCol()
+        public async void GetTileIncorrectTileCol()
         {
-            var tile = TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 170, 82);
-            Assert.Null(tile.Result);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 170, 82);
+            Assert.Null(tile);
         }
 
         [Fact]
