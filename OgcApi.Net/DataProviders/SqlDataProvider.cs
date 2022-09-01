@@ -534,7 +534,7 @@ namespace OgcApi.Net.DataProviders
             }
 
             var result = new List<TileMatrixLimits>();
-            for (var i = 0; i <= 22; ++i)
+            for (var i = 0; i <= 22; i++)
             {
                 result.Add(new TileMatrixLimits
                 {
