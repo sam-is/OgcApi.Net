@@ -607,5 +607,15 @@ namespace OgcApi.PostGis.Tests
         {
             Assert.Throws<ArgumentException>(() => TestProviders.GetDefaultProvider().GetLimits("test"));
         }
+
+        [Fact]
+        public void GetLimits()
+        {
+            var limits = TestProviders.GetDefaultProvider().GetLimits("Polygons");
+            for (var i = 0; i <= 22; i++)
+            {
+                Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 && limits[i].MaxTileCol == (1 << i) && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == (1 << i));
+            }
+        }
     }
 }
