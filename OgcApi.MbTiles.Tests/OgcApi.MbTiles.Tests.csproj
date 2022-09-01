@@ -26,10 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="data_2018-02-12.mbtiles">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data.mbtiles">
+    <None Update="Data\data_12-02-2018.mbtiles">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\data.mbtiles">

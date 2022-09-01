@@ -97,7 +97,7 @@ namespace OgcApi.Net.MbTiles
             }
         }
 
-        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string datetime = null, string apiKey = null)
+        public async Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string dateTime = null, string apiKey = null)
         {
             var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
             if (tileOptions == null)
@@ -113,16 +113,17 @@ namespace OgcApi.Net.MbTiles
             if (tileOptions.MaxZoom.HasValue && tileMatrix > tileOptions.MaxZoom.Value)
                 return null;
 
-            string dateString = "";
-            if (datetime != null)
+            var dateString = "";
+            if (dateTime != null)
             {
-                dateString = "_"+ datetime.Substring(0, 10);
+                var dateTimeInterval = Temporal.DateTimeInterval.Parse(dateTime);
+                dateString = "_" + dateTimeInterval.Start.Value.ToString("dd-MM-yyyy");
             }
 
-            var fileName = Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"{dateString}.mbtiles";
+            var fileName = "Data/" + Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"{dateString}.mbtiles";
             if (!File.Exists(fileName))
             {
-                _logger.LogError($"GetTileAsync: file for collection with with datetime = {datetime} ({fileName}) does not exist");
+                _logger.LogError($"GetTileAsync: file for collection with with datetime = {dateTime} ({fileName}) does not exist");
                 return null;
             }
 
