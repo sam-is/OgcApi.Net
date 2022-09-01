@@ -126,7 +126,8 @@ namespace OgcApi.Net.MbTiles
                     _logger.LogError($"GetTileAsync: couldn't parce datetime = {dateTime}; Exception: {ex}");
                     throw;
                 }
-                dateString = "_" + dateTimeInterval.Start.Value.ToString("dd-MM-yyyy");
+                if (dateTimeInterval.Start != null)
+                    dateString = "_" + dateTimeInterval.Start.Value.ToString("dd-MM-yyyy");
             }
 
             var fileName = "Data/" + Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"{dateString}.mbtiles";
