@@ -116,7 +116,16 @@ namespace OgcApi.Net.MbTiles
             var dateString = "";
             if (dateTime != null)
             {
-                var dateTimeInterval = Temporal.DateTimeInterval.Parse(dateTime);
+                Temporal.DateTimeInterval dateTimeInterval;
+                try
+                {
+                    dateTimeInterval = Temporal.DateTimeInterval.Parse(dateTime);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"GetTileAsync: couldn't parce datetime = {dateTime}; Exception: {ex}");
+                    throw;
+                }
                 dateString = "_" + dateTimeInterval.Start.Value.ToString("dd-MM-yyyy");
             }
 
