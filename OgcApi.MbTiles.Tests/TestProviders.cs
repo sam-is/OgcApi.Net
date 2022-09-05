@@ -35,10 +35,14 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
-                                    FileName = Path.Combine("Data", "data.mbtiles")
+                                    FileName = Path.Combine("Data", "data.mbtiles"),
+                                    TimestampFiles = 
+                                    {
+                                        new TimestampFile { DateTime = new DateTime(2018, 2, 12), FileName = Path.Combine("Data", "data_12-02-2018.mbtiles") }
+                                    }
                                 }
                             }
                         }
@@ -64,7 +68,7 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles"),
@@ -117,7 +121,7 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles"),
@@ -147,7 +151,7 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
                                     FileName = "Data Source=" + Path.Combine("Data", "test.mbtiles")
@@ -207,7 +211,7 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles"),
@@ -258,7 +262,7 @@ namespace OgcApi.MbTiles.Tests
                                 TileMatrixSet =
                                     new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
                                 Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
-                                Storage = new MbTilesSourceOptions()
+                                Storage = new MbTilesSourceOptions
                                 {
                                     Type = "MbTiles",
                                     FileName = Path.Combine("Data", "data.mbtiles")

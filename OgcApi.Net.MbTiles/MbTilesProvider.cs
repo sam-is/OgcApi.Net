@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace OgcApi.Net.MbTiles
 {
@@ -113,19 +114,25 @@ namespace OgcApi.Net.MbTiles
             if (tileOptions.MaxZoom.HasValue && tileMatrix > tileOptions.MaxZoom.Value)
                 return null;
 
-            var dateString = "";
+            var fileName = tileOptions.FileName;
+
             if (dateTime != null)
             {
                 var dateTimeInterval = Temporal.DateTimeInterval.Parse(dateTime);
                 if (dateTimeInterval.Start != null)
-                    dateString = "_" + dateTimeInterval.Start.Value.ToString("dd-MM-yyyy");
-            }
+                {
+                    fileName =
+                        (from timestampFile in tileOptions.TimestampFiles
+                        where dateTimeInterval.Start >= timestampFile.DateTime
+                        orderby timestampFile.DateTime descending
+                        select timestampFile.FileName).FirstOrDefault();
 
-            var fileName = "Data/" + Path.GetFileNameWithoutExtension(tileOptions.FileName) + $"{dateString}.mbtiles";
-            if (!File.Exists(fileName))
-            {
-                _logger.LogError($"GetTileAsync: file for collection with with datetime = {dateTime} ({fileName}) does not exist");
-                return null;
+                    if (fileName == null || !File.Exists(fileName))
+                    {
+                        _logger.LogError($"GetTileAsync: file for collection with with datetime = {dateTime} ({fileName}) does not exist");
+                        return null;
+                    }
+                }
             }
 
             try
