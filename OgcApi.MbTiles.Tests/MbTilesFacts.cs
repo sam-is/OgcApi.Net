@@ -33,7 +33,7 @@ namespace OgcApi.MbTiles.Tests
                         Tiles = new CollectionTilesOptions
                         {
                             Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            Storage = new MbTilesSourceOptions()
+                            Storage = new MbTilesSourceOptions
                             {
                                 Type = "MbTiles"
                             }
@@ -62,7 +62,7 @@ namespace OgcApi.MbTiles.Tests
         [Fact]
         public async void GetTileWithDate()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162, "2018-02-12T19:00:01Z");
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 82, 162, "2018-02-19T19:00:01Z");
             Assert.NotNull(tile);
         }
 

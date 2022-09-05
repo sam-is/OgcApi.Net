@@ -15,6 +15,8 @@ namespace OgcApi.Net.MbTiles
 
         public TileAccessDelegate TileAccessDelegate { get; set; }
 
+        public List<TimestampFile> TimestampFiles { get; set; } = new();
+
         public List<string> Validate()
         {
             var failureMessages = new List<string>();
