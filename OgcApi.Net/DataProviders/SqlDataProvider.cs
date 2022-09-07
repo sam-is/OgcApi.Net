@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 
 namespace OgcApi.Net.DataProviders
@@ -507,7 +508,7 @@ namespace OgcApi.Net.DataProviders
             var features = GetFeatures(collectionId, bbox: bbox);
 
             var vectorTile = new VectorTile();
-            var layer = new Layer();
+            var layer = new Layer { Name = "layer"};
 
             foreach (var feature in features)
             {
@@ -520,7 +521,13 @@ namespace OgcApi.Net.DataProviders
             vectorTile.Write(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
 
-            return Task.FromResult(memoryStream.ToArray());
+            using var compressedStream = new MemoryStream();
+            using var compressor = new GZipStream(compressedStream, CompressionMode.Compress);
+            memoryStream.CopyTo(compressor);
+
+            compressedStream.Seek(0, SeekOrigin.Begin);
+
+            return Task.FromResult(compressedStream.ToArray());
         }
 
         public List<TileMatrixLimits> GetLimits(string collectionId)
