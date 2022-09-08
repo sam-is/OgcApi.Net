@@ -504,11 +504,34 @@ namespace OgcApi.Net.DataProviders
 
         public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string datetime = null, string apiKey = null)
         {
-            var bbox = CoordinateConverter.TileBounds(tileRow, tileCol, tileMatrix);
+            var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
+            if (collectionOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+            }
+
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
+            var bbox = CoordinateConverter.TileBounds(tileCol, tileRow, tileMatrix);
+            bbox.Transform(CrsUtils.DefaultCrs, collectionOptions.Features.StorageCrs);
             var features = GetFeatures(collectionId, bbox: bbox);
 
-            var vectorTile = new VectorTile();
-            var layer = new Layer { Name = "layer"};
+            features.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
+
+            var vectorTile = new VectorTile
+            {
+                TileId = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix).Id
+            };
+            var layer = new Layer { Name = "layer" };
+
 
             foreach (var feature in features)
             {
@@ -517,13 +540,11 @@ namespace OgcApi.Net.DataProviders
 
             vectorTile.Layers.Add(layer);
 
-            using var memoryStream = new MemoryStream();
-            vectorTile.Write(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
             using var compressedStream = new MemoryStream();
-            using var compressor = new GZipStream(compressedStream, CompressionMode.Compress);
-            memoryStream.CopyTo(compressor);
+            using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
+
+            vectorTile.Write(compressor, idAttributeName: sourceOptions.IdentifierColumn);
+            compressor.Flush();
 
             compressedStream.Seek(0, SeekOrigin.Begin);
 
