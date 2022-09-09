@@ -6,7 +6,6 @@ using NetTopologySuite.IO;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
-using OgcApi.Net.Options.Tiles;
 using System.Data.Common;
 
 namespace OgcApi.Net.SqlServer
