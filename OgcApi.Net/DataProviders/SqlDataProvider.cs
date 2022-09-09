@@ -522,21 +522,26 @@ namespace OgcApi.Net.DataProviders
 
             var bbox = CoordinateConverter.TileBounds(tileCol, tileRow, tileMatrix);
             bbox.Transform(CrsUtils.DefaultCrs, collectionOptions.Features.StorageCrs);
-
+            
             var features = GetFeatures(collectionId, bbox: bbox);
             var layer = new Layer { Name = collectionId };
 
+            var bboxPolygon = new Polygon(
+                new LinearRing(
+                    new Coordinate[]
+                    {
+                        new(bbox.MinX, bbox.MinY),
+                        new(bbox.MinX, bbox.MaxY),
+                        new(bbox.MaxX, bbox.MaxY),
+                        new(bbox.MaxX, bbox.MinY),
+                        new(bbox.MinX, bbox.MinY)
+                    }
+                )
+            );
+
             foreach (var feature in features)
-            {
-                Polygon bboxPolygon = new Polygon(new LinearRing(new Coordinate[]
-                {
-                    new Coordinate(bbox.MinX, bbox.MinY),
-                    new Coordinate(bbox.MinX, bbox.MaxY),
-                    new Coordinate(bbox.MaxX, bbox.MaxY),
-                    new Coordinate(bbox.MaxX, bbox.MinY),
-                    new Coordinate(bbox.MinX, bbox.MinY)
-                }));
-                var intersectedFeature = feature.Geometry.Intersection(bboxPolygon);
+            {                
+                var intersectedFeature = feature.Geometry.Intersection(bboxPolygon.Copy());
                 if (intersectedFeature.IsEmpty)
                     continue;
                 feature.Geometry = intersectedFeature;
