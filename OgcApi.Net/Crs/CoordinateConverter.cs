@@ -37,7 +37,7 @@ namespace OgcApi.Net.Crs
             var e = TileXToLong(x + 1, z);
             var n = TileYToLat(y, z);
             var s = TileYToLat(y + 1, z);
-            return new Envelope(w, e, n, s);
+            return new Envelope(new Coordinate(w, n), new Coordinate(e,s));
         }
     }
 }
