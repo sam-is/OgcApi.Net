@@ -614,7 +614,7 @@ namespace OgcApi.PostGis.Tests
             var limits = TestProviders.GetDefaultProvider().GetLimits("Polygons");
             for (var i = 0; i <= 22; i++)
             {
-                Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 && limits[i].MaxTileCol == ((1 << i) - 1) && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == ((1 << i) - 1));
+                Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 && limits[i].MaxTileCol == (1 << i) && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == (1 << i));
             }
         }
     }
