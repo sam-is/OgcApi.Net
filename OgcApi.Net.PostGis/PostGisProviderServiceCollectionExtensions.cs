@@ -8,6 +8,7 @@ namespace OgcApi.Net.PostGis
         public static IServiceCollection AddOgcApiPostGisProvider(this IServiceCollection services)
         {
             services.AddSingleton<IFeaturesProvider, PostGisProvider>();
+            services.AddSingleton<ITilesProvider, PostGisProvider>();
 
             return services;
         }
