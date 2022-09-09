@@ -522,22 +522,29 @@ namespace OgcApi.Net.DataProviders
 
             var bbox = CoordinateConverter.TileBounds(tileCol, tileRow, tileMatrix);
             bbox.Transform(CrsUtils.DefaultCrs, collectionOptions.Features.StorageCrs);
+
             var features = GetFeatures(collectionId, bbox: bbox);
-
-            features.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
-
-            var vectorTile = new VectorTile
-            {
-                TileId = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix).Id
-            };
-            var layer = new Layer { Name = "layer" };
-
+            var layer = new Layer { Name = collectionId };
 
             foreach (var feature in features)
             {
+                Polygon bboxPolygon = new Polygon(new LinearRing(new Coordinate[]
+                {
+                    new Coordinate(bbox.MinX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MinY)
+                }));
+                var intersectedFeature = feature.Geometry.Intersection(bboxPolygon);
+                if (intersectedFeature.IsEmpty)
+                    continue;
+                feature.Geometry = intersectedFeature;
+                feature.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
                 layer.Features.Add(feature);
             }
 
+            var vectorTile = new VectorTile { TileId = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix).Id };
             vectorTile.Layers.Add(layer);
 
             using var compressedStream = new MemoryStream();
@@ -568,9 +575,9 @@ namespace OgcApi.Net.DataProviders
                 {
                     TileMatrix = i,
                     MinTileCol = 0,
-                    MaxTileCol = 1 << i,
+                    MaxTileCol = (1 << i) - 1,
                     MinTileRow = 0,
-                    MaxTileRow = 1 << i
+                    MaxTileRow = (1 << i) - 1
                 });
             }
             return result;
