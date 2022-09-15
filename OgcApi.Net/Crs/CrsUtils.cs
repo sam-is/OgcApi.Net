@@ -28,7 +28,7 @@ namespace OgcApi.Net.Crs
             var sridFile = File.Exists(Path.Combine(assemblyPath, SridFileName)) ? Path.Combine(assemblyPath, SridFileName) : Path.Combine(assemblyPath, "Crs", SridFileName);
 
             var sridInFile = srid + ";";
-            return File.ReadAllLines(sridFile).SkipWhile(line => !line.StartsWith(sridInFile)).Skip(1).First().Split(';').Last();
+            return File.ReadAllLines(sridFile).SkipWhile(line => !line.StartsWith(sridInFile)).First().Split(';').Last();
         }
 
         public static CoordinateSystem GetCoordinateSystemBySrid(string srid)
