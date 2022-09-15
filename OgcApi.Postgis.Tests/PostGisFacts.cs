@@ -600,11 +600,11 @@ namespace OgcApi.PostGis.Tests
             using var memoryStream = new MemoryStream(rawTile);
             memoryStream.Seek(0, SeekOrigin.Begin);
 
-            using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
+            await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
 
             using var decompressedStream = new MemoryStream();
-            decompressor.CopyTo(decompressedStream);
-
+            await decompressor.CopyToAsync(decompressedStream);
+   
             var reader = new MapboxTileReader();
             var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));
             Assert.True(tile.IsEmpty);
