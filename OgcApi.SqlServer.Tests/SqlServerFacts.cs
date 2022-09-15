@@ -2,12 +2,15 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
 using OgcApi.SqlServer.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Xunit;
 
@@ -577,6 +580,52 @@ namespace OgcApi.SqlServer.Tests
         {
             var provider = TestProviders.GetDefaultProvider();
             Assert.Throws<ArgumentException>(() => provider.DeleteFeature("PolygonsForInsert", "200"));
+        }
+
+        [Fact]
+        public async void GetTile()
+        {
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 0, 1);
+            Assert.NotNull(tile);
+        }
+
+        [Fact]
+        public void GetTileUnknownCollection()
+        {
+            Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
+        }
+
+        [Fact]
+        public async void GetTileEmptyTile()
+        {
+            var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 1, 250);
+            using var memoryStream = new MemoryStream(rawTile);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
+
+            using var decompressedStream = new MemoryStream();
+            await decompressor.CopyToAsync(decompressedStream);
+
+            var reader = new MapboxTileReader();
+            var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));
+            Assert.True(tile.IsEmpty);
+        }
+
+        [Fact]
+        public void GetLimitsUnknownCollection()
+        {
+            Assert.Throws<ArgumentException>(() => TestProviders.GetDefaultProvider().GetLimits("test"));
+        }
+
+        [Fact]
+        public void GetLimits()
+        {
+            var limits = TestProviders.GetDefaultProvider().GetLimits("Polygons");
+            for (var i = 0; i <= 22; i++)
+            {
+                Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 && limits[i].MaxTileCol == ((1 << i) - 1) && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == ((1 << i) - 1));
+            }
         }
     }
 }

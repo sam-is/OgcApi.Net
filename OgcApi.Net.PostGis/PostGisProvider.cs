@@ -11,6 +11,7 @@ using System.Data.Common;
 namespace OgcApi.Net.PostGis
 {
     [OgcFeaturesProvider("PostGis", typeof(SqlFeaturesSourceOptions))]
+    [OgcTilesProvider("MbTiles", null)]
     public class PostGisProvider : SqlDataProvider
     {
         public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)

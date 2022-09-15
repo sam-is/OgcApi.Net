@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OgcApi.Net.Crs;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Interfaces;

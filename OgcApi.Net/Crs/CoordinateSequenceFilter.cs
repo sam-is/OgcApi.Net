@@ -16,12 +16,10 @@ namespace OgcApi.Net.Crs
         public void Filter(CoordinateSequence seq, int i)
         {
             double x = seq.GetX(i);
-            double y = seq.GetY(i);
-            double z = seq.GetZ(i);
-            _mathTransform.Transform(ref x, ref y, ref z);
+            double y = seq.GetY(i);                        
+            _mathTransform.Transform(ref x, ref y);
             seq.SetX(i, x);
-            seq.SetY(i, y);
-            seq.SetZ(i, z);
+            seq.SetY(i, y);            
         }
     }
 }

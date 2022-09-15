@@ -2,16 +2,24 @@
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO.VectorTiles;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
+using OgcApi.Net.Crs;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Interfaces;
+using OgcApi.Net.Resources;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace OgcApi.Net.DataProviders
 {
-    public abstract class SqlDataProvider : IFeaturesProvider
+    public abstract class SqlDataProvider : IFeaturesProvider, ITilesProvider
     {
         public const int FeaturesMinimumLimit = 1;
 
@@ -493,5 +501,100 @@ namespace OgcApi.Net.DataProviders
         protected abstract IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions);
 
         protected abstract Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions);
+
+        public Task<byte[]> GetTileAsync(string collectionId, int tileMatrix, int tileRow, int tileCol, string datetime = null, string apiKey = null)
+        {
+            var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
+            if (collectionOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+            }
+
+            var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
+            if (sourceOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            }
+
+            var bbox = CoordinateConverter.TileBounds(tileCol, tileRow, tileMatrix);
+            bbox.Transform(CrsUtils.DefaultCrs, collectionOptions.Features.StorageCrs);
+
+            var features = GetFeatures(collectionId, bbox: bbox, limit: 1000);
+            var layer = new Layer { Name = collectionId };
+
+            var bboxPolygon = new Polygon(
+                new LinearRing(
+                    new Coordinate[]
+                    {
+                        new(bbox.MinX, bbox.MinY),
+                        new(bbox.MinX, bbox.MaxY),
+                        new(bbox.MaxX, bbox.MaxY),
+                        new(bbox.MaxX, bbox.MinY),
+                        new(bbox.MinX, bbox.MinY)
+                    }
+                )
+            );
+
+            var featureCollection = new OgcFeatureCollection();
+
+            foreach (var feature in features)
+            {
+                if (feature.Geometry.GeometryType != Geometry.TypeNamePoint)
+                {
+                    var intersectedFeature = feature.Geometry.Intersection(bboxPolygon.Copy());
+                    if (intersectedFeature.IsEmpty)
+                        continue;
+                    feature.Geometry = intersectedFeature;
+                }
+                featureCollection.Add(feature);
+            }
+
+            featureCollection.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
+
+            foreach (var feature in featureCollection)
+                layer.Features.Add(feature);
+
+            var vectorTile = new VectorTile { TileId = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix).Id };
+            vectorTile.Layers.Add(layer);
+
+            using var compressedStream = new MemoryStream();
+            using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
+
+            vectorTile.Write(compressor, idAttributeName: sourceOptions.IdentifierColumn);
+            compressor.Flush();
+
+            compressedStream.Seek(0, SeekOrigin.Begin);
+
+            return Task.FromResult(compressedStream.ToArray());
+        }
+
+        public List<TileMatrixLimits> GetLimits(string collectionId)
+        {
+            var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
+            if (collectionOptions == null)
+            {
+                Logger.LogTrace(
+                    $"The source collection with ID = {collectionId} was not found in the provided options");
+                throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+            }
+
+            var result = new List<TileMatrixLimits>();
+            for (var i = 0; i <= 22; i++)
+            {
+                result.Add(new TileMatrixLimits
+                {
+                    TileMatrix = i,
+                    MinTileCol = 0,
+                    MaxTileCol = (1 << i) - 1,
+                    MinTileRow = 0,
+                    MaxTileRow = (1 << i) - 1
+                });
+            }
+            return result;
+        }
     }
 }
