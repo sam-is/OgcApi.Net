@@ -522,8 +522,8 @@ namespace OgcApi.Net.DataProviders
 
             var bbox = CoordinateConverter.TileBounds(tileCol, tileRow, tileMatrix);
             bbox.Transform(CrsUtils.DefaultCrs, collectionOptions.Features.StorageCrs);
-            
-            var features = GetFeatures(collectionId, bbox: bbox);
+
+            var features = GetFeatures(collectionId, bbox: bbox, limit: 1000);
             var layer = new Layer { Name = collectionId };
 
             var bboxPolygon = new Polygon(
@@ -539,15 +539,24 @@ namespace OgcApi.Net.DataProviders
                 )
             );
 
+            var featureCollection = new OgcFeatureCollection();
+
             foreach (var feature in features)
-            {                
-                var intersectedFeature = feature.Geometry.Intersection(bboxPolygon.Copy());
-                if (intersectedFeature.IsEmpty)
-                    continue;
-                feature.Geometry = intersectedFeature;
-                feature.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
-                layer.Features.Add(feature);
+            {
+                if (feature.Geometry.GeometryType != Geometry.TypeNamePoint)
+                {
+                    var intersectedFeature = feature.Geometry.Intersection(bboxPolygon.Copy());
+                    if (intersectedFeature.IsEmpty)
+                        continue;
+                    feature.Geometry = intersectedFeature;
+                }
+                featureCollection.Add(feature);
             }
+
+            featureCollection.Transform(collectionOptions.Features.StorageCrs, CrsUtils.DefaultCrs);
+
+            foreach (var feature in featureCollection)
+                layer.Features.Add(feature);
 
             var vectorTile = new VectorTile { TileId = new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix).Id };
             vectorTile.Layers.Add(layer);
