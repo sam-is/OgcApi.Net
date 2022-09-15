@@ -10,6 +10,7 @@ using OgcApi.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Xunit;
 
@@ -582,7 +583,7 @@ namespace OgcApi.PostGis.Tests
         [Fact]
         public async void GetTile()
         {
-            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 1, 1);
+            var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 0, 1);
             Assert.NotNull(tile);
         }
 
@@ -595,10 +596,17 @@ namespace OgcApi.PostGis.Tests
         [Fact]
         public async void GetTileEmptyTile()
         {
-            var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("LineStrings", 8, 1, 250);
+            var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 1, 250);
             using var memoryStream = new MemoryStream(rawTile);
             memoryStream.Seek(0, SeekOrigin.Begin);
-            var tile = new MapboxTileReader().Read(memoryStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(8, 1, 250));
+
+            using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
+
+            using var decompressedStream = new MemoryStream();
+            decompressor.CopyTo(decompressedStream);
+
+            var reader = new MapboxTileReader();
+            var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));
             Assert.True(tile.IsEmpty);
         }
 
