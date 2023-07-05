@@ -32,17 +32,17 @@ public class OgcFeatureConverter : JsonConverter<OgcFeature>
         }
 
         writer.WriteString("type", "Feature");
-        if (value.Id != null || !options.IgnoreNullValues)
+        if (value.Id != null || options.DefaultIgnoreCondition != JsonIgnoreCondition.WhenWritingNull)
         {
             writer.WritePropertyName("id");
             JsonSerializer.Serialize(writer, value.Id, options);
         }
-        if (value.Geometry != null || !options.IgnoreNullValues)
+        if (value.Geometry != null || options.DefaultIgnoreCondition != JsonIgnoreCondition.WhenWritingNull)
         {
             writer.WritePropertyName("geometry");
             JsonSerializer.Serialize(writer, value.Geometry, options);
         }
-        if (value.Attributes != null || !options.IgnoreNullValues)
+        if (value.Attributes != null || options.DefaultIgnoreCondition != JsonIgnoreCondition.WhenWritingNull)
         {
             writer.WritePropertyName("properties");
             JsonSerializer.Serialize(writer, value.Attributes, options);
