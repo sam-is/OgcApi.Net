@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net5.0</TargetFramework>
+	<TargetFramework>net6.0</TargetFramework>
     <Description>OGC API Features Standard implementation</Description>    
   </PropertyGroup>  
 	
@@ -28,10 +28,10 @@
 
   <ItemGroup>
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	<PackageReference Include="Microsoft.OpenApi" Version="1.2.3" />    
-    <PackageReference Include="NetTopologySuite" Version="2.4.0" />
+	<PackageReference Include="Microsoft.OpenApi" Version="1.6.5" />    
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
     <PackageReference Include="NetTopologySuite.Features" Version="2.1.0" />
-    <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="2.1.1" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="3.0.0" />
     <PackageReference Include="NetTopologySuite.IO.VectorTiles" Version="1.0.0" />
     <PackageReference Include="NetTopologySuite.IO.VectorTiles.Mapbox" Version="1.0.0" />
     <PackageReference Include="ProjNet" Version="2.0.0" />

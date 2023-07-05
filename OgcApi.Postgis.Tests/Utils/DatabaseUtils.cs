@@ -10,7 +10,7 @@ namespace OgcApi.PostGis.Tests.Utils
 
         private const string ConnectionStringTemplateEnvVariable = "POSTGRES_CONNECTION_STRING_TEMPLATE";
 
-        private const string DbConnectionString = @"Host=127.0.0.1;User Id=postgres;Password=password;Database={0};Port=5432;";
+        private const string DbConnectionString = @"Host=127.0.0.1;User Id=postgres;Password=123;Database={0};Port=5432;";
 
         public static void RecreateDatabase()
         {
@@ -18,14 +18,10 @@ namespace OgcApi.PostGis.Tests.Utils
             createDbSqlConnection.Open();
 
             var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql");
-            if (stream == null)
-            {
-                throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-            }
+            using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql") ?? 
+                               throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
             using var streamReader = new StreamReader(stream);
-            string line;
-            while ((line = streamReader.ReadLine()) != null)
+            while (streamReader.ReadLine() is { } line)
             {
                 using var createDatabaseCommand =
                     new NpgsqlCommand(string.Format(line, DatabaseName), createDbSqlConnection);
@@ -45,13 +41,8 @@ namespace OgcApi.PostGis.Tests.Utils
         private static string GetInstallSqlScript()
         {
             var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseInstall.sql");
-
-            if (stream == null)
-            {
-                throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-            }
-
+            using var stream = assembly.GetManifestResourceStream("OgcApi.PostGis.Tests.Utils.DatabaseInstall.sql") ?? 
+                               throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
             using var streamReader = new StreamReader(stream);
             return streamReader.ReadToEnd();
         }

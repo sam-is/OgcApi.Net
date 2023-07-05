@@ -11,7 +11,7 @@ namespace OgcApi.Options.Tests
         public void OgcApiOptionsSerialization()
         {
             var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
-            var json = JsonSerializer.Serialize(ogcApiOptions, new()
+            var json = JsonSerializer.Serialize(ogcApiOptions, new JsonSerializerOptions
             {
                 Converters = { new FeaturesSourceOptionsConverter() }
             });
