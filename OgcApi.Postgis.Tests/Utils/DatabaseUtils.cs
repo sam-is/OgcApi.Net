@@ -2,68 +2,58 @@
 using System;
 using System.IO;
 
-namespace OgcApi.PostGis.Tests.Utils
+namespace OgcApi.PostGis.Tests.Utils;
+
+public static class DatabaseUtils
 {
-    public static class DatabaseUtils
+    public const string DatabaseName = "ogc_api_tests";
+
+    private const string ConnectionStringTemplateEnvVariable = "POSTGRES_CONNECTION_STRING_TEMPLATE";
+
+    private const string DbConnectionString = @"Host=127.0.0.1;User Id=postgres;Password=password;Database={0};Port=5432;";
+
+    public static void RecreateDatabase()
     {
-        public const string DatabaseName = "ogc_api_tests";
+        using var createDbSqlConnection = new NpgsqlConnection(string.Format(GetConnectionStringTemplate(), "postgres"));
+        createDbSqlConnection.Open();
 
-        private const string ConnectionStringTemplateEnvVariable = "POSTGRES_CONNECTION_STRING_TEMPLATE";
-
-        private const string DbConnectionString = @"Host=127.0.0.1;User Id=postgres;Password=password;Database={0};Port=5432;";
-
-        public static void RecreateDatabase()
+        var assembly = typeof(DatabaseUtils).Assembly;
+        using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql") ?? 
+                           throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
+        using var streamReader = new StreamReader(stream);
+        while (streamReader.ReadLine() is { } line)
         {
-            using var createDbSqlConnection = new NpgsqlConnection(string.Format(GetConnectionStringTemplate(), "postgres"));
-            createDbSqlConnection.Open();
-
-            var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql");
-            if (stream == null)
-            {
-                throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-            }
-            using var streamReader = new StreamReader(stream);
-            string line;
-            while ((line = streamReader.ReadLine()) != null)
-            {
-                using var createDatabaseCommand =
-                    new NpgsqlCommand(string.Format(line, DatabaseName), createDbSqlConnection);
-                createDatabaseCommand.ExecuteNonQuery();
-            }
-
-            createDbSqlConnection.Close();
-
-            using var installDbSqlConnection = new NpgsqlConnection(GetConnectionString());
-            installDbSqlConnection.Open();
-
-            using var installDatabaseCommand =
-                new NpgsqlCommand(string.Format(GetInstallSqlScript(), DatabaseName), installDbSqlConnection);
-            installDatabaseCommand.ExecuteNonQuery();
+            using var createDatabaseCommand =
+                new NpgsqlCommand(string.Format(line, DatabaseName), createDbSqlConnection);
+            createDatabaseCommand.ExecuteNonQuery();
         }
 
-        private static string GetInstallSqlScript()
-        {
-            var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseInstall.sql");
+        createDbSqlConnection.Close();
 
-            if (stream == null)
-            {
-                throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-            }
+        using var installDbSqlConnection = new NpgsqlConnection(GetConnectionString());
+        installDbSqlConnection.Open();
 
-            using var streamReader = new StreamReader(stream);
-            return streamReader.ReadToEnd();
-        }
+        using var installDatabaseCommand =
+            new NpgsqlCommand(string.Format(GetInstallSqlScript(), DatabaseName), installDbSqlConnection);
+        installDatabaseCommand.ExecuteNonQuery();
+    }
 
-        private static string GetConnectionStringTemplate()
-        {
-            return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
-        }
+    private static string GetInstallSqlScript()
+    {
+        var assembly = typeof(DatabaseUtils).Assembly;
+        using var stream = assembly.GetManifestResourceStream("OgcApi.PostGis.Tests.Utils.DatabaseInstall.sql") ?? 
+                           throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
+        using var streamReader = new StreamReader(stream);
+        return streamReader.ReadToEnd();
+    }
 
-        public static string GetConnectionString()
-        {
-            return string.Format(GetConnectionStringTemplate(), DatabaseName);
-        }
+    private static string GetConnectionStringTemplate()
+    {
+        return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
+    }
+
+    public static string GetConnectionString()
+    {
+        return string.Format(GetConnectionStringTemplate(), DatabaseName);
     }
 }

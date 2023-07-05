@@ -8,34 +8,32 @@ using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using System.Data.Common;
 
-namespace OgcApi.Net.SqlServer
+namespace OgcApi.Net.SqlServer;
+
+[OgcFeaturesProvider("SqlServer", typeof(SqlFeaturesSourceOptions))]
+[OgcTilesProvider("MbTiles", null)]
+public class SqlServerProvider : SqlDataProvider
 {
-    [OgcFeaturesProvider("SqlServer", typeof(SqlFeaturesSourceOptions))]
-    [OgcTilesProvider("MbTiles", null)]
-    public class SqlServerProvider : SqlDataProvider
+    public SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+        : base(logger, options) { }
+
+    protected override DbConnection GetDbConnection(string connectionString)
     {
-        public SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-            : base(logger, options) { }
+        return new SqlConnection(connectionString);
+    }
 
-        protected override DbConnection GetDbConnection(string connectionString)
-        {
-            return new SqlConnection(connectionString);
-        }
+    protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
+    {
+        return new FeaturesSqlQueryBuilder(collectionOptions);
+    }
 
-        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
+    protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
+    {
+        var geometryStream = dataReader.GetStream(ordinal);
+        var geometryReader = new SqlServerBytesReader
         {
-            return new FeaturesSqlQueryBuilder(collectionOptions);
-        }
-
-        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
-        {
-            var geometryStream = dataReader.GetStream(ordinal);
-            var geometryReader = new SqlServerBytesReader
-            {
-                RepairRings = true,
-                IsGeography = collectionSourceOptions.GeometryDataType == "geography"
-            };
-            return geometryReader.Read(geometryStream);
-        }
+            IsGeography = collectionSourceOptions.GeometryDataType == "geography"
+        };
+        return geometryReader.Read(geometryStream);
     }
 }

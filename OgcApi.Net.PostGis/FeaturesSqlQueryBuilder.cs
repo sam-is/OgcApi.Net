@@ -10,215 +10,214 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace OgcApi.Net.PostGis
+namespace OgcApi.Net.PostGis;
+
+public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
 {
-    public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
+    private string _query = "";
+
+    private readonly List<NpgsqlParameter> _sqlParameters = new();
+
+    private readonly SqlFeaturesSourceOptions _collectionOptions;
+
+    private readonly List<string> _predicateConditions = new();
+
+    public FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
     {
-        private string _query = "";
+        _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
+    }
 
-        private readonly List<NpgsqlParameter> _sqlParameters = new();
+    public IFeaturesSqlQueryBuilder AddSelectBbox()
+    {
+        _query += $@"SELECT ST_AsEWKB(ST_Extent(""{_collectionOptions.GeometryColumn}"")::geometry) FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}""";
+        return this;
+    }
 
-        private readonly SqlFeaturesSourceOptions _collectionOptions;
+    public IFeaturesSqlQueryBuilder AddSelect()
+    {
+        _query += $@"SELECT ""{_collectionOptions.IdentifierColumn}"", ST_AsEWKB(""{_collectionOptions.GeometryColumn}"")";
+        if (_collectionOptions.Properties != null)
+            _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $@"""{property}"""));
+        _query += " ";
+        return this;
+    }
 
-        private readonly List<string> _predicateConditions = new();
+    public IFeaturesSqlQueryBuilder AddInsert(IFeature feature)
+    {
+        _query += $@"INSERT INTO ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" (""{_collectionOptions.GeometryColumn}""";
+        if (_collectionOptions.Properties != null)
+            _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $@"""{property}"""));
+        _query += ") VALUES (@p0";
+        if (_collectionOptions.Properties != null)
+            for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+            {
+                _query += $", @p{i + 1}";
+                _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
+                    feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+            }
+        _query += $@") RETURNING ""{_collectionOptions.IdentifierColumn}""";
 
-        public FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
+        var geometryBytes = new PostGisWriter().Write(feature.Geometry);
+        _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
         {
-            _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
+            NpgsqlDbType = NpgsqlDbType.Bytea
+        });
+
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
+    {
+        _query +=
+            $@"UPDATE ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" " +
+            $@"SET ""{_collectionOptions.GeometryColumn}"" = @p0";
+
+        var geometryBytes = new PostGisWriter().Write(feature.Geometry);
+        _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
+        {
+            NpgsqlDbType = NpgsqlDbType.Bytea
+        });
+
+        if (_collectionOptions.Properties != null)
+        {
+            for (var i = 0; i < _collectionOptions.Properties.Count; i++)
+            {
+                _query += $@", ""{_collectionOptions.Properties[i]}"" = @p{i + 1}";
+                _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
+                    feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
+            }
         }
 
-        public IFeaturesSqlQueryBuilder AddSelectBbox()
-        {
-            _query += $@"SELECT ST_AsEWKB(ST_Extent(""{_collectionOptions.GeometryColumn}"")::geometry) FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}""";
-            return this;
-        }
+        _query += " ";
 
-        public IFeaturesSqlQueryBuilder AddSelect()
-        {
-            _query += $@"SELECT ""{_collectionOptions.IdentifierColumn}"", ST_AsEWKB(""{_collectionOptions.GeometryColumn}"")";
-            if (_collectionOptions.Properties != null)
-                _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $@"""{property}"""));
-            _query += " ";
-            return this;
-        }
+        return this;
+    }
 
-        public IFeaturesSqlQueryBuilder AddInsert(IFeature feature)
-        {
-            _query += $@"INSERT INTO ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" (""{_collectionOptions.GeometryColumn}""";
-            if (_collectionOptions.Properties != null)
-                _query += ", " + string.Join(", ", _collectionOptions.Properties.Select(property => $@"""{property}"""));
-            _query += ") VALUES (@p0";
-            if (_collectionOptions.Properties != null)
-                for (var i = 0; i < _collectionOptions.Properties.Count; i++)
-                {
-                    _query += $", @p{i + 1}";
-                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
-                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
-                }
-            _query += $@") RETURNING ""{_collectionOptions.IdentifierColumn}""";
+    public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
+    {
+        _query +=
+            $@"UPDATE ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" " +
+            "SET ";
 
+        if (feature.Geometry != null)
+        {
+            _query += $@"""{_collectionOptions.GeometryColumn}"" = @p0 ";
             var geometryBytes = new PostGisWriter().Write(feature.Geometry);
             _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
             {
                 NpgsqlDbType = NpgsqlDbType.Bytea
             });
-
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddReplace(IFeature feature)
-        {
-            _query +=
-                $@"UPDATE ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" " +
-                $@"SET ""{_collectionOptions.GeometryColumn}"" = @p0";
-
-            var geometryBytes = new PostGisWriter().Write(feature.Geometry);
-            _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
-            {
-                NpgsqlDbType = NpgsqlDbType.Bytea
-            });
-
-            if (_collectionOptions.Properties != null)
-            {
-                for (var i = 0; i < _collectionOptions.Properties.Count; i++)
-                {
-                    _query += $@", ""{_collectionOptions.Properties[i]}"" = @p{i + 1}";
-                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}",
-                        feature.Attributes?.GetOptionalValue(_collectionOptions.Properties[i]) ?? DBNull.Value));
-                }
-            }
-
-            _query += " ";
-
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddUpdate(IFeature feature)
-        {
-            _query +=
-                $@"UPDATE ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" " +
-                "SET ";
-
-            if (feature.Geometry != null)
-            {
-                _query += $@"""{_collectionOptions.GeometryColumn}"" = @p0 ";
-                var geometryBytes = new PostGisWriter().Write(feature.Geometry);
-                _sqlParameters.Add(new NpgsqlParameter("@p0", geometryBytes)
-                {
-                    NpgsqlDbType = NpgsqlDbType.Bytea
-                });
-
-                if (feature.Attributes != null)
-                {
-                    _query += ",";
-                }
-            }
 
             if (feature.Attributes != null)
             {
-                var attributesNames = feature.Attributes.GetNames();
-                for (var i = 0; i < attributesNames.Length; i++)
-                {
-                    if (!_collectionOptions.Properties.Contains(attributesNames[i])) continue;
-                    _query += $@" ""{attributesNames[i]}"" = @p{i + 1}";
-                    if (i != attributesNames.Length - 1)
-                        _query += ",";
-                    _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
-                }
+                _query += ",";
             }
-
-            _query += " ";
-
-            return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddDelete()
+        if (feature.Attributes != null)
         {
-            _query += $@"DELETE FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" ";
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddCount()
-        {
-            _query += "SELECT COUNT(*)";
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddLimit(int offset, int limit)
-        {
-            _query +=
-                $@" ORDER BY ""{_collectionOptions.IdentifierColumn}"" " +
-                $"LIMIT {limit}" +
-                $"OFFSET {offset}";
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddFrom()
-        {
-            _query += $@"FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" ";
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddWhere(Envelope bbox)
-        {
-            if (bbox == null) return this;
-            _predicateConditions.Add($@"ST_Intersects(""{_collectionOptions.GeometryColumn}"", ST_GeomFromText(@Bbox, @GeometrySRID))");
-            _sqlParameters.Add(new NpgsqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
-            _sqlParameters.Add(new NpgsqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
-            return this;
-        }
-
-        public IFeaturesSqlQueryBuilder AddWhere(DateTime? startDateTime, DateTime? endDateTime)
-        {
-            if (string.IsNullOrWhiteSpace(_collectionOptions.DateTimeColumn)) return this;
-            if (startDateTime != null)
+            var attributesNames = feature.Attributes.GetNames();
+            for (var i = 0; i < attributesNames.Length; i++)
             {
-                _predicateConditions.Add($@"""{_collectionOptions.DateTimeColumn}"" >= @StartDateTime");
-                _sqlParameters.Add(new NpgsqlParameter("@StartDateTime", startDateTime.Value));
+                if (!_collectionOptions.Properties.Contains(attributesNames[i])) continue;
+                _query += $@" ""{attributesNames[i]}"" = @p{i + 1}";
+                if (i != attributesNames.Length - 1)
+                    _query += ",";
+                _sqlParameters.Add(new NpgsqlParameter($"@p{i + 1}", feature.Attributes.GetOptionalValue(attributesNames[i]) ?? DBNull.Value));
             }
-            if (endDateTime != null)
-            {
-                _predicateConditions.Add($@"""{_collectionOptions.DateTimeColumn}"" <= @EndDateTime");
-                _sqlParameters.Add(new NpgsqlParameter("@EndDateTime", endDateTime.Value));
-            }
-            return this;
         }
 
-        public IFeaturesSqlQueryBuilder AddWhere(string featureId)
+        _query += " ";
+
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddDelete()
+    {
+        _query += $@"DELETE FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" ";
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddCount()
+    {
+        _query += "SELECT COUNT(*)";
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddLimit(int offset, int limit)
+    {
+        _query +=
+            $@" ORDER BY ""{_collectionOptions.IdentifierColumn}"" " +
+            $"LIMIT {limit} " +
+            $"OFFSET {offset}";
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddFrom()
+    {
+        _query += $@"FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}"" ";
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddWhere(Envelope bbox)
+    {
+        if (bbox == null) return this;
+        _predicateConditions.Add($@"ST_Intersects(""{_collectionOptions.GeometryColumn}"", ST_GeomFromText(@Bbox, @GeometrySRID))");
+        _sqlParameters.Add(new NpgsqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
+        _sqlParameters.Add(new NpgsqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddWhere(DateTime? startDateTime, DateTime? endDateTime)
+    {
+        if (string.IsNullOrWhiteSpace(_collectionOptions.DateTimeColumn)) return this;
+        if (startDateTime != null)
         {
-            _predicateConditions.Add($@"CAST(""{_collectionOptions.IdentifierColumn}"" AS text) = @FeatureId");
-            _sqlParameters.Add(new NpgsqlParameter("@FeatureId", featureId));
-            return this;
+            _predicateConditions.Add($@"""{_collectionOptions.DateTimeColumn}"" >= @StartDateTime");
+            _sqlParameters.Add(new NpgsqlParameter("@StartDateTime", startDateTime.Value));
         }
-
-        public IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
+        if (endDateTime != null)
         {
-            if (string.IsNullOrWhiteSpace(apiKeyPredicate) || string.IsNullOrWhiteSpace(apiKey)) return this;
-            _predicateConditions.Add(apiKeyPredicate);
-            _sqlParameters.Add(new NpgsqlParameter("@ApiKey", apiKey));
-            return this;
+            _predicateConditions.Add($@"""{_collectionOptions.DateTimeColumn}"" <= @EndDateTime");
+            _sqlParameters.Add(new NpgsqlParameter("@EndDateTime", endDateTime.Value));
         }
+        return this;
+    }
 
-        public IFeaturesSqlQueryBuilder ComposeWhereClause()
+    public IFeaturesSqlQueryBuilder AddWhere(string featureId)
+    {
+        _predicateConditions.Add($@"CAST(""{_collectionOptions.IdentifierColumn}"" AS text) = @FeatureId");
+        _sqlParameters.Add(new NpgsqlParameter("@FeatureId", featureId));
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
+    {
+        if (string.IsNullOrWhiteSpace(apiKeyPredicate) || string.IsNullOrWhiteSpace(apiKey)) return this;
+        _predicateConditions.Add(apiKeyPredicate);
+        _sqlParameters.Add(new NpgsqlParameter("@ApiKey", apiKey));
+        return this;
+    }
+
+    public IFeaturesSqlQueryBuilder ComposeWhereClause()
+    {
+        if (_predicateConditions.Count > 0)
         {
-            if (_predicateConditions.Count > 0)
-            {
-                _query += "WHERE " + string.Join(" AND ", _predicateConditions);
-            }
-            return this;
+            _query += "WHERE " + string.Join(" AND ", _predicateConditions);
         }
+        return this;
+    }
 
-        public IDbCommand BuildCommand(IDbConnection connection)
+    public IDbCommand BuildCommand(IDbConnection connection)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = _query;
+
+        foreach (var parameter in _sqlParameters)
         {
-            var command = connection.CreateCommand();
-            command.CommandText = _query;
-
-            foreach (var parameter in _sqlParameters)
-            {
-                command.Parameters.Add(parameter);
-            }
-
-            return command;
+            command.Parameters.Add(parameter);
         }
+
+        return command;
     }
 }

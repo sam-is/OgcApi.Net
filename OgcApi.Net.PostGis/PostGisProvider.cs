@@ -8,33 +8,32 @@ using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using System.Data.Common;
 
-namespace OgcApi.Net.PostGis
+namespace OgcApi.Net.PostGis;
+
+[OgcFeaturesProvider("PostGis", typeof(SqlFeaturesSourceOptions))]
+[OgcTilesProvider("MbTiles", null)]
+public class PostGisProvider : SqlDataProvider
 {
-    [OgcFeaturesProvider("PostGis", typeof(SqlFeaturesSourceOptions))]
-    [OgcTilesProvider("MbTiles", null)]
-    public class PostGisProvider : SqlDataProvider
+    public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+        : base(logger, options) { }
+
+    protected override DbConnection GetDbConnection(string connectionString)
     {
-        public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-            : base(logger, options) { }
+        return new NpgsqlConnection(connectionString);
+    }
 
-        protected override DbConnection GetDbConnection(string connectionString)
+    protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
+    {
+        return new FeaturesSqlQueryBuilder(collectionOptions);
+    }
+
+    protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
+    {
+        var geometryReader = new PostGisReader
         {
-            return new NpgsqlConnection(connectionString);
-        }
+            RepairRings = false
+        };
 
-        protected override IFeaturesSqlQueryBuilder GetFeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
-        {
-            return new FeaturesSqlQueryBuilder(collectionOptions);
-        }
-
-        protected override Geometry ReadGeometry(DbDataReader dataReader, int ordinal, SqlFeaturesSourceOptions collectionSourceOptions)
-        {
-            var geometryReader = new PostGisReader
-            {
-                RepairRings = false
-            };
-
-            return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
-        }
+        return geometryReader.Read((byte[])dataReader.GetValue(ordinal));
     }
 }

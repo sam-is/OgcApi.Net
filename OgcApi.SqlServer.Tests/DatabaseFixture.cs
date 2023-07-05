@@ -1,12 +1,11 @@
 ﻿using OgcApi.SqlServer.Tests.Utils;
 
-namespace OgcApi.SqlServer.Tests
+namespace OgcApi.SqlServer.Tests;
+
+public class DatabaseFixture
 {
-    public class DatabaseFixture
+    public DatabaseFixture()
     {
-        public DatabaseFixture()
-        {
-            DatabaseUtils.RecreateDatabase();
-        }
+        DatabaseUtils.RecreateDatabase();
     }
 }

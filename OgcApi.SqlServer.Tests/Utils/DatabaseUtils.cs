@@ -2,52 +2,51 @@
 using System;
 using System.IO;
 
-namespace OgcApi.SqlServer.Tests.Utils
+namespace OgcApi.SqlServer.Tests.Utils;
+
+public static class DatabaseUtils
 {
-    public static class DatabaseUtils
+    public const string DatabaseName = "OgcApiTests";
+
+    private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
+
+    private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
+
+    public static void RecreateDatabase()
     {
-        public const string DatabaseName = "OgcApiTests";
+        using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
+        sqlConnection.Open();
 
-        private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
+        using var createDatabaseCommand =
+            new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
+        createDatabaseCommand.ExecuteNonQuery();
 
-        private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
+        using var installDatabaseCommand =
+            new SqlCommand(string.Format(GetInstallSqlScript("DatabaseInstall"), DatabaseName), sqlConnection);
+        installDatabaseCommand.ExecuteNonQuery();
+    }
 
-        public static void RecreateDatabase()
+    private static string GetInstallSqlScript(string scriptName)
+    {
+        var assembly = typeof(DatabaseUtils).Assembly;
+        using var stream = assembly.GetManifestResourceStream($"OgcApi.SqlServer.Tests.Utils.{scriptName}.sql");
+
+        if (stream == null)
         {
-            using var sqlConnection = new SqlConnection(string.Format(GetConnectionStringTemplate(), "master"));
-            sqlConnection.Open();
-
-            using var createDatabaseCommand =
-                new SqlCommand(string.Format(GetInstallSqlScript("DatabaseCreate"), DatabaseName), sqlConnection);
-            createDatabaseCommand.ExecuteNonQuery();
-
-            using var installDatabaseCommand =
-                new SqlCommand(string.Format(GetInstallSqlScript("DatabaseInstall"), DatabaseName), sqlConnection);
-            installDatabaseCommand.ExecuteNonQuery();
+            throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
         }
 
-        private static string GetInstallSqlScript(string scriptName)
-        {
-            var assembly = typeof(DatabaseUtils).Assembly;
-            using var stream = assembly.GetManifestResourceStream($"OgcApi.SqlServer.Tests.Utils.{scriptName}.sql");
+        using var streamReader = new StreamReader(stream);
+        return streamReader.ReadToEnd();
+    }
 
-            if (stream == null)
-            {
-                throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-            }
+    private static string GetConnectionStringTemplate()
+    {
+        return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
+    }
 
-            using var streamReader = new StreamReader(stream);
-            return streamReader.ReadToEnd();
-        }
-
-        private static string GetConnectionStringTemplate()
-        {
-            return Environment.GetEnvironmentVariable(ConnectionStringTemplateEnvVariable) ?? DbConnectionString;
-        }
-
-        public static string GetConnectionString()
-        {
-            return string.Format(GetConnectionStringTemplate(), DatabaseName);
-        }
+    public static string GetConnectionString()
+    {
+        return string.Format(GetConnectionStringTemplate(), DatabaseName);
     }
 }

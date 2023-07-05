@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OgcApi.Net.Options
+namespace OgcApi.Net.Options;
+
+public class ConformanceOptions
 {
-    public class ConformanceOptions
-    {
-        public List<Uri> ConformsTo { get; set; }
-    }
+    public List<Uri> ConformsTo { get; set; }
 }

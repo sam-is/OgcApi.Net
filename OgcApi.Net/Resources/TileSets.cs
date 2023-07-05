@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Resources
+namespace OgcApi.Net.Resources;
+
+public class TileSets
 {
-    public class TileSets
-    {
-        [JsonPropertyName("tilesets")]
-        public List<TileSet> Items { get; set; }
-    }
+    [JsonPropertyName("tilesets")]
+    public List<TileSet> Items { get; set; }
 }

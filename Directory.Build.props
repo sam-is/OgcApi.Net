@@ -2,8 +2,8 @@
 <Project>
   <PropertyGroup>
 	 <MajorVersion>0</MajorVersion>
-	 <MinorVersion>3</MinorVersion>
-	 <PatchVersion>16</PatchVersion> 
+	 <MinorVersion>4</MinorVersion>
+	 <PatchVersion>0</PatchVersion> 
 	  	 
 	 <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	 <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

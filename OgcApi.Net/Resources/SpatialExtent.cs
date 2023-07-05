@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace OgcApi.Net.Resources
-{
-    public class SpatialExtent
-    {
-        public double[][] Bbox { get; set; }
+namespace OgcApi.Net.Resources;
 
-        public Uri Crs { get; set; }
-    }
+public class SpatialExtent
+{
+    public double[][] Bbox { get; set; }
+
+    public Uri Crs { get; set; }
 }

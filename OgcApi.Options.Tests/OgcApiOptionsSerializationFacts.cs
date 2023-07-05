@@ -3,38 +3,37 @@ using OgcApi.Options.Tests.Utils;
 using System.Text.Json;
 using Xunit;
 
-namespace OgcApi.Options.Tests
+namespace OgcApi.Options.Tests;
+
+public class OgcApiOptionsSerializationFacts
 {
-    public class OgcApiOptionsSerializationFacts
+    [Fact]
+    public void OgcApiOptionsSerialization()
     {
-        [Fact]
-        public void OgcApiOptionsSerialization()
+        var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+        var json = JsonSerializer.Serialize(ogcApiOptions, new JsonSerializerOptions
         {
-            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
-            var json = JsonSerializer.Serialize(ogcApiOptions, new()
-            {
-                Converters = { new FeaturesSourceOptionsConverter() }
-            });
+            Converters = { new FeaturesSourceOptionsConverter() }
+        });
 
-            Assert.False(string.IsNullOrEmpty(json));
-        }
+        Assert.False(string.IsNullOrEmpty(json));
+    }
 
-        [Fact]
-        public void LandingPageOptionsSerialization()
-        {
-            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
-            var json = JsonSerializer.Serialize(ogcApiOptions.LandingPage, OptionsUtils.SerializerOptions);
+    [Fact]
+    public void LandingPageOptionsSerialization()
+    {
+        var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+        var json = JsonSerializer.Serialize(ogcApiOptions.LandingPage, OptionsUtils.SerializerOptions);
 
-            Assert.False(string.IsNullOrEmpty(json));
-        }
+        Assert.False(string.IsNullOrEmpty(json));
+    }
 
-        [Fact]
-        public void CollectionsOptionsSerialization()
-        {
-            var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
-            var json = JsonSerializer.Serialize(ogcApiOptions.Collections, OptionsUtils.SerializerOptions);
+    [Fact]
+    public void CollectionsOptionsSerialization()
+    {
+        var ogcApiOptions = OptionsUtils.GetOptionsFromCode();
+        var json = JsonSerializer.Serialize(ogcApiOptions.Collections, OptionsUtils.SerializerOptions);
 
-            Assert.False(string.IsNullOrEmpty(json));
-        }
+        Assert.False(string.IsNullOrEmpty(json));
     }
 }

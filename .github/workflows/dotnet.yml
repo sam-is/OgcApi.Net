@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=VeryStrong!P@ssword111
+      CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=VeryStrong!P@ssword111;TrustServerCertificate=true
     
     services:
       sql:        
@@ -34,7 +34,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

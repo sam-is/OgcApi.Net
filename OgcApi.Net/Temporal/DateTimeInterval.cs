@@ -1,57 +1,56 @@
 ﻿using System;
 using System.Globalization;
 
-namespace OgcApi.Net.Temporal
+namespace OgcApi.Net.Temporal;
+
+public class DateTimeInterval
 {
-    public class DateTimeInterval
+    public DateTimeInterval(DateTime? start, DateTime? end)
     {
-        public DateTimeInterval(DateTime? start, DateTime? end)
+        Start = start;
+        End = end;
+    }
+
+    public DateTime? Start { get; set; }
+
+    public DateTime? End { get; set; }
+
+    public static DateTimeInterval Parse(string dateTime)
+    {
+        if (dateTime is null)
         {
-            Start = start;
-            End = end;
+            return new DateTimeInterval(null, null);
         }
 
-        public DateTime? Start { get; set; }
-
-        public DateTime? End { get; set; }
-
-        public static DateTimeInterval Parse(string dateTime)
+        DateTime? startDate, endDate;
+        if (!dateTime.Contains('/'))
         {
-            if (dateTime is null)
-            {
-                return new DateTimeInterval(null, null);
-            }
+            startDate = DateTime.Parse(dateTime, CultureInfo.InvariantCulture);
+            endDate = startDate;
+        }
+        else
+        {
+            var tokens = dateTime.Split('/');
 
-            DateTime? startDate, endDate;
-            if (!dateTime.Contains('/'))
+            if (tokens[0] == "..")
             {
-                startDate = DateTime.Parse(dateTime, CultureInfo.InvariantCulture);
-                endDate = startDate;
+                startDate = null;
             }
             else
             {
-                string[] tokens = dateTime.Split('/');
-
-                if (tokens[0] == "..")
-                {
-                    startDate = null;
-                }
-                else
-                {
-                    startDate = DateTime.Parse(tokens[0], CultureInfo.InvariantCulture);
-                }
-
-                if (tokens[1] == "..")
-                {
-                    endDate = null;
-                }
-                else
-                {
-                    endDate = DateTime.Parse(tokens[1], CultureInfo.InvariantCulture);
-                }
+                startDate = DateTime.Parse(tokens[0], CultureInfo.InvariantCulture);
             }
 
-            return new DateTimeInterval(startDate, endDate);
+            if (tokens[1] == "..")
+            {
+                endDate = null;
+            }
+            else
+            {
+                endDate = DateTime.Parse(tokens[1], CultureInfo.InvariantCulture);
+            }
         }
+
+        return new DateTimeInterval(startDate, endDate);
     }
 }
