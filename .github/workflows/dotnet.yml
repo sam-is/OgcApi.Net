@@ -45,6 +45,6 @@ jobs:
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       run: |        
         mkdir artifacts 
-        dotnet pack -c Release -o artifacts --no-restore
+        dotnet pack -c Release -o artifacts
         dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
         rm -rf artifacts    
