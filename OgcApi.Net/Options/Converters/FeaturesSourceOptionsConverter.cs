@@ -6,60 +6,59 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Options.Converters
+namespace OgcApi.Net.Options.Converters;
+
+public class FeaturesSourceOptionsConverter : JsonConverter<IFeaturesSourceOptions>
 {
-    public class FeaturesSourceOptionsConverter : JsonConverter<IFeaturesSourceOptions>
+    private readonly Dictionary<string, Type> _providersOptionsTypes = new();
+
+    public FeaturesSourceOptionsConverter()
     {
-        private readonly Dictionary<string, Type> _providersOptionsTypes = new();
+        var providersTypes = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .SelectMany(x => x.DefinedTypes)
+            .Where(type => Attribute.IsDefined(type, typeof(OgcFeaturesProviderAttribute)));
 
-        public FeaturesSourceOptionsConverter()
+        foreach (var type in providersTypes)
         {
-            var providersTypes = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(x => x.DefinedTypes)
-                .Where(type => Attribute.IsDefined(type, typeof(OgcFeaturesProviderAttribute)));
+            var attribute =
+                (OgcFeaturesProviderAttribute)Attribute.GetCustomAttribute(type,
+                    typeof(OgcFeaturesProviderAttribute));
 
-            foreach (var type in providersTypes)
-            {
-                var attribute =
-                    (OgcFeaturesProviderAttribute)Attribute.GetCustomAttribute(type,
-                        typeof(OgcFeaturesProviderAttribute));
+            if (attribute != null)
+                _providersOptionsTypes[attribute.Name] = attribute.OptionsType;
+        }
+    }
 
-                if (attribute != null)
-                    _providersOptionsTypes[attribute.Name] = attribute.OptionsType;
-            }
+    public override IFeaturesSourceOptions Read(ref Utf8JsonReader reader, Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        using var jsonDocument = JsonDocument.ParseValue(ref reader);
+
+        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString();
+
+        if (storageType == null)
+            throw new JsonException("Type element is not defined");
+
+        var optionsType = _providersOptionsTypes[storageType];
+        if (optionsType != null)
+        {
+            return JsonSerializer.Deserialize(jsonDocument.RootElement.ToString(), optionsType, options) as IFeaturesSourceOptions;
         }
 
-        public override IFeaturesSourceOptions Read(ref Utf8JsonReader reader, Type typeToConvert,
-            JsonSerializerOptions options)
+        throw new JsonException($"Cannot find type with {storageType} OgcFeaturesProviderAttribute value");
+    }
+
+    public override void Write(Utf8JsonWriter writer, IFeaturesSourceOptions value, JsonSerializerOptions options)
+    {
+        var optionsType = _providersOptionsTypes[value.Type];
+        if (optionsType != null)
         {
-            using var jsonDocument = JsonDocument.ParseValue(ref reader);
-
-            var storageType = jsonDocument.RootElement.GetProperty("Type").GetString();
-
-            if (storageType == null)
-                throw new JsonException("Type element is not defined");
-
-            var optionsType = _providersOptionsTypes[storageType];
-            if (optionsType != null)
-            {
-                return JsonSerializer.Deserialize(jsonDocument.RootElement.ToString(), optionsType, options) as IFeaturesSourceOptions;
-            }
-
-            throw new JsonException($"Cannot find type with {storageType} OgcFeaturesProviderAttribute value");
+            JsonSerializer.Serialize(writer, value, optionsType, options);
         }
-
-        public override void Write(Utf8JsonWriter writer, IFeaturesSourceOptions value, JsonSerializerOptions options)
+        else
         {
-            var optionsType = _providersOptionsTypes[value.Type];
-            if (optionsType != null)
-            {
-                JsonSerializer.Serialize(writer, value, optionsType, options);
-            }
-            else
-            {
-                throw new JsonException($"Cannot find type with {value.Type} OgcFeaturesProviderAttribute value");
-            }
+            throw new JsonException($"Cannot find type with {value.Type} OgcFeaturesProviderAttribute value");
         }
     }
 }

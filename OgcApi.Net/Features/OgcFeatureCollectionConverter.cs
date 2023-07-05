@@ -2,40 +2,39 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OgcApi.Net.Features
+namespace OgcApi.Net.Features;
+
+public class OgcFeatureCollectionConverter : JsonConverter<OgcFeatureCollection>
 {
-    public class OgcFeatureCollectionConverter : JsonConverter<OgcFeatureCollection>
+    public override OgcFeatureCollection Read(ref Utf8JsonReader reader, Type objectType, JsonSerializerOptions options)
     {
-        public override OgcFeatureCollection Read(ref Utf8JsonReader reader, Type objectType, JsonSerializerOptions options)
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, OgcFeatureCollection value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("type", "FeatureCollection");
+
+        writer.WriteString("timeStamp", DateTime.Now);
+        writer.WriteString("numberMatched", value.TotalMatched.ToString());
+        writer.WriteString("numberReturned", value.Count.ToString());
+
+        if (value.Links != null)
         {
-            throw new NotImplementedException();
-        }
-
-        public override void Write(Utf8JsonWriter writer, OgcFeatureCollection value, JsonSerializerOptions options)
-        {
-            writer.WriteStartObject();
-            writer.WriteString("type", "FeatureCollection");
-
-            writer.WriteString("timeStamp", DateTime.Now);
-            writer.WriteString("numberMatched", value.TotalMatched.ToString());
-            writer.WriteString("numberReturned", value.Count.ToString());
-
-            if (value.Links != null)
+            writer.WriteStartArray("links");
+            foreach (var link in value.Links)
             {
-                writer.WriteStartArray("links");
-                foreach (var link in value.Links)
-                {
-                    JsonSerializer.Serialize(writer, link, options);
-                }
-                writer.WriteEndArray();
+                JsonSerializer.Serialize(writer, link, options);
             }
-
-            writer.WriteStartArray("features");
-            foreach (var feature in value)
-                JsonSerializer.Serialize(writer, feature, options);
             writer.WriteEndArray();
-
-            writer.WriteEndObject();
         }
+
+        writer.WriteStartArray("features");
+        foreach (var feature in value)
+            JsonSerializer.Serialize(writer, feature, options);
+        writer.WriteEndArray();
+
+        writer.WriteEndObject();
     }
 }

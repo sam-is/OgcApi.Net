@@ -1,9 +1,8 @@
-﻿namespace OgcApi.Net.Resources
-{
-    public class TemporalExtent
-    {
-        public double[][] Interval { get; set; }
+﻿namespace OgcApi.Net.Resources;
 
-        public string Trs { get; set; }
-    }
+public class TemporalExtent
+{
+    public double[][] Interval { get; set; }
+
+    public string Trs { get; set; }
 }

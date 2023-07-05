@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace OgcApi.Net.MbTiles
-{
-    public class TimestampFile
-    {
-        public DateTime DateTime { get; set; }
+namespace OgcApi.Net.MbTiles;
 
-        public string FileName { get; set; }
-    }
+public class TimestampFile
+{
+    public DateTime DateTime { get; set; }
+
+    public string FileName { get; set; }
 }

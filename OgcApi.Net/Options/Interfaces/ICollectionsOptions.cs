@@ -1,7 +1,6 @@
-﻿namespace OgcApi.Net.Options.Interfaces
+﻿namespace OgcApi.Net.Options.Interfaces;
+
+public interface ICollectionsOptions
 {
-    public interface ICollectionsOptions
-    {
-        ICollectionOptions GetSourceById(string id);
-    }
+    ICollectionOptions GetSourceById(string id);
 }
