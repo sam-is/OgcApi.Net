@@ -42,8 +42,8 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: |
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      run: |        
         mkdir artifacts 
         dotnet pack -c Release -o artifacts --no-restore
         dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
