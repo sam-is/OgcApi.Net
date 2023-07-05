@@ -148,7 +148,7 @@ public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
     {
         _query +=
             $@" ORDER BY ""{_collectionOptions.IdentifierColumn}"" " +
-            $"LIMIT {limit}" +
+            $"LIMIT {limit} " +
             $"OFFSET {offset}";
         return this;
     }
