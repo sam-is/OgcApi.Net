@@ -37,7 +37,7 @@ jobs:
         dotnet-version: 6.0.x
         source-url: https://api.nuget.org/v3/index.json        
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}        
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
