@@ -41,31 +41,10 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish OgcApi.Net
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:        
-        PROJECT_FILE_PATH: OgcApi.Net/OgcApi.Net.csproj
-        VERSION_FILE_PATH: Directory.Build.props
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish OgcApi.Net.SqlServer
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        PROJECT_FILE_PATH: OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj
-        VERSION_FILE_PATH: Directory.Build.props
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish OgcApi.Net.PostGis
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        PROJECT_FILE_PATH: OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj
-        VERSION_FILE_PATH: Directory.Build.props
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish OgcApi.Net.MbTiles
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        PROJECT_FILE_PATH: OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj
-        VERSION_FILE_PATH: Directory.Build.props
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+    - name: Publish
+      run: |
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        mkdir artifacts 
+        dotnet pack -c Release -o artifacts --no-restore
+        dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
+        rm -rf artifacts    
