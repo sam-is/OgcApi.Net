@@ -24,7 +24,10 @@ public class FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
 
     public IFeaturesSqlQueryBuilder AddSelectBbox()
     {
-        _query += $@"SELECT ST_AsEWKB(ST_Extent(""{_collectionOptions.GeometryColumn}"")::geometry) FROM ""{_collectionOptions.Schema}"".""{_collectionOptions.Table}""";
+        _query += $"""
+                   SELECT ST_AsEWKB(ST_Extent("{_collectionOptions.GeometryColumn}")::geometry) 
+                   FROM "{_collectionOptions.Schema}"."{_collectionOptions.Table}"
+                   """;
         return this;
     }
 
@@ -159,6 +162,7 @@ public class FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
     {
         _query +=
             $"""
+             
              ORDER BY "{_collectionOptions.IdentifierColumn}" 
              LIMIT {limit} 
              OFFSET {offset}

@@ -8,7 +8,7 @@ public static class DatabaseUtils
 {
     private const string DatabaseName = "OgcApiSamples";
 
-    private const string DbConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={0}";
+    private const string DbConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={0};TrustServerCertificate=True";
 
     public static void RecreateDatabase()
     {
