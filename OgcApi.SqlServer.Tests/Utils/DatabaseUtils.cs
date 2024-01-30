@@ -10,7 +10,7 @@ public static class DatabaseUtils
 
     private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
 
-    private const string DbConnectionString = @"Server=localhost; Database={0}; Trusted_Connection=True;";
+    private const string DbConnectionString = "Server=localhost; Database={0}; Trusted_Connection=True;";
 
     public static void RecreateDatabase()
     {

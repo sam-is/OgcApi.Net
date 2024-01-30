@@ -5,10 +5,5 @@ namespace OgcApi.Options.Tests;
 
 public class ConfigurationOptionsFixture
 {
-    public readonly OgcApiOptions Options;
-
-    public ConfigurationOptionsFixture()
-    {
-        Options = OptionsUtils.GetOptionsFromJsonConfig();
-    }
+    public readonly OgcApiOptions Options = OptionsUtils.GetOptionsFromJsonConfig();
 }

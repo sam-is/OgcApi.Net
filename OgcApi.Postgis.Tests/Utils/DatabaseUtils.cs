@@ -10,7 +10,7 @@ public static class DatabaseUtils
 
     private const string ConnectionStringTemplateEnvVariable = "POSTGRES_CONNECTION_STRING_TEMPLATE";
 
-    private const string DbConnectionString = @"Host=127.0.0.1;User Id=postgres;Password=password;Database={0};Port=5432;";
+    private const string DbConnectionString = "Host=127.0.0.1;User Id=postgres;Password=password;Database={0};Port=5432;";
 
     public static void RecreateDatabase()
     {

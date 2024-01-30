@@ -16,17 +16,10 @@ using System.Linq;
 namespace OgcApi.Net.MbTiles;
 
 [OgcTilesProvider("MbTiles", typeof(MbTilesSourceOptions))]
-public class MbTilesProvider : ITilesProvider
+public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+    : ITilesProvider
 {
-    private readonly ILogger<MbTilesProvider> _logger;
-
-    private readonly ICollectionsOptions _collectionsOptions;
-
-    public MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-    {
-        _logger = logger;
-        _collectionsOptions = options.CurrentValue.Collections;
-    }
+    private readonly ICollectionsOptions _collectionsOptions = options.CurrentValue.Collections;
 
     private static SqliteConnection GetDbConnection(string fileName)
     {
@@ -45,7 +38,7 @@ public class MbTilesProvider : ITilesProvider
         var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
         if (tileOptions == null)
         {
-            _logger.LogTrace(
+            logger.LogTrace(
                 "The tile source for collection with ID = {collectionId} was not found in the provided options", collectionId);
             throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
         }
@@ -55,10 +48,10 @@ public class MbTilesProvider : ITilesProvider
             using var connection = GetDbConnection(tileOptions.FileName);
             connection.Open();
 
-            var checkMetadataCommand = GetDbCommand(@"SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'metadata'", connection);
+            var checkMetadataCommand = GetDbCommand("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'metadata'", connection);
             if (checkMetadataCommand.ExecuteScalar() == null) return null;
 
-            var getParamCommand = GetDbCommand(@"SELECT Value FROM metadata WHERE name = $name", connection);
+            var getParamCommand = GetDbCommand("SELECT Value FROM metadata WHERE name = $name", connection);
 
             getParamCommand.Parameters.AddWithValue("$name", "minzoom");
             if (!int.TryParse(getParamCommand.ExecuteScalar()?.ToString(), out var minZoom)) return null;
@@ -78,7 +71,7 @@ public class MbTilesProvider : ITilesProvider
             if (!double.TryParse(coordStrs[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var lon2)) return null;
             if (!double.TryParse(coordStrs[3], NumberStyles.Any, CultureInfo.InvariantCulture, out var lat2)) return null;
 
-            List<TileMatrixLimits> result = new();
+            List<TileMatrixLimits> result = [];
             for (var i = minZoom; i <= maxZoom; i++)
             {
                 result.Add(new TileMatrixLimits
@@ -94,7 +87,7 @@ public class MbTilesProvider : ITilesProvider
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetLimits database query completed with an exception");
+            logger.LogError(ex, "GetLimits database query completed with an exception");
             throw;
         }
     }
@@ -104,7 +97,7 @@ public class MbTilesProvider : ITilesProvider
         var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
         if (tileOptions == null)
         {
-            _logger.LogTrace(
+            logger.LogTrace(
                 "The tile source for collection with ID = {collectionId} was not found in the provided options", collectionId);
             throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
         }
@@ -130,7 +123,7 @@ public class MbTilesProvider : ITilesProvider
 
                 if (fileName == null || !File.Exists(fileName))
                 {
-                    _logger.LogError("GetTileAsync: file for collection with with datetime = {dateTime} ({fileName}) does not exist", dateTime, fileName);
+                    logger.LogError("GetTileAsync: file for collection with with datetime = {dateTime} ({fileName}) does not exist", dateTime, fileName);
                     return null;
                 }
             }
@@ -142,7 +135,7 @@ public class MbTilesProvider : ITilesProvider
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetTileAsync database query completed with an exception");
+            logger.LogError(ex, "GetTileAsync database query completed with an exception");
             throw;
         }
     }
@@ -152,7 +145,7 @@ public class MbTilesProvider : ITilesProvider
         await using var connection = GetDbConnection(fileName);
         connection.Open();
 
-        var command = GetDbCommand(@"SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
+        var command = GetDbCommand("SELECT tile_data FROM tiles WHERE zoom_level = $zoom_level AND tile_column = $tile_column AND tile_row = $tile_row", connection);
 
         command.Parameters.AddWithValue("$zoom_level", tileMatrix);
         command.Parameters.AddWithValue("$tile_column", tileCol);

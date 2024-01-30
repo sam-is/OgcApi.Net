@@ -12,20 +12,15 @@ using System.Linq;
 
 namespace OgcApi.Net.SqlServer;
 
-public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
+public class FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions) : IFeaturesSqlQueryBuilder
 {
     private string _query = "";
 
-    private readonly List<SqlParameter> _sqlParameters = new();
+    private readonly List<SqlParameter> _sqlParameters = [];
 
-    private readonly SqlFeaturesSourceOptions _collectionOptions;
+    private readonly SqlFeaturesSourceOptions _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
 
-    private readonly List<string> _predicateConditions = new();
-
-    public FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
-    {
-        _collectionOptions = collectionOptions ?? throw new ArgumentNullException(nameof(collectionOptions));
-    }
+    private readonly List<string> _predicateConditions = [];
 
     public IFeaturesSqlQueryBuilder AddSelectBbox()
     {
@@ -174,12 +169,11 @@ public class FeaturesSqlQueryBuilder : IFeaturesSqlQueryBuilder
 
     public IFeaturesSqlQueryBuilder AddWhere(Envelope bbox)
     {
-        if (bbox != null)
-        {
-            _predicateConditions.Add($"[{_collectionOptions.GeometryColumn}].STIntersects({_collectionOptions.GeometryDataType}::STGeomFromText(@Bbox, @GeometrySRID)) = 1");
-            _sqlParameters.Add(new SqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
-            _sqlParameters.Add(new SqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
-        }
+        if (bbox == null) return this;
+
+        _predicateConditions.Add($"[{_collectionOptions.GeometryColumn}].STIntersects({_collectionOptions.GeometryDataType}::STGeomFromText(@Bbox, @GeometrySRID)) = 1");
+        _sqlParameters.Add(new SqlParameter("@Bbox", FormattableString.Invariant($"POLYGON(({bbox.MinX} {bbox.MinY}, {bbox.MinX} {bbox.MaxY}, {bbox.MaxX} {bbox.MaxY}, {bbox.MaxX} {bbox.MinY}, {bbox.MinX} {bbox.MinY}))")));
+        _sqlParameters.Add(new SqlParameter("@GeometrySRID", _collectionOptions.GeometrySrid));
         return this;
     }
 

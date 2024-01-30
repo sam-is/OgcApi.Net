@@ -12,11 +12,9 @@ namespace OgcApi.Net.PostGis;
 
 [OgcFeaturesProvider("PostGis", typeof(SqlFeaturesSourceOptions))]
 [OgcTilesProvider("MbTiles", null)]
-public class PostGisProvider : SqlDataProvider
+public class PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+    : SqlDataProvider(logger, options)
 {
-    public PostGisProvider(ILogger<PostGisProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-        : base(logger, options) { }
-
     protected override DbConnection GetDbConnection(string connectionString)
     {
         return new NpgsqlConnection(connectionString);

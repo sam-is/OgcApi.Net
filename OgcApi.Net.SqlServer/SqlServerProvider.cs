@@ -12,11 +12,9 @@ namespace OgcApi.Net.SqlServer;
 
 [OgcFeaturesProvider("SqlServer", typeof(SqlFeaturesSourceOptions))]
 [OgcTilesProvider("MbTiles", null)]
-public class SqlServerProvider : SqlDataProvider
+public class SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
+    : SqlDataProvider(logger, options)
 {
-    public SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-        : base(logger, options) { }
-
     protected override DbConnection GetDbConnection(string connectionString)
     {
         return new SqlConnection(connectionString);

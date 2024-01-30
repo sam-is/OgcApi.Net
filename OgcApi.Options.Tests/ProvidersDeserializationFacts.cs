@@ -6,14 +6,10 @@ using Xunit;
 
 namespace OgcApi.Options.Tests;
 
-public class ProvidersDeserializationFacts : IClassFixture<ConfigurationOptionsFixture>
+public class ProvidersDeserializationFacts(ConfigurationOptionsFixture fixture)
+    : IClassFixture<ConfigurationOptionsFixture>
 {
-    private readonly OgcApiOptions _options;
-
-    public ProvidersDeserializationFacts(ConfigurationOptionsFixture fixture)
-    {
-        _options = fixture.Options;
-    }
+    private readonly OgcApiOptions _options = fixture.Options;
 
     [Fact]
     public void SqlServerProviderOptionsLinksSet()

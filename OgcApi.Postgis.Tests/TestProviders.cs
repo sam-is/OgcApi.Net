@@ -6,7 +6,6 @@ using OgcApi.Net.Options.Features;
 using OgcApi.Net.PostGis;
 using OgcApi.PostGis.Tests.Utils;
 using System;
-using System.Collections.Generic;
 
 namespace OgcApi.PostGis.Tests;
 
@@ -18,18 +17,18 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "Polygons",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -42,26 +41,27 @@ public static class TestProviders
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "date",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "name",
                                     "num",
                                     "s",
                                     "date"
-                                }
+                                ]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "LineStrings",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -73,23 +73,21 @@ public static class TestProviders
                                 GeometryColumn = "geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "name"
-                                }
+                                Properties = ["name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "Points",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -101,23 +99,21 @@ public static class TestProviders
                                 GeometryColumn = "geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "name"
-                                }
+                                Properties = ["name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "Empty",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -129,23 +125,21 @@ public static class TestProviders
                                 GeometryColumn = "geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "name"
-                                }
+                                Properties = ["name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "PolygonsForInsert",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -158,17 +152,17 @@ public static class TestProviders
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "date",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "name",
                                     "num",
                                     "s",
                                     "date"
-                                }
+                                ]
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -179,18 +173,18 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "Test",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -205,7 +199,7 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -216,18 +210,18 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "PointsWithApiKey",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -239,15 +233,12 @@ public static class TestProviders
                                 GeometryColumn = "geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "name"
-                                },
+                                Properties = ["name"],
                                 ApiKeyPredicateForGet = "key = @ApiKey"
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -255,18 +246,18 @@ public static class TestProviders
     public static PostGisProvider GetDefaultProvider()
     {
         return new PostGisProvider(new NullLogger<PostGisProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetDefaultOptions()));
     }
 
     public static PostGisProvider GetProviderWithErrors()
     {
         return new PostGisProvider(new NullLogger<PostGisProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownTable()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithUnknownTable()));
     }
 
     public static PostGisProvider GetProviderWithApiKey()
     {
         return new PostGisProvider(new NullLogger<PostGisProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithApiKey()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithApiKey()));
     }
 }

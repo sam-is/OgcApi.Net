@@ -41,13 +41,13 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
     {
         var options = new CollectionsOptions
         {
-            Items = new List<CollectionOptions>
-            {
-                new()
+            Items =
+            [
+                new CollectionOptions
                 {
                     Id = "Polygons"
                 }
-            }
+            ]
         };
         Assert.Throws<OptionsValidationException>(() => CollectionsOptionsValidator.Validate(options));
     }
@@ -327,14 +327,13 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
                 ),
                 Geometry = new Polygon(
                     new LinearRing(
-                        new Coordinate[]
-                        {
-                            new(0, 0),
-                            new(0, 1000000),
-                            new(1000000, 1000000),
-                            new(1000000, 0),
-                            new(0, 0)
-                        }
+                        [
+                            new Coordinate(0, 0),
+                            new Coordinate(0, 1000000),
+                            new Coordinate(1000000, 1000000),
+                            new Coordinate(1000000, 0),
+                            new Coordinate(0, 0)
+                        ]
                     )
                 )
             };
@@ -405,14 +404,13 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
                 ),
                 Geometry = new Polygon(
                     new LinearRing(
-                        new Coordinate[]
-                        {
-                            new(0, 0),
-                            new(0, 1000001),
-                            new(1000001, 1000001),
-                            new(1000001, 0),
-                            new(0, 0)
-                        }
+                        [
+                            new Coordinate(0, 0),
+                            new Coordinate(0, 1000001),
+                            new Coordinate(1000001, 1000001),
+                            new Coordinate(1000001, 0),
+                            new Coordinate(0, 0)
+                        ]
                     )
                 )
             };
@@ -476,14 +474,13 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
             {
                 Geometry = new Polygon(
                     new LinearRing(
-                        new Coordinate[]
-                        {
-                            new(0, 0),
-                            new(0, 1000002),
-                            new(1000002, 1000002),
-                            new(1000002, 0),
-                            new(0, 0)
-                        }
+                        [
+                            new Coordinate(0, 0),
+                            new Coordinate(0, 1000002),
+                            new Coordinate(1000002, 1000002),
+                            new Coordinate(1000002, 0),
+                            new Coordinate(0, 0)
+                        ]
                     )
                 )
             };
@@ -520,14 +517,13 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
                 ),
                 Geometry = new Polygon(
                     new LinearRing(
-                        new Coordinate[]
-                        {
-                            new(0, 0),
-                            new(0, 1000001),
-                            new(1000001, 1000001),
-                            new(1000001, 0),
-                            new(0, 0)
-                        }
+                        [
+                            new Coordinate(0, 0),
+                            new Coordinate(0, 1000001),
+                            new Coordinate(1000001, 1000001),
+                            new Coordinate(1000001, 0),
+                            new Coordinate(0, 0)
+                        ]
                     )
                 )
             };
@@ -588,9 +584,9 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public void GetTileUnknownCollection()
+    public async System.Threading.Tasks.Task GetTileUnknownCollection()
     {
-        Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
+        await Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
     }
 
     [Fact]

@@ -8,7 +8,6 @@ using OgcApi.Net.PostGis;
 using OgcApi.Net.Resources;
 using OgcApi.Net.SqlServer;
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OgcApi.Options.Tests.Utils;
@@ -47,52 +46,57 @@ public static class OptionsUtils
                 ContactUrl = new Uri("https://example.com/"),
                 ApiDocumentPage = new Uri("https://api.com/index.html"),
                 ApiDescriptionPage = new Uri("https://api.com/swagger.json"),
-                Links = new List<Link>
-                {
-                    new() { Href = new Uri("https://api.com/landing_page/link1.html") },
-                    new() { Href = new Uri("https://api.com/landing_page/link2.html") }
-                }
+                Links =
+                [
+                    new Link {Href = new Uri("https://api.com/landing_page/link1.html")},
+                    new Link {Href = new Uri("https://api.com/landing_page/link2.html")}
+                ]
             },
             Conformance = new ConformanceOptions
             {
-                ConformsTo = new List<Uri>
-                {
-                    new("https://api.com/conform1.html"),
-                    new("https://api.com/conform2.html")
-                }
+                ConformsTo =
+                [
+                    new Uri("https://api.com/conform1.html"),
+                    new Uri("https://api.com/conform2.html")
+                ]
             },
             UseApiKeyAuthorization = true,
             Collections = new CollectionsOptions
             {
-                Links = new List<Link>
-                {
-                    new() { Href = new Uri("https://api.com/collections/link1.html") },
-                    new() { Href = new Uri("https://api.com/collections/link2.html") }
-                },
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Links =
+                [
+                    new Link {Href = new Uri("https://api.com/collections/link1.html")},
+                    new Link {Href = new Uri("https://api.com/collections/link2.html")}
+                ],
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "Collection1",
                         Title = "Collection title 1",
                         Description = "Collection description 1",
                         Extent = new Extent
                         {
-                            Spatial = new SpatialExtent { Bbox = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Crs = new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84") },
-                            Temporal = new TemporalExtent { Interval = new[] { new[] { 1.0, 2.0 }, new[] { 3.0, 4.0 } }, Trs = "Trs" }
+                            Spatial = new SpatialExtent
+                            {
+                                Bbox = [[1.0, 2.0], [3.0, 4.0]],
+                                Crs = new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84")
+                            },
+                            Temporal = new TemporalExtent
+                                {Interval = [[1.0, 2.0], [3.0, 4.0]], Trs = "Trs"}
                         },
-                        Links = new List<Link>
-                        {
-                            new() { Href = new Uri("https://api.com/collections/collection1/link1.html") },
-                            new() { Href = new Uri("https://api.com/collections/collection1/link2.html") }
-                        },
+                        Links =
+                        [
+                            new Link {Href = new Uri("https://api.com/collections/collection1/link1.html")},
+                            new Link {Href = new Uri("https://api.com/collections/collection1/link2.html")}
+                        ],
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -105,11 +109,11 @@ public static class OptionsUtils
                                 GeometryDataType = "geometry",
                                 GeometryGeoJsonType = "MultiPolygon",
                                 IdentifierColumn = "id",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "Prop1",
                                     "Prop2"
-                                },
+                                ],
                                 AllowCreate = true,
                                 AllowReplace = true,
                                 AllowUpdate = true,
@@ -119,28 +123,30 @@ public static class OptionsUtils
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "Collection2",
                         Title = "Collection title 2",
                         Description = "Collection description 2",
-                        Links = new List<Link>
-                        {
-                            new() { Href = new Uri("https://api.com/collections/collection2/link1.html") },
-                            new() { Href = new Uri("https://api.com/collections/collection2/link2.html") }
-                        },
+                        Links =
+                        [
+                            new Link {Href = new Uri("https://api.com/collections/collection2/link1.html")},
+                            new Link {Href = new Uri("https://api.com/collections/collection2/link2.html")}
+                        ],
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857"),
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
                                 Type = "SqlServer",
-                                ConnectionString = "data source=127.0.0.1,1433;user id=user;password=user;initial catalog=dbo;Persist Security Info=true",
+                                ConnectionString =
+                                    "data source=127.0.0.1,1433;user id=user;password=user;initial catalog=dbo;Persist Security Info=true",
                                 Schema = "dbo",
                                 Table = "Collection2",
                                 GeometryColumn = "Geom",
@@ -148,11 +154,11 @@ public static class OptionsUtils
                                 GeometryDataType = "geometry",
                                 GeometryGeoJsonType = "MultiPolygon",
                                 IdentifierColumn = "Id",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "Prop1",
                                     "Prop2"
-                                },
+                                ],
                                 AllowCreate = true,
                                 AllowReplace = true,
                                 AllowUpdate = true,
@@ -162,7 +168,7 @@ public static class OptionsUtils
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
