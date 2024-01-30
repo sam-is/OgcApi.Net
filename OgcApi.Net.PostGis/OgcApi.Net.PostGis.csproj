@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Description>PostgreSQL/PostGis provider for the OGC API Features Standard implementation</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
-    <PackageReference Include="Npgsql" Version="7.0.4" />
+    <PackageReference Include="Npgsql" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
