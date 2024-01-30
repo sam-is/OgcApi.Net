@@ -60,9 +60,9 @@ public class LandingPageController : ControllerBase
         if (_apiOptions.LandingPage.Links == null ||
             _apiOptions.LandingPage.Links.Count == 0)
         {
-            links = new List<Link>
-            {
-                new()
+            links =
+            [
+                new Link
                 {
                     Href = Utils.GetBaseUrl(Request, false),
                     HrefLang = "en",
@@ -70,7 +70,8 @@ public class LandingPageController : ControllerBase
                     Type = "application/json",
                     Title = "The landing page"
                 },
-                new()
+                
+                new Link
                 {
                     Href = _apiOptions.LandingPage.ApiDescriptionPage,
                     HrefLang = "en",
@@ -78,7 +79,8 @@ public class LandingPageController : ControllerBase
                     Type = "application/vnd.oai.openapi+json;version=3.0",
                     Title = "OGC API definition"
                 },
-                new()
+
+                new Link
                 {
                     Href = _apiOptions.LandingPage.ApiDocumentPage,
                     HrefLang = "en",
@@ -86,15 +88,18 @@ public class LandingPageController : ControllerBase
                     Type = "text/html",
                     Title = "OGC API documentation"
                 },
-                new()
+
+                new Link
                 {
                     Href = new Uri(baseUri, "conformance"),
                     HrefLang = "en",
                     Rel = "conformance",
                     Type = "application/json",
-                    Title = "Conformance classes from standards or community specifications, identified by a URI, that the API conforms to"
+                    Title =
+                        "Conformance classes from standards or community specifications, identified by a URI, that the API conforms to"
                 },
-                new()
+
+                new Link
                 {
                     Href = new Uri(baseUri, "collections"),
                     HrefLang = "en",
@@ -102,7 +107,7 @@ public class LandingPageController : ControllerBase
                     Type = "application/json",
                     Title = "Feature collections provided by the API"
                 }
-            };
+            ];
         }
         else
         {

@@ -3,15 +3,9 @@
 namespace OgcApi.Net.DataProviders;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class OgcTilesProviderAttribute : Attribute
+public class OgcTilesProviderAttribute(string name, Type optionsType) : Attribute
 {
-    public string Name;
+    public readonly string Name = name;
 
-    public Type OptionsType;
-
-    public OgcTilesProviderAttribute(string name, Type optionsType)
-    {
-        Name = name;
-        OptionsType = optionsType;
-    }
+    public readonly Type OptionsType = optionsType;
 }
