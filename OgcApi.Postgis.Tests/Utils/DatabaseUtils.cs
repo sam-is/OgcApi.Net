@@ -18,7 +18,7 @@ public static class DatabaseUtils
         createDbSqlConnection.Open();
 
         var assembly = typeof(DatabaseUtils).Assembly;
-        using var stream = assembly.GetManifestResourceStream($"OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql") ?? 
+        using var stream = assembly.GetManifestResourceStream("OgcApi.PostGis.Tests.Utils.DatabaseCreate.sql") ?? 
                            throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
         using var streamReader = new StreamReader(stream);
         while (streamReader.ReadLine() is { } line)

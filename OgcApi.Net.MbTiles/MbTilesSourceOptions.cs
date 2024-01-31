@@ -15,7 +15,7 @@ public class MbTilesSourceOptions : ITilesSourceOptions
 
     public TileAccessDelegate TileAccessDelegate { get; set; }
 
-    public List<TimestampFile> TimestampFiles { get; set; } = new();
+    public List<TimestampFile> TimestampFiles { get; set; } = [];
 
     public List<string> Validate()
     {

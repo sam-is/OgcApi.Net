@@ -523,14 +523,13 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
 
         var bboxPolygon = new Polygon(
             new LinearRing(
-                new Coordinate[]
-                {
-                    new(bbox.MinX, bbox.MinY),
-                    new(bbox.MinX, bbox.MaxY),
-                    new(bbox.MaxX, bbox.MaxY),
-                    new(bbox.MaxX, bbox.MinY),
-                    new(bbox.MinX, bbox.MinY)
-                }
+                [
+                    new Coordinate(bbox.MinX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MinY)
+                ]
             )
         );
 
