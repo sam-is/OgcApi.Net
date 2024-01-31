@@ -17,7 +17,7 @@ Standard | Data Providers
 [OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles 
 
 This project uses:
-- ASP.NET Core 6.0 for building web API
+- ASP.NET Core 8 for building web API
 - [NetTopologySuite](https://github.com/NetTopologySuite/NetTopologySuite) for the features representation
 - [ProjNET](https://github.com/NetTopologySuite/ProjNet4GeoAPI) for coordinate conversions
 - [OpenAPI.NET](https://github.com/Microsoft/OpenAPI.NET) for OpenAPI documents generation
