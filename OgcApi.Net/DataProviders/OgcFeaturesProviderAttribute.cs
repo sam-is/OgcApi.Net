@@ -3,15 +3,9 @@
 namespace OgcApi.Net.DataProviders;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class OgcFeaturesProviderAttribute : Attribute
+public class OgcFeaturesProviderAttribute(string name, Type optionsType) : Attribute
 {
-    public string Name;
+    public readonly string Name = name;
 
-    public Type OptionsType;
-
-    public OgcFeaturesProviderAttribute(string name, Type optionsType)
-    {
-        Name = name;
-        OptionsType = optionsType;
-    }
+    public readonly Type OptionsType = optionsType;
 }

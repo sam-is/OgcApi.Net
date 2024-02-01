@@ -11,7 +11,6 @@ using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OgcApi.MbTiles.Tests;
@@ -24,9 +23,9 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -39,14 +38,18 @@ public static class TestProviders
                             {
                                 Type = "MbTiles",
                                 FileName = Path.Combine("Data", "data.mbtiles"),
-                                TimestampFiles = 
+                                TimestampFiles =
                                 {
-                                    new TimestampFile { DateTime = new DateTime(2018, 2, 12), FileName = Path.Combine("Data", "data_12-02-2018.mbtiles") }
+                                    new TimestampFile
+                                    {
+                                        DateTime = new DateTime(2018, 2, 12),
+                                        FileName = Path.Combine("Data", "data_12-02-2018.mbtiles")
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -57,9 +60,9 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -77,7 +80,7 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -110,9 +113,9 @@ public static class TestProviders
             },
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -129,7 +132,7 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -140,9 +143,9 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -158,34 +161,33 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
 
-
     public static MbTilesProvider GetDefaultProvider()
     {
         return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetDefaultOptions()));
     }
 
     public static MbTilesProvider GetProviderWithAccessDelegate()
     {
         return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithAccessDelegate()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithAccessDelegate()));
     }
 
     public static MbTilesProvider GetProviderWithErrors()
     {
         return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownDataFile()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithUnknownDataFile()));
     }
 
     public static MbTilesProvider GetProviderWithMinMaxZoom()
     {
         return new MbTilesProvider(new NullLogger<MbTilesProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithMinMaxZoom()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithMinMaxZoom()));
     }
 
     public static CollectionsController GetControllerWithAccessDelegate()
@@ -200,9 +202,9 @@ public static class TestProviders
             };
             options.Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -219,7 +221,7 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             };
         });
         serviceCollection.AddLogging();
@@ -251,9 +253,9 @@ public static class TestProviders
             };
             options.Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Title = "data",
                         Id = "data",
@@ -269,7 +271,7 @@ public static class TestProviders
                             }
                         }
                     }
-                }
+                ]
             };
         });
         serviceCollection.AddLogging();

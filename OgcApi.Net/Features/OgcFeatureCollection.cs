@@ -5,13 +5,8 @@ using System.Collections.ObjectModel;
 
 namespace OgcApi.Net.Features;
 
-public class OgcFeatureCollection : Collection<IFeature>
+public class OgcFeatureCollection() : Collection<IFeature>(new List<IFeature>())
 {
-    public OgcFeatureCollection()
-        : base(new List<IFeature>())
-    {
-    }
-
     public List<Link> Links { get; set; }
 
     public long TotalMatched { get; set; }

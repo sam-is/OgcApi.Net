@@ -2,8 +2,8 @@
 <Project>
   <PropertyGroup>
 	 <MajorVersion>0</MajorVersion>
-	 <MinorVersion>4</MinorVersion>
-	 <PatchVersion>1</PatchVersion> 
+	 <MinorVersion>5</MinorVersion>
+	 <PatchVersion>0</PatchVersion> 
 	  	 
 	 <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	 <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -11,7 +11,7 @@
 	 <Authors>Nikolay Chupshev, Alexander Belov, Aleksei Maksimov</Authors>
 	 <Owners>Samara-Informsputnik</Owners>
 	 <Company>Samara-Informsputnik</Company>
-	 <Copyright>Copyright © 2022 Samara-Informsputnik</Copyright>
+	 <Copyright>Copyright © 2024 Samara-Informsputnik</Copyright>
 	 <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	 <PackageProjectUrl>https://github.com/sam-is/OgcApi.Net</PackageProjectUrl>
 	 <RepositoryUrl>https://github.com/sam-is/OgcApi.Net</RepositoryUrl>

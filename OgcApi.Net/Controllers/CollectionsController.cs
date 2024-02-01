@@ -72,21 +72,22 @@ public class CollectionsController : ControllerBase
         List<Link> links;
         if (_apiOptions.Collections.Links == null || _apiOptions.Collections.Links.Count == 0)
         {
-            links = new List<Link>
-            {
-                new()
+            links =
+            [
+                new Link
                 {
                     Href = Utils.GetBaseUrl(Request, false),
                     Rel = "self",
                     Type = "application/json"
                 },
-                new()
+
+                new Link
                 {
                     Href = _apiOptions.LandingPage.ApiDescriptionPage,
                     Rel = "alternate",
                     Type = "text/html"
                 }
-            };
+            ];
         }
         else
         {
@@ -117,7 +118,7 @@ public class CollectionsController : ControllerBase
                     {
                         Spatial = new SpatialExtent
                         {
-                            Bbox = new[] { new[] { envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY } },
+                            Bbox = [[envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY]],
                             Crs = CrsUtils.DefaultCrs
                         }
                     };
@@ -128,22 +129,22 @@ public class CollectionsController : ControllerBase
         List<Link> links;
         if (_apiOptions.Collections.Links == null || _apiOptions.Collections.Links.Count == 0)
         {
-            links = new List<Link>
-            {
-                new()
+            links =
+            [
+                new Link
                 {
                     Href = uri,
                     Rel = "items",
                     Type = "application/geo+json",
                     Title = collectionOptions.Title
                 },
-                new()
+                new Link
                 {
                     Href = _apiOptions.LandingPage.ApiDescriptionPage,
                     Rel = "alternate",
                     Type = "text/html"
                 }
-            };
+            ];
         }
         else
         {
@@ -157,7 +158,7 @@ public class CollectionsController : ControllerBase
             Description = collectionOptions.Description,
             Extent = extent,
             Links = links,
-            Crs = collectionOptions.Features?.Crs ?? new List<Uri> { CrsUtils.DefaultCrs },
+            Crs = collectionOptions.Features?.Crs ?? [CrsUtils.DefaultCrs],
             StorageCrs = collectionOptions.Features?.StorageCrs ?? CrsUtils.DefaultCrs,
             StorageCrsCoordinateEpoch = collectionOptions.Features?.StorageCrsCoordinateEpoch
         };
@@ -289,21 +290,23 @@ public class CollectionsController : ControllerBase
                     apiKey);
                 features.Transform(collectionOptions.Features.StorageCrs, crs);
 
-                features.Links = new List<Link>
-                {
-                    new()
+                features.Links =
+                [
+                    new Link
                     {
                         Href = Utils.GetBaseUrl(Request, false),
                         Rel = "self",
                         Type = "application/geo+json"
                     },
-                    new()
+                    new Link
                     {
-                        Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
+                        Href = collectionOptions.FeatureHtmlPage != null
+                            ? collectionOptions.FeatureHtmlPage(collectionId)
+                            : _apiOptions.LandingPage.ApiDescriptionPage,
                         Rel = "alternate",
                         Type = "text/html"
                     }
-                };
+                ];
 
                 features.TotalMatched = dataProvider.GetFeaturesCount(
                     collectionOptions.Id,
@@ -325,7 +328,7 @@ public class CollectionsController : ControllerBase
                     });
                 }
 
-                Response.Headers.Add("Content-Crs", $"<{crs}>");
+                Response.Headers.Append("Content-Crs", $"<{crs}>");
 
                 return Ok(features);
             }
@@ -339,7 +342,7 @@ public class CollectionsController : ControllerBase
             }
         }
 
-        _logger.LogError($"Cannot find options for specified collection {collectionId}");
+        _logger.LogError("Cannot find options for specified collection {collectionId}", collectionId);
         return NotFound();
     }
 
@@ -399,33 +402,37 @@ public class CollectionsController : ControllerBase
                     return NotFound();
                 }
 
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+                Response.Headers.Append("ETag", Utils.GetFeatureETag(feature));
 
                 feature.Transform(collectionOptions.Features.StorageCrs, crs);
 
-                feature.Links = new List<Link>
-                {
-                    new()
+                feature.Links =
+                [
+                    new Link
                     {
                         Href = new Uri(baseUri, $"{collectionOptions.Id}/items/{featureId}"),
                         Rel = "self",
                         Type = "application/geo+json"
                     },
+
                     new()
                     {
-                        Href = collectionOptions.FeatureHtmlPage != null ? collectionOptions.FeatureHtmlPage(collectionId) : _apiOptions.LandingPage.ApiDescriptionPage,
+                        Href = collectionOptions.FeatureHtmlPage != null
+                            ? collectionOptions.FeatureHtmlPage(collectionId)
+                            : _apiOptions.LandingPage.ApiDescriptionPage,
                         Rel = "alternate",
                         Type = "text/html"
                     },
+
                     new()
                     {
                         Href = new Uri(baseUri, $"{collectionOptions.Id}/items"),
                         Rel = "collection",
                         Type = "application/json"
                     }
-                };
+                ];
 
-                Response.Headers.Add("Content-Crs", $"<{crs}>");
+                Response.Headers.Append("Content-Crs", $"<{crs}>");
 
                 return Ok(feature);
             }
@@ -558,7 +565,7 @@ public class CollectionsController : ControllerBase
             try
             {
                 dataProvider.ReplaceFeature(collectionId, featureId, feature, apiKey);
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(feature));
+                Response.Headers.Append("ETag", Utils.GetFeatureETag(feature));
                 return Ok();
             }
             catch (UnauthorizedAccessException)
@@ -585,7 +592,7 @@ public class CollectionsController : ControllerBase
         string featureId,
         [FromQuery] string apiKey = null)
     {
-        _logger.LogTrace($"Delete feature with parameters {Request.QueryString}");
+        _logger.LogTrace("Delete feature with parameters {queryString}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
         if (collectionOptions != null)
@@ -670,7 +677,7 @@ public class CollectionsController : ControllerBase
             try
             {
                 dataProvider.UpdateFeature(collectionId, featureId, feature, apiKey);
-                Response.Headers.Add("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
+                Response.Headers.Append("ETag", Utils.GetFeatureETag(dataProvider.GetFeature(collectionId, featureId, apiKey)));
                 return Ok();
             }
             catch (UnauthorizedAccessException)
@@ -702,9 +709,9 @@ public class CollectionsController : ControllerBase
 
             return Ok(new TileSets
             {
-                Items = new List<TileSet>
-                {
-                    new()
+                Items =
+                [
+                    new TileSet
                     {
                         Title = collectionOptions.Title,
                         Crs = collectionOptions.Tiles.Crs,
@@ -712,27 +719,27 @@ public class CollectionsController : ControllerBase
                         DataType = "vector",
                         TileMatrixSetLimits = dataProvider.GetLimits(collectionId),
 
-                        Links = new List<Link>
-                        {
-                            new()
+                        Links =
+                        [
+                            new Link
                             {
                                 Href = new Uri(Utils.GetBaseUrl(Request), $"{collectionId}/tiles"),
                                 Rel = "self",
                                 Type = "application/json"
                             },
-                            new()
+                            new Link
                             {
                                 Href = collectionOptions.Tiles.TileMatrixSet,
                                 Rel = "http://www.opengis.net/def/rel/ogc/1.0/tiling-scheme",
                                 Type = "application/json"
                             }
-                        }
+                        ]
                     }
-                }
+                ]
             });
         }
 
-        _logger.LogError($"Cannot find options for specified collection {collectionId}");
+        _logger.LogError("Cannot find options for specified collection {collectionId}", collectionId);
         return NotFound();
     }
 
@@ -760,7 +767,7 @@ public class CollectionsController : ControllerBase
 
             var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, datetime, apiKey);
             if (tileContent == null) return NoContent();
-            Response.Headers.Add("Content-Encoding", "gzip");
+            Response.Headers.Append("Content-Encoding", "gzip");
             return File(tileContent,
                 "application/vnd.mapbox-vector-tile",
                 "tile.mvt");

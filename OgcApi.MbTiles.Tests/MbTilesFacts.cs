@@ -5,7 +5,6 @@ using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -24,12 +23,12 @@ public class MbTilesFacts
     {
         var options = new CollectionsOptions
         {
-            Items = new List<CollectionOptions>
-            {
-                new()
+            Items =
+            [
+                new CollectionOptions
                 {
                     Title = "test",
-                    Id =  "test",
+                    Id = "test",
                     Tiles = new CollectionTilesOptions
                     {
                         Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
@@ -39,7 +38,7 @@ public class MbTilesFacts
                         }
                     }
                 }
-            }
+            ]
         };
         Assert.Throws<OptionsValidationException>(() =>
             CollectionsOptionsValidator.Validate(options));
@@ -81,92 +80,91 @@ public class MbTilesFacts
     }
 
     [Fact]
-    public void GetTileUnknownCollection()
+    public async System.Threading.Tasks.Task GetTileUnknownCollection()
     {
-        Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 8, 162, 82));
+        await Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 8, 162, 82));
     }
 
     [Fact]
-    public async void GetTileIncorrectZoomLevel()
+    public async System.Threading.Tasks.Task GetTileIncorrectZoomLevel()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 15, 162, 82);
         Assert.Null(tile);
     }
 
     [Fact]
-    public async void GetTileIncorrectTileRow()
+    public async System.Threading.Tasks.Task GetTileIncorrectTileRow()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 162, 90);
         Assert.Null(tile);
     }
 
     [Fact]
-    public void GetTileIncorrectTileCol()
+    public async System.Threading.Tasks.Task GetTileIncorrectTileCol()
     {
-        var tile = TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 170, 82);
-        Assert.Null(tile.Result);
+        var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 170, 82);
+        Assert.Null(tile);
     }
 
     [Fact]
-    public void GetTileFileNotExists()
+    public async System.Threading.Tasks.Task GetTileFileNotExists()
     {
-        Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
+        await Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
     }
 
     [Fact]
-    public async void GetTileAccessViolationApiKeyNull()
+    public async System.Threading.Tasks.Task GetTileAccessViolationApiKeyNull()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async void GetTileAccessViolationApiKeyIncorrect()
+    public async System.Threading.Tasks.Task GetTileAccessViolationApiKeyIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "12345");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async void GetTileAccessViolationTileMatrixIncorrect()
+    public async System.Threading.Tasks.Task GetTileAccessViolationTileMatrixIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 8, 82, 162, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
-
     [Fact]
-    public async void GetTileAccessViolationTileRowIncorrect()
+    public async System.Threading.Tasks.Task GetTileAccessViolationTileRowIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 41, 81, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async void GetTileAccessViolationTileColIncorrect()
+    public async System.Threading.Tasks.Task GetTileAccessViolationTileColIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 80, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async void GetTileAccessOk()
+    public async System.Threading.Tasks.Task GetTileAccessOk()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, apiKey : "qwerty");
         Assert.IsType<FileContentResult>(result);
     }
 
     [Fact]
-    public async void GetTileAccessDelegateNotSet()
+    public async System.Threading.Tasks.Task GetTileAccessDelegateNotSet()
     {
         var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, apiKey: "qwerty");
         Assert.IsType<FileContentResult>(result);
     }
 
     [Fact]
-    public void GetTileDirectFileNotExists()
+    public async System.Threading.Tasks.Task GetTileDirectFileNotExists()
     {
-        Assert.ThrowsAsync<SqliteException>(() => MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
+        await Assert.ThrowsAsync<SqliteException>(() => MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
     }
 
     [Fact]

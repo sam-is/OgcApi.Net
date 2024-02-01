@@ -46,7 +46,7 @@ public class ConformanceController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public Conformance Get()
     {
-        _logger.LogTrace($"Get conformance with parameters {Request.QueryString}");
+        _logger.LogTrace("Get conformance with parameters {queryString}", Request.QueryString);
 
         if (_apiOptions?.Conformance?.ConformsTo != null && _apiOptions.Conformance.ConformsTo.Count != 0)
             return new Conformance

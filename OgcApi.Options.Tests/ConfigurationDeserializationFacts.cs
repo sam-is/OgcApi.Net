@@ -3,134 +3,128 @@ using Xunit;
 
 namespace OgcApi.Options.Tests;
 
-public class ConfigurationDeserializationFacts : IClassFixture<ConfigurationOptionsFixture>
+public class ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixture)
+    : IClassFixture<ConfigurationOptionsFixture>
 {
-    private readonly ConfigurationOptionsFixture _fixture;
-
-    public ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
     [Fact]
     public void OgcApiOptionsDeserialization()
     {
-        Assert.NotNull(_fixture.Options);
+        Assert.NotNull(fixture.Options);
     }
 
     [Fact]
     public void LandingPageDeserialization()
     {
-        Assert.NotNull(_fixture.Options.LandingPage);
-        Assert.Equal("API Title", _fixture.Options.LandingPage.Title);
-        Assert.Equal("API Description", _fixture.Options.LandingPage.Description);
-        Assert.Equal("1.0", _fixture.Options.LandingPage.Version);
-        Assert.Equal("API Contacts", _fixture.Options.LandingPage.ContactName);
-        Assert.Equal("https://example.com/", _fixture.Options.LandingPage.ContactUrl.ToString());
-        Assert.Equal("https://api.com/index.html", _fixture.Options.LandingPage.ApiDocumentPage.ToString());
-        Assert.Equal("https://api.com/swagger.json", _fixture.Options.LandingPage.ApiDescriptionPage.ToString());
-        Assert.Equal("API License", _fixture.Options.LandingPage.LicenseName);
-        Assert.Equal("https://api.com/license.html", _fixture.Options.LandingPage.LicenseUrl.ToString());
-        Assert.NotNull(_fixture.Options.LandingPage.Links);
-        Assert.NotEmpty(_fixture.Options.LandingPage.Links);
-        Assert.Equal(2, _fixture.Options.LandingPage.Links.Count);
-        Assert.Equal("https://api.com/landing_page/link1.html", _fixture.Options.LandingPage.Links[0].Href.ToString());
-        Assert.Equal("https://api.com/landing_page/link2.html", _fixture.Options.LandingPage.Links[1].Href.ToString());
+        Assert.NotNull(fixture.Options.LandingPage);
+        Assert.Equal("API Title", fixture.Options.LandingPage.Title);
+        Assert.Equal("API Description", fixture.Options.LandingPage.Description);
+        Assert.Equal("1.0", fixture.Options.LandingPage.Version);
+        Assert.Equal("API Contacts", fixture.Options.LandingPage.ContactName);
+        Assert.Equal("https://example.com/", fixture.Options.LandingPage.ContactUrl.ToString());
+        Assert.Equal("https://api.com/index.html", fixture.Options.LandingPage.ApiDocumentPage.ToString());
+        Assert.Equal("https://api.com/swagger.json", fixture.Options.LandingPage.ApiDescriptionPage.ToString());
+        Assert.Equal("API License", fixture.Options.LandingPage.LicenseName);
+        Assert.Equal("https://api.com/license.html", fixture.Options.LandingPage.LicenseUrl.ToString());
+        Assert.NotNull(fixture.Options.LandingPage.Links);
+        Assert.NotEmpty(fixture.Options.LandingPage.Links);
+        Assert.Equal(2, fixture.Options.LandingPage.Links.Count);
+        Assert.Equal("https://api.com/landing_page/link1.html", fixture.Options.LandingPage.Links[0].Href.ToString());
+        Assert.Equal("https://api.com/landing_page/link2.html", fixture.Options.LandingPage.Links[1].Href.ToString());
     }
 
     [Fact]
     public void ConformanceDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Conformance);
-        Assert.NotNull(_fixture.Options.Conformance.ConformsTo);
-        Assert.NotEmpty(_fixture.Options.Conformance.ConformsTo);
-        Assert.Equal(2, _fixture.Options.Conformance.ConformsTo.Count);
-        Assert.Equal("https://api.com/conform1.html", _fixture.Options.Conformance.ConformsTo[0].ToString());
-        Assert.Equal("https://api.com/conform2.html", _fixture.Options.Conformance.ConformsTo[1].ToString());
+        Assert.NotNull(fixture.Options.Conformance);
+        Assert.NotNull(fixture.Options.Conformance.ConformsTo);
+        Assert.NotEmpty(fixture.Options.Conformance.ConformsTo);
+        Assert.Equal(2, fixture.Options.Conformance.ConformsTo.Count);
+        Assert.Equal("https://api.com/conform1.html", fixture.Options.Conformance.ConformsTo[0].ToString());
+        Assert.Equal("https://api.com/conform2.html", fixture.Options.Conformance.ConformsTo[1].ToString());
     }
 
     [Fact]
     public void UseApiKeyAuthorizationDeserialization()
     {
-        Assert.True(_fixture.Options.UseApiKeyAuthorization);
+        Assert.True(fixture.Options.UseApiKeyAuthorization);
     }
 
     [Fact]
     public void CollectionsLinksDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections);
-        Assert.NotNull(_fixture.Options.Collections.Links);
-        Assert.NotEmpty(_fixture.Options.Collections.Links);
-        Assert.Equal(2, _fixture.Options.Collections.Links.Count);
-        Assert.Equal("https://api.com/collections/link1.html", _fixture.Options.Collections.Links[0].Href.ToString());
-        Assert.Equal("https://api.com/collections/link2.html", _fixture.Options.Collections.Links[1].Href.ToString());
+        Assert.NotNull(fixture.Options.Collections);
+        Assert.NotNull(fixture.Options.Collections.Links);
+        Assert.NotEmpty(fixture.Options.Collections.Links);
+        Assert.Equal(2, fixture.Options.Collections.Links.Count);
+        Assert.Equal("https://api.com/collections/link1.html", fixture.Options.Collections.Links[0].Href.ToString());
+        Assert.Equal("https://api.com/collections/link2.html", fixture.Options.Collections.Links[1].Href.ToString());
     }
 
     [Fact]
     public void CollectionsItemsDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections);
-        Assert.NotNull(_fixture.Options.Collections.Items);
-        Assert.NotEmpty(_fixture.Options.Collections.Items);
-        Assert.Equal(2, _fixture.Options.Collections.Items.Count);
+        Assert.NotNull(fixture.Options.Collections);
+        Assert.NotNull(fixture.Options.Collections.Items);
+        Assert.NotEmpty(fixture.Options.Collections.Items);
+        Assert.Equal(2, fixture.Options.Collections.Items.Count);
     }
 
     [Fact]
     public void FirstCollectionOptionsDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections.Items[0]);
-        Assert.Equal("Collection1", _fixture.Options.Collections.Items[0].Id);
-        Assert.Equal("Collection title 1", _fixture.Options.Collections.Items[0].Title);
-        Assert.Equal("Collection description 1", _fixture.Options.Collections.Items[0].Description);
-        Assert.Equal("Collection1 ItemType", _fixture.Options.Collections.Items[0].ItemType);
-        Assert.NotNull(_fixture.Options.Collections.Items[0].Features);
+        Assert.NotNull(fixture.Options.Collections.Items[0]);
+        Assert.Equal("Collection1", fixture.Options.Collections.Items[0].Id);
+        Assert.Equal("Collection title 1", fixture.Options.Collections.Items[0].Title);
+        Assert.Equal("Collection description 1", fixture.Options.Collections.Items[0].Description);
+        Assert.Equal("Collection1 ItemType", fixture.Options.Collections.Items[0].ItemType);
+        Assert.NotNull(fixture.Options.Collections.Items[0].Features);
     }
 
     [Fact]
     public void SecondCollectionOptionsDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections.Items[1]);
-        Assert.Equal("Collection2", _fixture.Options.Collections.Items[1].Id);
-        Assert.Equal("Collection title 2", _fixture.Options.Collections.Items[1].Title);
-        Assert.Equal("Collection description 2", _fixture.Options.Collections.Items[1].Description);
-        Assert.Equal("Collection2 ItemType", _fixture.Options.Collections.Items[1].ItemType);
-        Assert.NotNull(_fixture.Options.Collections.Items[1].Features);
+        Assert.NotNull(fixture.Options.Collections.Items[1]);
+        Assert.Equal("Collection2", fixture.Options.Collections.Items[1].Id);
+        Assert.Equal("Collection title 2", fixture.Options.Collections.Items[1].Title);
+        Assert.Equal("Collection description 2", fixture.Options.Collections.Items[1].Description);
+        Assert.Equal("Collection2 ItemType", fixture.Options.Collections.Items[1].ItemType);
+        Assert.NotNull(fixture.Options.Collections.Items[1].Features);
     }
 
     [Fact]
     public void FirstCollectionFeaturesDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections.Items[0].Features);
-        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", _fixture.Options.Collections.Items[0].Features.StorageCrs.ToString());
-        Assert.Equal("1", _fixture.Options.Collections.Items[0].Features.StorageCrsCoordinateEpoch);
-        Assert.NotNull(_fixture.Options.Collections.Items[0].Features.Crs);
-        Assert.NotEmpty(_fixture.Options.Collections.Items[0].Features.Crs);
-        Assert.Equal(2, _fixture.Options.Collections.Items[0].Features.Crs.Count);
-        Assert.Equal("http://www.opengis.net/def/crs/OGC/1.3/CRS84", _fixture.Options.Collections.Items[0].Features.Crs[0].ToString());
-        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", _fixture.Options.Collections.Items[0].Features.Crs[1].ToString());
-        Assert.NotNull(_fixture.Options.Collections.Items[0].Features.Storage);
+        Assert.NotNull(fixture.Options.Collections.Items[0].Features);
+        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", fixture.Options.Collections.Items[0].Features.StorageCrs.ToString());
+        Assert.Equal("1", fixture.Options.Collections.Items[0].Features.StorageCrsCoordinateEpoch);
+        Assert.NotNull(fixture.Options.Collections.Items[0].Features.Crs);
+        Assert.NotEmpty(fixture.Options.Collections.Items[0].Features.Crs);
+        Assert.Equal(2, fixture.Options.Collections.Items[0].Features.Crs.Count);
+        Assert.Equal("http://www.opengis.net/def/crs/OGC/1.3/CRS84", fixture.Options.Collections.Items[0].Features.Crs[0].ToString());
+        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", fixture.Options.Collections.Items[0].Features.Crs[1].ToString());
+        Assert.NotNull(fixture.Options.Collections.Items[0].Features.Storage);
 
     }
 
     [Fact]
     public void SecondCollectionFeaturesDeserialization()
     {
-        Assert.NotNull(_fixture.Options.Collections.Items[1].Features);
-        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", _fixture.Options.Collections.Items[1].Features.StorageCrs.ToString());
-        Assert.Equal("2", _fixture.Options.Collections.Items[1].Features.StorageCrsCoordinateEpoch);
-        Assert.NotNull(_fixture.Options.Collections.Items[1].Features.Crs);
-        Assert.NotEmpty(_fixture.Options.Collections.Items[1].Features.Crs);
-        Assert.Equal(2, _fixture.Options.Collections.Items[1].Features.Crs.Count);
-        Assert.Equal("http://www.opengis.net/def/crs/OGC/1.3/CRS84", _fixture.Options.Collections.Items[1].Features.Crs[0].ToString());
-        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", _fixture.Options.Collections.Items[1].Features.Crs[1].ToString());
-        Assert.NotNull(_fixture.Options.Collections.Items[1].Features.Storage);
+        Assert.NotNull(fixture.Options.Collections.Items[1].Features);
+        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", fixture.Options.Collections.Items[1].Features.StorageCrs.ToString());
+        Assert.Equal("2", fixture.Options.Collections.Items[1].Features.StorageCrsCoordinateEpoch);
+        Assert.NotNull(fixture.Options.Collections.Items[1].Features.Crs);
+        Assert.NotEmpty(fixture.Options.Collections.Items[1].Features.Crs);
+        Assert.Equal(2, fixture.Options.Collections.Items[1].Features.Crs.Count);
+        Assert.Equal("http://www.opengis.net/def/crs/OGC/1.3/CRS84", fixture.Options.Collections.Items[1].Features.Crs[0].ToString());
+        Assert.Equal("http://www.opengis.net/def/crs/EPSG/0/3857", fixture.Options.Collections.Items[1].Features.Crs[1].ToString());
+        Assert.NotNull(fixture.Options.Collections.Items[1].Features.Storage);
 
     }
 
     [Fact]
     public void FirstCollectionStorageDeserialization()
     {
-        var storage = _fixture.Options.Collections.Items[0].Features.Storage as SqlFeaturesSourceOptions;
+        var storage = fixture.Options.Collections.Items[0].Features.Storage as SqlFeaturesSourceOptions;
 
         Assert.NotNull(storage);
         Assert.Equal("PostGis", storage.Type);
@@ -161,7 +155,7 @@ public class ConfigurationDeserializationFacts : IClassFixture<ConfigurationOpti
     [Fact]
     public void SecondCollectionStorageDeserialization()
     {
-        var storage = _fixture.Options.Collections.Items[1].Features.Storage as SqlFeaturesSourceOptions;
+        var storage = fixture.Options.Collections.Items[1].Features.Storage as SqlFeaturesSourceOptions;
 
         Assert.NotNull(storage);
         Assert.Equal("SqlServer", storage.Type);
@@ -192,7 +186,7 @@ public class ConfigurationDeserializationFacts : IClassFixture<ConfigurationOpti
     [Fact]
     public void FirstCollectionExtentDeserializationValid()
     {
-        var extent = _fixture.Options.Collections.Items[0].Extent;
+        var extent = fixture.Options.Collections.Items[0].Extent;
 
         Assert.NotNull(extent);
         Assert.NotNull(extent.Spatial);
@@ -228,7 +222,7 @@ public class ConfigurationDeserializationFacts : IClassFixture<ConfigurationOpti
     [Fact]
     public void SecondCollectionExtentDeserializationValid()
     {
-        var extent = _fixture.Options.Collections.Items[1].Extent;
+        var extent = fixture.Options.Collections.Items[1].Extent;
 
         Assert.NotNull(extent);
         Assert.NotNull(extent.Spatial);

@@ -8,14 +8,9 @@ using System.Linq;
 
 namespace OgcApi.Net.OpenApi;
 
-public class OpenApiGenerator : IOpenApiGenerator
+public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpenApiGenerator
 {
-    private readonly OgcApiOptions _apiOptions;
-
-    public OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions)
-    {
-        _apiOptions = apiOptions?.CurrentValue ?? throw new ArgumentNullException(nameof(apiOptions));
-    }
+    private readonly OgcApiOptions _apiOptions = apiOptions?.CurrentValue ?? throw new ArgumentNullException(nameof(apiOptions));
 
     public OpenApiDocument GetDocument(Uri baseUrl)
     {

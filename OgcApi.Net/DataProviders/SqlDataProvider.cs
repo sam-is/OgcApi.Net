@@ -19,21 +19,16 @@ using System.Threading.Tasks;
 
 namespace OgcApi.Net.DataProviders;
 
-public abstract class SqlDataProvider : IFeaturesProvider, ITilesProvider
+public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOptions> options)
+    : IFeaturesProvider, ITilesProvider
 {
     public const int FeaturesMinimumLimit = 1;
 
     public const int FeaturesMaximumLimit = 10000;
 
-    protected readonly ILogger Logger;
+    protected readonly ILogger Logger = logger;
 
-    protected readonly ICollectionsOptions CollectionsOptions;
-
-    protected SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOptions> options)
-    {
-        Logger = logger;
-        CollectionsOptions = options.CurrentValue.Collections;
-    }
+    protected readonly ICollectionsOptions CollectionsOptions = options.CurrentValue.Collections;
 
     public Envelope GetBbox(string collectionId, string apiKey = null)
     {
@@ -528,14 +523,13 @@ public abstract class SqlDataProvider : IFeaturesProvider, ITilesProvider
 
         var bboxPolygon = new Polygon(
             new LinearRing(
-                new Coordinate[]
-                {
-                    new(bbox.MinX, bbox.MinY),
-                    new(bbox.MinX, bbox.MaxY),
-                    new(bbox.MaxX, bbox.MaxY),
-                    new(bbox.MaxX, bbox.MinY),
-                    new(bbox.MinX, bbox.MinY)
-                }
+                [
+                    new Coordinate(bbox.MinX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MaxY),
+                    new Coordinate(bbox.MaxX, bbox.MinY),
+                    new Coordinate(bbox.MinX, bbox.MinY)
+                ]
             )
         );
 

@@ -10,7 +10,7 @@ using SampleWebApplication.Utils;
 
 namespace SampleWebApplication;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
     private static bool TilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey)
     {
@@ -37,12 +37,7 @@ public class Startup
         return false;
     }
 
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     public void ConfigureServices(IServiceCollection services)
     {

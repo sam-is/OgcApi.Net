@@ -6,7 +6,6 @@ using OgcApi.Net.Options.Features;
 using OgcApi.Net.SqlServer;
 using OgcApi.SqlServer.Tests.Utils;
 using System;
-using System.Collections.Generic;
 
 namespace OgcApi.SqlServer.Tests;
 
@@ -18,22 +17,22 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
-                        Id ="Polygons",
+                        Id = "Polygons",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
-                                Type= "SqlServer",
+                                Type = "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
                                 Schema = "dbo",
                                 Table = "Polygons",
@@ -42,30 +41,31 @@ public static class TestProviders
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "Date",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "Name",
                                     "Number",
                                     "S",
                                     "Date"
-                                }
+                                ]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
-                        Id ="LineStrings",
+                        Id = "LineStrings",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
-                                Type= "SqlServer",
+                                Type = "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
                                 Schema = "dbo",
                                 Table = "LineStrings",
@@ -73,27 +73,25 @@ public static class TestProviders
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "Name"
-                                }
+                                Properties = ["Name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
-                        Id ="Points",
+                        Id = "Points",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
-                                Type= "SqlServer",
+                                Type = "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
                                 Schema = "dbo",
                                 Table = "Points",
@@ -101,27 +99,25 @@ public static class TestProviders
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "Name"
-                                }
+                                Properties = ["Name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
-                        Id ="Empty",
+                        Id = "Empty",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
-                                Type= "SqlServer",
+                                Type = "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
                                 Schema = "dbo",
                                 Table = "EmptyTable",
@@ -129,27 +125,25 @@ public static class TestProviders
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "Name"
-                                }
+                                Properties = ["Name"]
                             }
                         }
                     },
-                    new()
+
+                    new CollectionOptions
                     {
                         Id = "PolygonsForInsert",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
-                                Type= "SqlServer",
+                                Type = "SqlServer",
                                 ConnectionString = DatabaseUtils.GetConnectionString(),
                                 Schema = "dbo",
                                 Table = "PolygonsForInsert",
@@ -158,17 +152,17 @@ public static class TestProviders
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
                                 DateTimeColumn = "Date",
-                                Properties = new List<string>
-                                {
+                                Properties =
+                                [
                                     "Name",
                                     "Number",
                                     "S",
                                     "Date"
-                                }
+                                ]
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -179,18 +173,18 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "Test",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -207,7 +201,7 @@ public static class TestProviders
                         }
 
                     }
-                }
+                ]
             }
         };
     }
@@ -218,18 +212,18 @@ public static class TestProviders
         {
             Collections = new CollectionsOptions
             {
-                Items = new List<CollectionOptions>
-                {
-                    new()
+                Items =
+                [
+                    new CollectionOptions
                     {
                         Id = "PointsWithApiKey",
                         Features = new CollectionFeaturesOptions
                         {
-                            Crs = new List<Uri>
-                            {
-                                new("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
-                                new("http://www.opengis.net/def/crs/EPSG/0/3857")
-                            },
+                            Crs =
+                            [
+                                new Uri("http://www.opengis.net/def/crs/OGC/1.3/CRS84"),
+                                new Uri("http://www.opengis.net/def/crs/EPSG/0/3857")
+                            ],
                             StorageCrs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3857"),
                             Storage = new SqlFeaturesSourceOptions
                             {
@@ -241,15 +235,12 @@ public static class TestProviders
                                 GeometryColumn = "Geom",
                                 GeometryDataType = "geometry",
                                 GeometrySrid = 3857,
-                                Properties = new List<string>
-                                {
-                                    "Name"
-                                },
+                                Properties = ["Name"],
                                 ApiKeyPredicateForGet = "[Key] = @ApiKey"
                             }
                         }
                     }
-                }
+                ]
             }
         };
     }
@@ -257,18 +248,18 @@ public static class TestProviders
     public static SqlServerProvider GetDefaultProvider()
     {
         return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetDefaultOptions()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetDefaultOptions()));
     }
 
     public static SqlServerProvider GetProviderWithErrors()
     {
         return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithUnknownTable()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithUnknownTable()));
     }
 
     public static SqlServerProvider GetProviderWithApiKey()
     {
         return new SqlServerProvider(new NullLogger<SqlServerProvider>(),
-            Mock.Of<IOptionsMonitor<OgcApiOptions>>(_ => _.CurrentValue == GetOptionsWithApiKey()));
+            Mock.Of<IOptionsMonitor<OgcApiOptions>>(monitor => monitor.CurrentValue == GetOptionsWithApiKey()));
     }
 }

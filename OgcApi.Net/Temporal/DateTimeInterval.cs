@@ -3,17 +3,11 @@ using System.Globalization;
 
 namespace OgcApi.Net.Temporal;
 
-public class DateTimeInterval
+public class DateTimeInterval(DateTime? start, DateTime? end)
 {
-    public DateTimeInterval(DateTime? start, DateTime? end)
-    {
-        Start = start;
-        End = end;
-    }
+    public DateTime? Start { get; set; } = start;
 
-    public DateTime? Start { get; set; }
-
-    public DateTime? End { get; set; }
+    public DateTime? End { get; set; } = end;
 
     public static DateTimeInterval Parse(string dateTime)
     {

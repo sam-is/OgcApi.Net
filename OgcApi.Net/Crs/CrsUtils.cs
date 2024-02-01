@@ -23,7 +23,7 @@ public static class CrsUtils
             throw new ArgumentException($"'{nameof(srid)}' cannot be null or whitespace.", nameof(srid));
         }
 
-        var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 
         var sridFile = File.Exists(Path.Combine(assemblyPath, SridFileName)) ? 
             Path.Combine(assemblyPath, SridFileName) : 
@@ -66,44 +66,21 @@ public static class CrsUtils
 
     public static void Transform(this IFeature feature, CoordinateSystem srcCrs, CoordinateSystem dstCrs)
     {
-        if (feature is null)
-        {
-            throw new ArgumentNullException(nameof(feature));
-        }
-
-        if (srcCrs is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrs));
-        }
-
-        if (dstCrs is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrs));
-        }
+        ArgumentNullException.ThrowIfNull(feature);
+        ArgumentNullException.ThrowIfNull(srcCrs);
+        ArgumentNullException.ThrowIfNull(dstCrs);
 
         if (srcCrs == dstCrs)
             return;
 
-        if (feature.Geometry != null)
-            feature.Geometry.Transform(srcCrs, dstCrs);
+        feature.Geometry?.Transform(srcCrs, dstCrs);
     }
 
     public static void Transform(this IFeature feature, Uri srcCrsUri, Uri dstCrsUri)
     {
-        if (feature is null)
-        {
-            throw new ArgumentNullException(nameof(feature));
-        }
-
-        if (srcCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrsUri));
-        }
-
-        if (dstCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrsUri));
-        }
+        ArgumentNullException.ThrowIfNull(feature);
+        ArgumentNullException.ThrowIfNull(srcCrsUri);
+        ArgumentNullException.ThrowIfNull(dstCrsUri);
 
         if (srcCrsUri == dstCrsUri)
             return;
@@ -115,20 +92,9 @@ public static class CrsUtils
 
     public static void Transform(this Geometry geometry, CoordinateSystem srcCrs, CoordinateSystem dstCrs)
     {
-        if (geometry is null)
-        {
-            throw new ArgumentNullException(nameof(geometry));
-        }
-
-        if (srcCrs is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrs));
-        }
-
-        if (dstCrs is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrs));
-        }
+        ArgumentNullException.ThrowIfNull(geometry);
+        ArgumentNullException.ThrowIfNull(srcCrs);
+        ArgumentNullException.ThrowIfNull(dstCrs);
 
         if (srcCrs == dstCrs)
             return;
@@ -142,20 +108,9 @@ public static class CrsUtils
 
     public static void Transform(this Geometry geometry, Uri srcCrsUri, Uri dstCrsUri)
     {
-        if (geometry is null)
-        {
-            throw new ArgumentNullException(nameof(geometry));
-        }
-
-        if (srcCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrsUri));
-        }
-
-        if (dstCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrsUri));
-        }
+        ArgumentNullException.ThrowIfNull(geometry);
+        ArgumentNullException.ThrowIfNull(srcCrsUri);
+        ArgumentNullException.ThrowIfNull(dstCrsUri);
 
         if (srcCrsUri == dstCrsUri)
             return;
@@ -167,20 +122,9 @@ public static class CrsUtils
 
     public static void Transform(this Envelope envelope, CoordinateSystem srcCrs, CoordinateSystem dstCrs)
     {
-        if (envelope is null)
-        {
-            throw new ArgumentNullException(nameof(envelope));
-        }
-
-        if (srcCrs is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrs));
-        }
-
-        if (dstCrs is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrs));
-        }
+        ArgumentNullException.ThrowIfNull(envelope);
+        ArgumentNullException.ThrowIfNull(srcCrs);
+        ArgumentNullException.ThrowIfNull(dstCrs);
 
         if (srcCrs == dstCrs)
             return;
@@ -202,20 +146,9 @@ public static class CrsUtils
 
     public static void Transform(this Envelope envelope, Uri srcCrsUri, Uri dstCrsUri)
     {
-        if (envelope is null)
-        {
-            throw new ArgumentNullException(nameof(envelope));
-        }
-
-        if (srcCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrsUri));
-        }
-
-        if (dstCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrsUri));
-        }
+        ArgumentNullException.ThrowIfNull(envelope);
+        ArgumentNullException.ThrowIfNull(srcCrsUri);
+        ArgumentNullException.ThrowIfNull(dstCrsUri);
 
         if (srcCrsUri == dstCrsUri)
             return;
@@ -227,20 +160,9 @@ public static class CrsUtils
 
     public static void Transform(this OgcFeatureCollection featureCollection, Uri srcCrsUri, Uri dstCrsUri)
     {
-        if (featureCollection is null)
-        {
-            throw new ArgumentNullException(nameof(featureCollection));
-        }
-
-        if (srcCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(srcCrsUri));
-        }
-
-        if (dstCrsUri is null)
-        {
-            throw new ArgumentNullException(nameof(dstCrsUri));
-        }
+        ArgumentNullException.ThrowIfNull(featureCollection);
+        ArgumentNullException.ThrowIfNull(srcCrsUri);
+        ArgumentNullException.ThrowIfNull(dstCrsUri);
 
         if (srcCrsUri == dstCrsUri)
             return;

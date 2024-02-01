@@ -16,6 +16,7 @@ public class TilesSourceOptionsConverter : JsonConverter<ITilesSourceOptions>
     {
         var providersTypes = AppDomain.CurrentDomain
             .GetAssemblies()
+            .Where(assembly => assembly.FullName!.Contains("OgcApi"))
             .SelectMany(x => x.DefinedTypes)
             .Where(type => Attribute.IsDefined(type, typeof(OgcTilesProviderAttribute)));
 
@@ -35,11 +36,7 @@ public class TilesSourceOptionsConverter : JsonConverter<ITilesSourceOptions>
     {
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
 
-        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString();
-
-        if (storageType == null)
-            throw new JsonException("Type element is not defined");
-
+        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString() ?? throw new JsonException("Type element is not defined");
         var optionsType = _providersOptionsTypes[storageType];
         if (optionsType != null)
         {
