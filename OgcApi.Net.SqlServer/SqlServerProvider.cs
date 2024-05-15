@@ -11,7 +11,7 @@ using System.Data.Common;
 namespace OgcApi.Net.SqlServer;
 
 [OgcFeaturesProvider("SqlServer", typeof(SqlFeaturesSourceOptions))]
-[OgcTilesProvider("MbTiles", null)]
+[OgcTilesProvider("SqlServer", null)]
 public class SqlServerProvider(ILogger<SqlServerProvider> logger, IOptionsMonitor<OgcApiOptions> options)
     : SqlDataProvider(logger, options)
 {
