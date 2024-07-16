@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NetTopologySuite.Features;
 using OgcApi.Net;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.SqlServer;
@@ -37,13 +38,21 @@ public class Startup(IConfiguration configuration)
         return false;
     }
 
+    private static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
+    {
+        "Polygons" => true,
+        "PolygonsWithApiKey" => feature.Attributes.Exists("value") && (ulong)feature.Attributes["value"] > 50,
+        _ => false,
+    };
+
+
     public IConfiguration Configuration { get; } = configuration;
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddOgcApiSqlServerProvider();
         services.AddOgcApiMbTilesProvider();
-        services.AddOgcApi("ogcapi.json", TilesAccessDelegate);
+        services.AddOgcApi("ogcapi.json", TilesAccessDelegate, FeatureAccessDelegate);
         services.AddControllers().AddOgcApiControllers();
 
         services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
