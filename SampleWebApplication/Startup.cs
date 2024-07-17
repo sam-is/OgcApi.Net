@@ -33,6 +33,8 @@ public class Startup(IConfiguration configuration)
                 }
 
                 break;
+            case "FeatureAccessData":
+                return true;
         }
 
         return false;
@@ -40,11 +42,12 @@ public class Startup(IConfiguration configuration)
 
     private static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
     {
-        "Polygons" => true,
-        "PolygonsWithApiKey" => feature.Attributes.Exists("value") && (ulong)feature.Attributes["value"] > 50,
-        _ => false,
+        "FeatureAccessData" => apiKey == "admin" ||
+            apiKey == "value" && feature.Attributes.Exists("value") && ((feature.Attributes["value"].GetType() == typeof(long) && (long)feature.Attributes["value"] > 1200) ||
+                (feature.Attributes["value"].GetType() == typeof(double) && (double)feature.Attributes["value"] > 100.0)) ||
+            feature.Attributes.Exists("roleAccess") && feature.Attributes["roleAccess"].ToString() == apiKey,
+        _ => true,
     };
-
 
     public IConfiguration Configuration { get; } = configuration;
 
