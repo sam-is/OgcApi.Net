@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
+using NetTopologySuite.Features;
 using OgcApi.Net;
 using OgcApi.Net.Controllers;
 using OgcApi.Net.MbTiles;
@@ -268,6 +269,67 @@ public static class TestProviders
                             {
                                 Type = "MbTiles",
                                 FileName = Path.Combine("Data", "data.mbtiles")
+                            }
+                        }
+                    }
+                ]
+            };
+        });
+        serviceCollection.AddLogging();
+        serviceCollection.AddOgcApiMbTilesProvider();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var options = serviceProvider.GetRequiredService<IOptionsMonitor<OgcApiOptions>>();
+
+        var controller = new CollectionsController(options,
+            serviceProvider,
+            serviceProvider.GetService<ILoggerFactory>())
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        return controller;
+    }
+
+    private static bool TestMbTilesFeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
+    {
+        "featureAccessData" => apiKey == "admin" ||
+            apiKey == "value" && feature.Attributes.Exists("value") && ((feature.Attributes["value"].GetType() == typeof(long) && (long)feature.Attributes["value"] > 1200) ||
+                (feature.Attributes["value"].GetType() == typeof(double) && (double)feature.Attributes["value"] > 100.0)) ||
+            feature.Attributes.Exists("roleAccess") && feature.Attributes["roleAccess"].ToString() == apiKey,
+        _ => true,
+    };
+
+    public static CollectionsController GetControllerWithFeatureAccessDelegate()
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddOgcApi(options =>
+        {
+            options.LandingPage = new LandingPageOptions
+            {
+                ApiDocumentPage = new Uri("https://api.com/index.html"),
+                ApiDescriptionPage = new Uri("https://api.com/swagger.json")
+            };
+            options.Collections = new CollectionsOptions
+            {
+                Items =
+                [
+                    new CollectionOptions
+                    {
+                        Title = "featureAccessData",
+                        Id = "featureAccessData",
+                        Tiles = new CollectionTilesOptions
+                        {
+                            TileMatrixSet =
+                                new Uri("http://www.opengis.net/def/tilematrixset/OGC/1.0/WorldMercatorWGS84Quad"),
+                            Crs = new Uri("http://www.opengis.net/def/crs/EPSG/0/3395"),
+                            Storage = new MbTilesSourceOptions
+                            {
+                                Type = "MbTiles",
+                                FileName = Path.Combine("Data", "featureAccessData.mbtiles"),
+                                FeatureAccessDelegate = TestMbTilesFeatureAccessDelegate
                             }
                         }
                     }
