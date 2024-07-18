@@ -783,6 +783,9 @@ public class CollectionsController : ControllerBase
                         if (!collectionOptions.Tiles.Storage.FeatureAccessDelegate.Invoke(collectionId, feature, apiKey))
                             layer.Features.Remove(feature);
 
+                if (tile.Layers.All(l => l.Features.Count == 0))
+                    return NoContent();
+
                 using var compressedStream = new MemoryStream();
                 using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
 
