@@ -222,22 +222,8 @@ public class MbTilesFacts
     [Fact]
     public async Task GetTileFeatureAccessApiKeyNull()
     {
-        const int countLayers = 2;
         var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0);
-
-        Assert.IsType<FileContentResult>(result);
-
-        var fileContent = result as FileContentResult;
-
-        var reader = new MapboxTileReader();
-        using var memoryStream = new MemoryStream(fileContent.FileContents);
-        using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
-        var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
-
-        Assert.Equal(countLayers, tile.Layers.Count);
-
-        foreach (var layer in tile.Layers)
-            Assert.Empty(layer.Features);
+        Assert.IsType<NoContentResult>(result);
     }
 
     [Fact]
@@ -251,13 +237,14 @@ public class MbTilesFacts
         };
 
         var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "admin");
-
         Assert.IsType<FileContentResult>(result);
 
         var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
         var reader = new MapboxTileReader();
-        using var memoryStream = new MemoryStream(fileContent.FileContents);
-        using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
         var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
 
         Assert.Equal(countLayers, tile.Layers.Count);
@@ -277,13 +264,14 @@ public class MbTilesFacts
         };
 
         var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "user1");
-
         Assert.IsType<FileContentResult>(result);
 
         var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
         var reader = new MapboxTileReader();
-        using var memoryStream = new MemoryStream(fileContent.FileContents);
-        using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
         var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
 
         Assert.Equal(countLayers, tile.Layers.Count);
@@ -303,13 +291,14 @@ public class MbTilesFacts
         };
 
         var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "user2");
-
         Assert.IsType<FileContentResult>(result);
 
         var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
         var reader = new MapboxTileReader();
-        using var memoryStream = new MemoryStream(fileContent.FileContents);
-        using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
         var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
 
         Assert.Equal(countLayers, tile.Layers.Count);
@@ -329,13 +318,14 @@ public class MbTilesFacts
         };
 
         var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "value");
-
         Assert.IsType<FileContentResult>(result);
 
         var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
         var reader = new MapboxTileReader();
-        using var memoryStream = new MemoryStream(fileContent.FileContents);
-        using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
         var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
 
         Assert.Equal(countLayers, tile.Layers.Count);

@@ -43,8 +43,9 @@ public class Startup(IConfiguration configuration)
     private static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
     {
         "FeatureAccessData" => apiKey == "admin" ||
-            apiKey == "value" && feature.Attributes.Exists("value") && ((feature.Attributes["value"].GetType() == typeof(long) && (long)feature.Attributes["value"] > 1200) ||
-                (feature.Attributes["value"].GetType() == typeof(double) && (double)feature.Attributes["value"] > 100.0)) ||
+            apiKey == "value" && feature.Attributes.Exists("value") &&
+            (feature.Attributes["value"] is long and > 1200 ||
+            feature.Attributes["value"] is > 100.0) ||
             feature.Attributes.Exists("roleAccess") && feature.Attributes["roleAccess"].ToString() == apiKey,
         _ => true,
     };

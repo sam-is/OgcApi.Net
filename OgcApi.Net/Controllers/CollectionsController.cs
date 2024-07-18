@@ -774,8 +774,8 @@ public class CollectionsController : ControllerBase
             if (collectionOptions.Tiles.Storage.FeatureAccessDelegate != null)
             {
                 var reader = new MapboxTileReader();
-                using var memoryStream = new MemoryStream(tileContent);
-                using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+                await using var memoryStream = new MemoryStream(tileContent);
+                await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
                 var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix));
 
                 foreach (var layer in tile.Layers)
@@ -786,8 +786,8 @@ public class CollectionsController : ControllerBase
                 if (tile.Layers.All(l => l.Features.Count == 0))
                     return NoContent();
 
-                using var compressedStream = new MemoryStream();
-                using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
+                await using var compressedStream = new MemoryStream();
+                await using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
 
                 tile.Write(compressor);
                 compressor.Flush();
