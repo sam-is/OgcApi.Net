@@ -243,6 +243,20 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         Assert.Equal("Point 4", features[2].Attributes["name"]);
     }
 
+    [Theory]
+    [InlineData(["s","0.25"])]
+    [InlineData(["name","Simple polygon"])]
+    public void GetFeaturesPropertyFilter(string key,string value)
+    {
+        var filter = new Dictionary<string, string>() { { key, value } };
+        var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", propertyFilter: filter);
+
+        Assert.Single(features);
+        Assert.NotNull(features[0]);
+        Assert.Equal("Simple polygon", features[0].Attributes["name"]);
+        Assert.Equal(0.25, (double)features[0].Attributes["s"] );
+    }
+
     [Fact]
     public void GetFeaturesWithoutApiKey()
     {

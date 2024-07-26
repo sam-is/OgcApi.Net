@@ -212,6 +212,17 @@ public class FeaturesSqlQueryBuilder(SqlFeaturesSourceOptions collectionOptions)
         return this;
     }
 
+    public IFeaturesSqlQueryBuilder AddWhere(Dictionary<string,string> propertyFilter)
+    {
+        if (propertyFilter != null)
+            foreach (var pair in propertyFilter)
+            {
+                _predicateConditions.Add($"""CAST("{pair.Key}" AS text) = @{pair.Key}Value""");
+                _sqlParameters.Add(new NpgsqlParameter($"@{pair.Key}Value", pair.Value));
+            }
+        return this;
+    }
+
     public IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey)
     {
         if (string.IsNullOrWhiteSpace(apiKeyPredicate) || string.IsNullOrWhiteSpace(apiKey)) return this;

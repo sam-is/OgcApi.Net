@@ -204,26 +204,30 @@ public class CollectionsController : ControllerBase
 
         _logger.LogTrace("Get collection items with parameters {query}", Request.QueryString);
 
-        var validParams = new List<string>
+        var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+        if (collectionOptions != null)
         {
+            var validParams = new List<string>
+            {
             nameof(limit),
             nameof(offset),
             nameof(bbox),
             nameof(crs),
             nameof(apiKey),
             "bbox-crs",
-            "datetime",
-        };
-        foreach (var (key, _) in Request.Query)
-        {
-            if (validParams.Contains(key)) continue;
-            _logger.LogError("Unknown parameter {key}", key);
-            return BadRequest($"Unknown parameter {key}");
-        }
+            "datetime"
+            };
 
-        var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions != null)
-        {
+            if (collectionOptions.Features.Storage.Properties is var properties && properties != null && properties.Count != 0)
+                validParams.AddRange(properties);
+
+            foreach (var (key, _) in Request.Query)
+            {
+                if (validParams.Contains(key)) continue;
+                _logger.LogError("Unknown parameter {key}", key);
+                return BadRequest($"Unknown parameter {key}");
+            }
+
             var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
             if (bboxCrs == null)
@@ -280,6 +284,11 @@ public class CollectionsController : ControllerBase
 
             try
             {
+                var queryCollection = HttpUtility.ParseQueryString(Request.QueryString.Value);
+                var propertyFilter = queryCollection.AllKeys
+                    .Where(key => properties.Any(property => property == key))
+                    .ToDictionary(key => key, key => queryCollection[key]);
+
                 var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
                     limit,
@@ -287,7 +296,8 @@ public class CollectionsController : ControllerBase
                     envelope,
                     dateTimeInterval.Start,
                     dateTimeInterval.End,
-                    apiKey);
+                    apiKey,
+                    propertyFilter);
                 features.Transform(collectionOptions.Features.StorageCrs, crs);
 
                 features.Links =

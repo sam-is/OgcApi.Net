@@ -245,6 +245,20 @@ public class SqlServerFacts : IClassFixture<DatabaseFixture>
         Assert.Equal("Point 4", features[2].Attributes["Name"]);
     }
 
+    [Theory]
+    [InlineData(["S", "0.25"])]
+    [InlineData(["Name", "Simple polygon"])]
+    public void GetFeaturesPropertyFilter(string key, string value)
+    {
+        var filter = new Dictionary<string, string>() { { key, value } };
+        var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", propertyFilter: filter);
+
+        Assert.Single(features);
+        Assert.NotNull(features[0]);
+        Assert.Equal("Simple polygon", features[0].Attributes["Name"]);
+        Assert.Equal(0.25, (double)features[0].Attributes["S"]);
+    }
+
     [Fact]
     public void GetFeaturesWithoutApiKey()
     {
