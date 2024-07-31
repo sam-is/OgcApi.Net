@@ -284,10 +284,12 @@ public class CollectionsController : ControllerBase
 
             try
             {
-                var queryCollection = HttpUtility.ParseQueryString(Request.QueryString.Value);
-                var propertyFilter = queryCollection.AllKeys
-                    .Where(key => properties.Any(property => property == key))
-                    .ToDictionary(key => key, key => queryCollection[key]);
+                Dictionary<string, string> propertyFilter = null;
+		if (properties is {Count: > 0})
+		{
+			propertyFilter = Request.Query.Keys.Where(properties.Contains)
+				.ToDictionary(key => key, key => Request.Query[key].First());
+		}
 
                 var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
