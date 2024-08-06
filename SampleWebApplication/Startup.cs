@@ -67,8 +67,6 @@ public class Startup(IConfiguration configuration)
             swaggerOptions.SwaggerEndpoint("ogc/swagger.json", "OGC API");
         });
 
-        app.UseHttpsRedirection();
-
         app.UseRouting();
 
         app.UseCors("OgcApi");

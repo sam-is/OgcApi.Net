@@ -2,8 +2,8 @@
   "LandingPage": {
     "Title": "OGC API Sample Application",
     "Description": "OGC API Sample Application",
-    "ApiDocumentPage": "https://localhost:5001/index.html",
-    "ApiDescriptionPage": "https://localhost:5001/api/ogc/swagger.json"
+    "ApiDocumentPage": "http://samplewebapplication:8080/api/index.html",
+    "ApiDescriptionPage": "http://samplewebapplication:8080/api/ogc/swagger.json"
   },
   "UseApiKeyAuthorization": true,
   "Collections": {
@@ -19,7 +19,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Integrated Security=true;Initial Catalog=OgcApiSamples",
+            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
             "Schema": "dbo",
             "Table": "Polygons",
             "GeometryColumn": "Geom",
@@ -59,7 +59,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Integrated Security=true;Initial Catalog=OgcApiSamples",
+            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
             "Schema": "dbo",
             "Table": "LineStrings",
             "GeometryColumn": "Geom",
@@ -88,7 +88,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Integrated Security=true;Initial Catalog=OgcApiSamples",
+            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
             "Schema": "dbo",
             "Table": "Points",
             "GeometryColumn": "Geom",
@@ -117,7 +117,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Integrated Security=true;Initial Catalog=OgcApiSamples",
+            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
             "Schema": "dbo",
             "Table": "PointsWithApiKey",
             "GeometryColumn": "Geom",
