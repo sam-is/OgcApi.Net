@@ -205,17 +205,18 @@ public class CollectionsController : ControllerBase
         _logger.LogTrace("Get collection items with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions != null)
+        if (collectionOptions is {Features: not null})
         {
             var validParams = new List<string>
             {
-            nameof(limit),
-            nameof(offset),
-            nameof(bbox),
-            nameof(crs),
-            nameof(apiKey),
-            "bbox-crs",
-            "datetime"
+                nameof(limit),
+                nameof(offset),
+                nameof(bbox),
+                nameof(crs),
+                nameof(apiKey),
+                "bbox-crs",
+                "datetime",
+                "f"
             };
 
             if (collectionOptions.Features.Storage.Properties is var properties && properties != null && properties.Count != 0)
@@ -246,12 +247,9 @@ public class CollectionsController : ControllerBase
                     {
                         envelope.Transform(bboxCrs, collectionOptions.Features.StorageCrs);
                     }
-                    catch
+                    catch (Exception)
                     {
-                        // if the coordinate transformation fails, just ignore bbox
-                        // this is not correct but is necessary to pass ogc tests
-                        // transformation fails in case of WGS84 -> WebMercator at the poles
-                        envelope = null;
+                        return BadRequest();
                     }
                 }
                 else
@@ -389,7 +387,7 @@ public class CollectionsController : ControllerBase
         _logger.LogTrace("Get feature with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions != null)
+        if (collectionOptions is { Features: not null })
         {
             var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
@@ -476,7 +474,7 @@ public class CollectionsController : ControllerBase
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
-        _logger.LogTrace($"Create feature with parameters {Request.QueryString}");
+        _logger.LogTrace("Create feature with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
         if (collectionOptions != null)
@@ -498,7 +496,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);
@@ -558,7 +556,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);
@@ -670,7 +668,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);

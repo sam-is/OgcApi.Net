@@ -43,7 +43,7 @@ public class Startup(IConfiguration configuration)
     {
         services.AddOgcApiSqlServerProvider();
         services.AddOgcApiMbTilesProvider();
-        services.AddOgcApi("ogcapi.json", TilesAccessDelegate);
+        services.AddOgcApi("ogcapi-features.json", TilesAccessDelegate);
         services.AddControllers().AddOgcApiControllers();
 
         services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>

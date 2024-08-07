@@ -16,6 +16,8 @@ public static class CrsUtils
 
     public const string SridFileName = "SRID.csv";
 
+    private const double Eps = 0.00000001;
+
     public static string GetWktBySrid(string srid)
     {
         if (string.IsNullOrWhiteSpace(srid))
@@ -120,7 +122,7 @@ public static class CrsUtils
             GetCoordinateSystemBySrid(dstCrsUri.Segments.Last()));
     }
 
-    public static void Transform(this Envelope envelope, CoordinateSystem srcCrs, CoordinateSystem dstCrs)
+    public static void Transform(this Envelope envelope, CoordinateSystem srcCrs, CoordinateSystem dstCrs, bool isSrcWgs84 = false)
     {
         ArgumentNullException.ThrowIfNull(envelope);
         ArgumentNullException.ThrowIfNull(srcCrs);
@@ -136,6 +138,19 @@ public static class CrsUtils
         var y1 = envelope.MinY;
         var x2 = envelope.MaxX;
         var y2 = envelope.MaxY;
+
+        if (isSrcWgs84)
+        {
+            if (Math.Abs(-90 - y1) < Eps)
+            {
+                y1 += Eps;
+            }
+
+            if (Math.Abs(90 - y2) < Eps)
+            {
+                y2 -= Eps;
+            }
+        }
 
         var mathTransform = transformation.MathTransform;
         mathTransform.Transform(ref x1, ref y1);
@@ -155,7 +170,8 @@ public static class CrsUtils
 
         envelope.Transform(
             GetCoordinateSystemBySrid(srcCrsUri.Segments.Last()),
-            GetCoordinateSystemBySrid(dstCrsUri.Segments.Last()));
+            GetCoordinateSystemBySrid(dstCrsUri.Segments.Last()),
+            srcCrsUri == DefaultCrs);
     }
 
     public static void Transform(this OgcFeatureCollection featureCollection, Uri srcCrsUri, Uri dstCrsUri)

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="ogcapi-features.json" />
     <Content Remove="ogcapi.json" />
   </ItemGroup>
 
@@ -23,6 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ogcapi-features.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ogcapi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

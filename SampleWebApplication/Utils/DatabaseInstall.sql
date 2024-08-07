@@ -28,8 +28,8 @@ CREATE TABLE [dbo].[LineStrings] (
 );
 
 INSERT INTO [dbo].[LineStrings] ([Geom], [Name])
-VALUES (geometry::STGeomFromText('LINESTRING(4000000 0, 4000000 1000000)', 3857), 'Simple LineString'),
-       (geometry::STGeomFromText('MULTILINESTRING((4000000 2000000, 4000000 3000000), (5000000 2000000, 5000000 3000000))', 3857), 'MiltiLineString');
+VALUES (geometry::STGeomFromText('LINESTRING(4000000 2000000, 5000000 1000000)', 3857), 'Simple LineString'),
+       (geometry::STGeomFromText('MULTILINESTRING((4000000 2000000, 4000000 3000000), (5000000 2000000, 6000000 3000000))', 3857), 'MiltiLineString');
 
 CREATE TABLE [dbo].[Points] (
 	[Id] [int] NOT NULL IDENTITY(1,1),
