@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace OgcApi.Net.DataProviders;
@@ -19,6 +20,7 @@ public interface IFeaturesSqlQueryBuilder
     IFeaturesSqlQueryBuilder AddWhere(Envelope bbox);
     IFeaturesSqlQueryBuilder AddWhere(DateTime? startDateTime, DateTime? endDateTime);
     IFeaturesSqlQueryBuilder AddWhere(string featureId);
+    IFeaturesSqlQueryBuilder AddWhere(Dictionary<string,string> propertyFilter);
     IFeaturesSqlQueryBuilder AddApiKeyWhere(string apiKeyPredicate, string apiKey);
     IFeaturesSqlQueryBuilder ComposeWhereClause();
     IDbCommand BuildCommand(IDbConnection connection);

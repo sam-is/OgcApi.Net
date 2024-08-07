@@ -3,9 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
+    <UserSecretsId>f8618acf-d5b7-42cc-811e-4152448e89ab</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="ogcapi-features.json" />
     <Content Remove="ogcapi.json" />
   </ItemGroup>
 
@@ -20,12 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ogcapi-features.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ogcapi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
   </ItemGroup>
 
