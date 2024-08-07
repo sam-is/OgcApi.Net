@@ -207,26 +207,31 @@ public class CollectionsController : ControllerBase
 
         _logger.LogTrace("Get collection items with parameters {query}", Request.QueryString);
 
-        var validParams = new List<string>
-        {
-            nameof(limit),
-            nameof(offset),
-            nameof(bbox),
-            nameof(crs),
-            nameof(apiKey),
-            "bbox-crs",
-            "datetime",
-        };
-        foreach (var (key, _) in Request.Query)
-        {
-            if (validParams.Contains(key)) continue;
-            _logger.LogError("Unknown parameter {key}", key);
-            return BadRequest($"Unknown parameter {key}");
-        }
-
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions != null)
+        if (collectionOptions is {Features: not null})
         {
+            var validParams = new List<string>
+            {
+                nameof(limit),
+                nameof(offset),
+                nameof(bbox),
+                nameof(crs),
+                nameof(apiKey),
+                "bbox-crs",
+                "datetime",
+                "f"
+            };
+
+            if (collectionOptions.Features.Storage.Properties is var properties && properties != null && properties.Count != 0)
+                validParams.AddRange(properties);
+
+            foreach (var (key, _) in Request.Query)
+            {
+                if (validParams.Contains(key)) continue;
+                _logger.LogError("Unknown parameter {key}", key);
+                return BadRequest($"Unknown parameter {key}");
+            }
+
             var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
             if (bboxCrs == null)
@@ -245,12 +250,9 @@ public class CollectionsController : ControllerBase
                     {
                         envelope.Transform(bboxCrs, collectionOptions.Features.StorageCrs);
                     }
-                    catch
+                    catch (Exception)
                     {
-                        // if the coordinate transformation fails, just ignore bbox
-                        // this is not correct but is necessary to pass ogc tests
-                        // transformation fails in case of WGS84 -> WebMercator at the poles
-                        envelope = null;
+                        return BadRequest();
                     }
                 }
                 else
@@ -283,6 +285,13 @@ public class CollectionsController : ControllerBase
 
             try
             {
+                Dictionary<string, string> propertyFilter = null;
+		        if (properties is {Count: > 0})
+		        {
+			        propertyFilter = Request.Query.Keys.Where(properties.Contains)
+				        .ToDictionary(key => key, key => Request.Query[key].First());
+		        }
+
                 var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
                     limit,
@@ -290,7 +299,8 @@ public class CollectionsController : ControllerBase
                     envelope,
                     dateTimeInterval.Start,
                     dateTimeInterval.End,
-                    apiKey);
+                    apiKey,
+                    propertyFilter);
                 features.Transform(collectionOptions.Features.StorageCrs, crs);
 
                 features.Links =
@@ -380,7 +390,7 @@ public class CollectionsController : ControllerBase
         _logger.LogTrace("Get feature with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions != null)
+        if (collectionOptions is { Features: not null })
         {
             var dataProvider = Utils.GetFeaturesProvider(_serviceProvider, collectionOptions.Features.Storage.Type);
 
@@ -467,7 +477,7 @@ public class CollectionsController : ControllerBase
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
-        _logger.LogTrace($"Create feature with parameters {Request.QueryString}");
+        _logger.LogTrace("Create feature with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
         if (collectionOptions != null)
@@ -489,7 +499,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);
@@ -549,7 +559,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);
@@ -661,7 +671,7 @@ public class CollectionsController : ControllerBase
             }
             else
             {
-                crs = CrsUtils.DefaultCrs;
+                crs = collectionOptions.Features.StorageCrs;
             }
 
             feature.Transform(crs, collectionOptions.Features.StorageCrs);

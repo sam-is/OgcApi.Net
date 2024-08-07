@@ -56,7 +56,7 @@ public class Startup(IConfiguration configuration)
     {
         services.AddOgcApiSqlServerProvider();
         services.AddOgcApiMbTilesProvider();
-        services.AddOgcApi("ogcapi.json", TilesAccessDelegate, FeatureAccessDelegate);
+        services.AddOgcApi("ogcapi-features.json", TilesAccessDelegate);
         services.AddControllers().AddOgcApiControllers();
 
         services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
@@ -79,8 +79,6 @@ public class Startup(IConfiguration configuration)
             swaggerOptions.RoutePrefix = "api";
             swaggerOptions.SwaggerEndpoint("ogc/swagger.json", "OGC API");
         });
-
-        app.UseHttpsRedirection();
 
         app.UseRouting();
 

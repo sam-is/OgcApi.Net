@@ -561,6 +561,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpen
                                     Name = "tileMatrix",
                                     Description = "Identifier of the tile matrix (representing a zoom level, a.k.a. a scale) listed in the TileMatrixSet definition",
                                     In = ParameterLocation.Path,
+                                    Required = true,
                                     Schema = new OpenApiSchema
                                     {
                                         Type = "integer",
@@ -572,6 +573,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpen
                                     Name = "tileRow",
                                     Description = "A non-negative integer between 0 and the MatrixHeight - 1. If there is a TileMatrixSetLimits the value is limited between MinTileRow and MaxTileRow",
                                     In = ParameterLocation.Path,
+                                    Required = true,
                                     Schema = new OpenApiSchema
                                     {
                                         Type = "integer",
@@ -583,6 +585,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpen
                                     Name = "tileCol",
                                     Description = "A non-negative integer between 0 and the MatrixWidth - 1. If there is a TileMatrixSetLimits the value is limited between MinTileCol and MaxTileCol",
                                     In = ParameterLocation.Path,
+                                    Required = true,
                                     Schema = new OpenApiSchema
                                     {
                                         Type = "integer",
