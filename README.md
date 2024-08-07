@@ -375,3 +375,14 @@ To add your custom coordinate system, modify file SRID.csv provided by the NuGet
 ### Tests
 
 Currently, this project contains tests for the data providers. Testing the entire API can be done by [OGC API - Features Conformance Test Suite](https://cite.opengeospatial.org/te2/about/ogcapi-features-1.0/1.0/site/)
+
+A test application is included in the repository (SampleWebApplication). It is recommended to use docker-compose debugging to run it. Included containers: 
+- Sql Server as a database
+- Tomcat with TEAM Engine and OGC API - Features test suite
+
+After launching the application, you can use the following links:
+- https://localhost/api/index.html - to test the API
+- http://localhost:8082/teamengine - TEAM engine application
+
+To run tests in the TEAM engine, you must use the internal address: http://samplewebapplication:8080/api/ogc
+The instructions for launching TEAM engine are given here in the section Docker: https://cite.opengeospatial.org/teamengine/about/ogcapi-features-1.0/1.0/site/
