@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
 using OgcApi.Net.Crs;
 using OgcApi.Net.Options;
 using OgcApi.Net.Resources;
@@ -12,6 +13,8 @@ using OgcApi.Net.Temporal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -777,6 +780,30 @@ public class CollectionsController : ControllerBase
 
             var tileContent = await dataProvider.GetTileAsync(collectionId, tileMatrix, tileRow, tileCol, datetime, apiKey);
             if (tileContent == null) return NoContent();
+
+            if (collectionOptions.Tiles.Storage.FeatureAccessDelegate != null)
+            {
+                var reader = new MapboxTileReader();
+                await using var memoryStream = new MemoryStream(tileContent);
+                await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+                var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(tileCol, tileRow, tileMatrix));
+
+                foreach (var layer in tile.Layers)
+                    foreach (var feature in layer.Features.ToList())
+                        if (!collectionOptions.Tiles.Storage.FeatureAccessDelegate.Invoke(collectionId, feature, apiKey))
+                            layer.Features.Remove(feature);
+
+                if (tile.Layers.All(l => l.Features.Count == 0))
+                    return NoContent();
+
+                await using var compressedStream = new MemoryStream();
+                await using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
+
+                tile.Write(compressor);
+                compressor.Flush();
+                tileContent = compressedStream.ToArray();
+            }
+
             Response.Headers.Append("Content-Encoding", "gzip");
             return File(tileContent,
                 "application/vnd.mapbox-vector-tile",

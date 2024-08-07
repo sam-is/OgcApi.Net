@@ -12,7 +12,7 @@ namespace OgcApi.Net;
 
 public static class OgcApiServiceCollectionExtensions
 {
-    public static IServiceCollection AddOgcApi(this IServiceCollection services, string settingsFileName, TileAccessDelegate tileAccessDelegate = null)
+    public static IServiceCollection AddOgcApi(this IServiceCollection services, string settingsFileName, TileAccessDelegate tileAccessDelegate = null, FeatureAccessDelegate featureAccessDelegate = null)
     {
         services.Configure<OgcApiOptions>(options =>
         {
@@ -26,6 +26,7 @@ public static class OgcApiServiceCollectionExtensions
             foreach (var item in ogcApiOptions.Collections.Items.Where(x => x.Tiles != null))
             {
                 item.Tiles.Storage.TileAccessDelegate = tileAccessDelegate;
+                item.Tiles.Storage.FeatureAccessDelegate = featureAccessDelegate;
             }
 
             options.Collections = ogcApiOptions.Collections;

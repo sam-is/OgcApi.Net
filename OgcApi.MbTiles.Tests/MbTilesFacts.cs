@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OgcApi.MbTiles.Tests;
@@ -80,89 +84,89 @@ public class MbTilesFacts
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileUnknownCollection()
+    public async Task GetTileUnknownCollection()
     {
         await Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 8, 162, 82));
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileIncorrectZoomLevel()
+    public async Task GetTileIncorrectZoomLevel()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 15, 162, 82);
         Assert.Null(tile);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileIncorrectTileRow()
+    public async Task GetTileIncorrectTileRow()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 162, 90);
         Assert.Null(tile);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileIncorrectTileCol()
+    public async Task GetTileIncorrectTileCol()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("data", 8, 170, 82);
         Assert.Null(tile);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileFileNotExists()
+    public async Task GetTileFileNotExists()
     {
         await Assert.ThrowsAsync<SqliteException>(() => TestProviders.GetProviderWithErrors().GetTileAsync("data", 8, 162, 82));
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessViolationApiKeyNull()
+    public async Task GetTileAccessViolationApiKeyNull()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessViolationApiKeyIncorrect()
+    public async Task GetTileAccessViolationApiKeyIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, "12345");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessViolationTileMatrixIncorrect()
+    public async Task GetTileAccessViolationTileMatrixIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 8, 82, 162, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessViolationTileRowIncorrect()
+    public async Task GetTileAccessViolationTileRowIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 41, 81, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessViolationTileColIncorrect()
+    public async Task GetTileAccessViolationTileColIncorrect()
     {
         var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 80, "qwerty");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessOk()
+    public async Task GetTileAccessOk()
     {
-        var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, apiKey : "qwerty");
+        var result = await TestProviders.GetControllerWithAccessDelegate().GetTile("data", 7, 40, 81, apiKey: "qwerty");
         Assert.IsType<FileContentResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileAccessDelegateNotSet()
+    public async Task GetTileAccessDelegateNotSet()
     {
         var result = await TestProviders.GetControllerWithoutAccessDelegate().GetTile("data", 7, 40, 81, apiKey: "qwerty");
         Assert.IsType<FileContentResult>(result);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileDirectFileNotExists()
+    public async Task GetTileDirectFileNotExists()
     {
         await Assert.ThrowsAsync<SqliteException>(() => MbTilesProvider.GetTileDirectAsync(Path.Combine("Data", "test.mbtiles"), 8, 82, 162));
     }
@@ -213,5 +217,120 @@ public class MbTilesFacts
     {
         var limits = TestProviders.GetProviderWithMinMaxZoom().GetLimits("data");
         Assert.Equal(5, limits.Count);
+    }
+
+    [Fact]
+    public async Task GetTileFeatureAccessApiKeyNull()
+    {
+        var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0);
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    public async Task GetTileFeatureAccessApiKeyAdmin()
+    {
+        const int countLayers = 2;
+        var featuresCount = new Dictionary<string, int>
+        {
+            {"chess", 3968 },
+            {"circle", 3968 }
+        };
+
+        var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "admin");
+        Assert.IsType<FileContentResult>(result);
+
+        var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
+        var reader = new MapboxTileReader();
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
+
+        Assert.Equal(countLayers, tile.Layers.Count);
+
+        foreach (var layer in tile.Layers)
+            Assert.Equal(featuresCount[layer.Name], layer.Features.Count);
+    }
+
+    [Fact]
+    public async Task GetTileFeatureAccessApiKeyUser1()
+    {
+        const int countLayers = 2;
+        var featuresCount = new Dictionary<string, int>
+        {
+            {"chess", 1984 },
+            {"circle", 179 }
+        };
+
+        var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "user1");
+        Assert.IsType<FileContentResult>(result);
+
+        var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
+        var reader = new MapboxTileReader();
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
+
+        Assert.Equal(countLayers, tile.Layers.Count);
+
+        foreach (var layer in tile.Layers)
+            Assert.Equal(featuresCount[layer.Name], layer.Features.Count);
+    }
+
+    [Fact]
+    public async Task GetTileFeatureAccessApiKeyUser2()
+    {
+        const int countLayers = 2;
+        var featuresCount = new Dictionary<string, int>
+        {
+            {"chess", 1984 },
+            {"circle", 3789 }
+        };
+
+        var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "user2");
+        Assert.IsType<FileContentResult>(result);
+
+        var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
+        var reader = new MapboxTileReader();
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
+
+        Assert.Equal(countLayers, tile.Layers.Count);
+
+        foreach (var layer in tile.Layers)
+            Assert.Equal(featuresCount[layer.Name], layer.Features.Count);
+    }
+
+    [Fact]
+    public async Task GetTileFeatureAccessApiKeyValue()
+    {
+        const int countLayers = 2;
+        var featuresCount = new Dictionary<string, int>
+        {
+            {"chess", 1327 },
+            {"circle", 2027 }
+        };
+
+        var result = await TestProviders.GetControllerWithFeatureAccessDelegate().GetTile("featureAccessData", 0, 0, 0, apiKey: "value");
+        Assert.IsType<FileContentResult>(result);
+
+        var fileContent = result as FileContentResult;
+        Assert.NotNull(fileContent);
+
+        var reader = new MapboxTileReader();
+        await using var memoryStream = new MemoryStream(fileContent.FileContents);
+        await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress, false);
+        var tile = reader.Read(decompressor, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(0, 0, 0));
+
+        Assert.Equal(countLayers, tile.Layers.Count);
+
+        foreach (var layer in tile.Layers)
+            Assert.Equal(featuresCount[layer.Name], layer.Features.Count);
     }
 }

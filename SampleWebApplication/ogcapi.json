@@ -147,6 +147,17 @@
             "FileName": "Data\\data.mbtiles"
           }
         }
+      },
+      {
+        "Id": "FeatureAccessData",
+        "Title": "FeatureAccessData",
+        "Tiles": {
+          "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "MbTiles",
+            "FileName": "Data\\featureAccessData.mbtiles"
+          }
+        }
       }
     ]
   }

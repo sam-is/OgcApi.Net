@@ -14,6 +14,7 @@ public class MbTilesSourceOptions : ITilesSourceOptions
     public int? MaxZoom { get; set; }
 
     public TileAccessDelegate TileAccessDelegate { get; set; }
+    public FeatureAccessDelegate FeatureAccessDelegate { get; set; }
 
     public List<TimestampFile> TimestampFiles { get; set; } = [];
 

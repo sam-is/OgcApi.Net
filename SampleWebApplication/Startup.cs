@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NetTopologySuite.Features;
 using OgcApi.Net;
 using OgcApi.Net.MbTiles;
 using OgcApi.Net.SqlServer;
@@ -32,10 +33,22 @@ public class Startup(IConfiguration configuration)
                 }
 
                 break;
+            case "FeatureAccessData":
+                return true;
         }
 
         return false;
     }
+
+    private static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
+    {
+        "FeatureAccessData" => apiKey == "admin" ||
+            apiKey == "value" && feature.Attributes.Exists("value") &&
+            (feature.Attributes["value"] is long and > 1200 ||
+            feature.Attributes["value"] is > 100.0) ||
+            feature.Attributes.Exists("roleAccess") && feature.Attributes["roleAccess"].ToString() == apiKey,
+        _ => true,
+    };
 
     public IConfiguration Configuration { get; } = configuration;
 
