@@ -19,10 +19,15 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
     - name: Restore dependencies
       run: dotnet restore OgcApi.Net.sln    
-    - name: Publish      
-      run: |        
+    - name: Build
+      run: dotnet build -c Release --no-restore OgcApi.Net.sln
+    - name: Pack
+      run: |
         mkdir artifacts 
-        dotnet build -c Release --no-restore OgcApi.Net.sln
-        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.sln
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.SqlServer.csproj
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.PostGis.csproj
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.MbTiles.csproj
+    - name: Publish          
+      run: |        
         dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
         rm -rf artifacts
