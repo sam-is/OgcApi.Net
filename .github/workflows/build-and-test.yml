@@ -1,10 +1,10 @@
-name: .NET
+name: .NET build & test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ] 
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
     
     env:
       CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=VeryStrong!P@ssword111;TrustServerCertificate=true
-    
+      
     services:
       sql:        
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -29,25 +29,15 @@ jobs:
         ports:         
           - 5432:5432
 
-    steps:    
-    - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1      
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
-        source-url: https://api.nuget.org/v3/index.json        
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
+        dotnet-version: 8.0.x      
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish      
-      run: |        
-        mkdir artifacts 
-        dotnet build -c Release --no-restore
-        dotnet pack -c Release -o artifacts --no-restore
-        dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
-        rm -rf artifacts 
