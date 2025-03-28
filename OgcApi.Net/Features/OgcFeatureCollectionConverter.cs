@@ -17,8 +17,8 @@ public class OgcFeatureCollectionConverter : JsonConverter<OgcFeatureCollection>
         writer.WriteString("type", "FeatureCollection");
 
         writer.WriteString("timeStamp", DateTime.Now);
-        writer.WriteString("numberMatched", value.TotalMatched.ToString());
-        writer.WriteString("numberReturned", value.Count.ToString());
+        writer.WriteNumber("numberMatched", value.TotalMatched);
+        writer.WriteNumber("numberReturned", value.Count);
 
         if (value.Links != null)
         {
