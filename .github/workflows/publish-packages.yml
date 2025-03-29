@@ -3,6 +3,8 @@ name: Publish nuget packages
 on:
   release:
     types: [created]  
+  push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -25,10 +27,10 @@ jobs:
     - name: Pack
       run: |
         mkdir artifacts 
-        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net/OgcApi.Net.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net/OgcApi.Net.csproj -p:PackageVersion=1.0.1
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj -p:PackageVersion=1.0.1
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj -p:PackageVersion=1.0.1
+        dotnet pack -c Release -o artifacts --no-restore OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj -p:PackageVersion=1.0.1
     - name: Publish          
       run: |        
         dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
