@@ -14,7 +14,7 @@ public interface IFeaturesProvider
 
     OgcFeature GetFeature(string collectionId, string featureId, string apiKey = null);
 
-    long GetFeaturesCount(string collectionId, Envelope bbox = null, DateTime? startDateTime = null, DateTime? endDateTime = null, string apiKey = null);
+    long GetFeaturesCount(string collectionId, Envelope bbox = null, DateTime? startDateTime = null, DateTime? endDateTime = null, string apiKey = null, Dictionary<string, string> propertyFilter = null);
 
     string CreateFeature(string collectionId, IFeature feature, string apiKey = null);
 

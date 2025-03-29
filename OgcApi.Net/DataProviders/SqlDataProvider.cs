@@ -240,7 +240,8 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         Envelope bbox = null,
         DateTime? startDateTime = null,
         DateTime? endDateTime = null,
-        string apiKey = null)
+        string apiKey = null,
+        Dictionary<string, string> propertyFilter = null)
     {
         var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
         if (collectionOptions == null)
@@ -270,6 +271,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
                 .AddWhere(bbox)
                 .AddWhere(startDateTime, endDateTime)
                 .AddApiKeyWhere(sourceOptions.ApiKeyPredicateForGet, apiKey)
+                .AddWhere(propertyFilter)
                 .ComposeWhereClause()
                 .BuildCommand(connection);
 

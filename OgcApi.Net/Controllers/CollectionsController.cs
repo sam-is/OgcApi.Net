@@ -326,7 +326,8 @@ public class CollectionsController : ControllerBase
                     envelope,
                     dateTimeInterval.Start,
                     dateTimeInterval.End,
-                    apiKey);
+                    apiKey,
+                    propertyFilter);
 
                 if (offset + limit < features.TotalMatched)
                 {
