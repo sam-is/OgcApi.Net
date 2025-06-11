@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
     <ProjectReference Include="..\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
   </ItemGroup>
 

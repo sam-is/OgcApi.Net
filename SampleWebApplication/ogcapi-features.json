@@ -44,6 +44,29 @@
             "AllowUpdate": true,
             "AllowDelete": true
           }
+        },
+        "SchemaOptions": {
+          "Properties": {
+            "Name": {
+              "Type": "string",
+              "Title": "Название"
+            },
+            "Number": {
+              "Type": "number",
+              "Title": "Число"
+            },
+            "Geom": {
+              "Title": "geometry"
+            },
+            "Id": {
+              "Title": "id",
+              "Type": "number",
+              "XOgcRole": "id"
+            },
+            "Date": {
+              "Title": "дата"
+            }
+          }
         }
       },
       {

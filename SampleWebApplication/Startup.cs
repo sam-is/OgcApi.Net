@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Features;
 using OgcApi.Net;
 using OgcApi.Net.MbTiles;
+using OgcApi.Net.Schemas;
 using OgcApi.Net.SqlServer;
 using SampleWebApplication.Utils;
 
@@ -56,7 +57,9 @@ public class Startup(IConfiguration configuration)
     {
         services.AddOgcApiSqlServerProvider();
         services.AddOgcApiMbTilesProvider();
+        services.AddSchemasOpenApiExtension();
         services.AddOgcApi("ogcapi-features.json", TilesAccessDelegate);
+
         services.AddControllers().AddOgcApiControllers();
 
         services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
