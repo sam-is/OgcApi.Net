@@ -17,7 +17,7 @@ namespace OgcApi.Net.MbTiles;
 
 [OgcTilesProvider("MbTiles", typeof(MbTilesSourceOptions))]
 public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<OgcApiOptions> options)
-    : ITilesProvider
+    : ITilesProvider, IPropertyMetadataProvider
 {
     private readonly ICollectionsOptions _collectionsOptions = options.CurrentValue.Collections;
 
@@ -151,5 +151,45 @@ public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<Og
         command.Parameters.AddWithValue("$tile_column", tileCol);
         command.Parameters.AddWithValue("$tile_row", (1 << tileMatrix) - 1 - tileRow);
         return (byte[])await command.ExecuteScalarAsync();
+    }
+
+    public Dictionary<string, string> GetPropertyMetadata(string collectionId)
+    {
+        var tileOptions = (MbTilesSourceOptions)_collectionsOptions.GetSourceById(collectionId)?.Tiles?.Storage;
+        if (tileOptions == null)
+        {
+            logger.LogTrace(
+                "The tile source for collection with ID = {collectionId} was not found in the provided options", collectionId);
+            throw new ArgumentException($"The tile source for collection with ID = {collectionId} does not exists");
+        }
+
+        using var connection = GetDbConnection(tileOptions.FileName);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT 
+              json_extract(layer.value, '$.id') AS layer_name,
+              field.key AS field_name,
+              field.value AS field_type
+            FROM metadata m
+            JOIN json_each(m.value, '$.vector_layers') AS layer
+            JOIN json_each(json_extract(layer.value, '$.fields')) AS field
+            WHERE m.name = 'json';
+            """;
+
+        using var reader = command.ExecuteReader();
+
+        var result = new Dictionary<string, string>();
+
+        while (reader.Read())
+        {
+            var name = reader.GetString(0);
+            var type = reader.GetString(1);
+
+            result.Add(name, type);
+        }
+
+        return result;
     }
 }

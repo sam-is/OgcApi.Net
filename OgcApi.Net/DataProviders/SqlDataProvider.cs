@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
@@ -12,6 +13,7 @@ using OgcApi.Net.Options.Interfaces;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.IO.Compression;
@@ -20,7 +22,7 @@ using System.Threading.Tasks;
 namespace OgcApi.Net.DataProviders;
 
 public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOptions> options)
-    : IFeaturesProvider, ITilesProvider
+    : IFeaturesProvider, ITilesProvider, IPropertyMetadataProvider
 {
     public const int FeaturesMinimumLimit = 1;
 
@@ -592,6 +594,61 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
                 MaxTileRow = (1 << i) - 1
             });
         }
+        return result;
+    }
+
+    public Dictionary<string, string> GetPropertyMetadata(string collectionId)
+    {
+        var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
+        if (collectionOptions == null)
+        {
+            Logger.LogTrace(
+                "The source collection with ID = {collectionId} was not found in the provided options", collectionId);
+            throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+        }
+        var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
+        if (sourceOptions == null)
+        {
+            Logger.LogTrace(
+                "The source collection with ID = {collectionId} was found, yet it contains no storage options", collectionId);
+            throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+        }
+
+        using var connection = GetDbConnection(sourceOptions.ConnectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT 
+                column_name,
+                data_type
+            FROM information_schema.columns
+            WHERE table_name = @Table AND table_schema = @Schema;
+            """;
+
+        var tableParameter = command.CreateParameter();
+        tableParameter.ParameterName = "Table";
+        tableParameter.Value = sourceOptions.Table;
+
+        var schemaParameter = command.CreateParameter();
+        schemaParameter.ParameterName = "Schema";
+        schemaParameter.Value = sourceOptions.Schema;
+
+        command.Parameters.Add(tableParameter);
+        command.Parameters.Add(schemaParameter);
+
+        using var reader = command.ExecuteReader();
+
+        var result = new Dictionary<string, string>();
+
+        while (reader.Read())
+        {
+            var name = reader.GetString(0);
+            var type = reader.GetString(1);
+
+            result.Add(name, type);
+        }
+
         return result;
     }
 }
