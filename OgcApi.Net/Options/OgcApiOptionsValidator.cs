@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OgcApi.Net.Options;
 
-static class OgcApiOptionsValidator
+public static class OgcApiOptionsValidator
 {
     public static void Validate(OgcApiOptions options)
     {
