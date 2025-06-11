@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using OgcApi.Net.OpenApi.Interfaces;
 using OgcApi.Net.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace OgcApi.Net.OpenApi;
 
-public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpenApiGenerator
+public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumerable<IOpenApiExtension> extensions) : IOpenApiGenerator
 {
     private readonly OgcApiOptions _apiOptions = apiOptions?.CurrentValue ?? throw new ArgumentNullException(nameof(apiOptions));
 
@@ -654,6 +656,9 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions) : IOpen
                 }
             };
         }
+
+        foreach (var extension in extensions)
+            extension.Apply(openApiDocument, _apiOptions);
 
         return openApiDocument;
     }
