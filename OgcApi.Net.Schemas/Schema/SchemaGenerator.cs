@@ -32,12 +32,36 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
 
     public OgcJsonSchema GenerateQueryablesSchema(Uri baseUri, CollectionOptions collectionOptions)
     {
-        throw new NotImplementedException();
+        var schemaOptions = GetSchemaOptions(collectionOptions);
+
+        var properties = CastProperties(schemaOptions.Properties);
+
+        var schema = new OgcJsonSchema
+        {
+            Id = new Uri(baseUri, $"collections/{collectionOptions.Id}/queryables"),
+            Title = schemaOptions.Title,
+            Description = schemaOptions.Description,
+            AdditionalProperties = schemaOptions.AdditionalProperties,
+            Properties = PrepareProperties(properties, collectionOptions)
+        };
+
+        return schema;
     }
 
     public OgcJsonSchema GenerateSortablesSchema(Uri baseUri, CollectionOptions collectionOptions)
     {
-        throw new NotImplementedException();
+        var schemaOptions = GetSchemaOptions(collectionOptions);
+
+        var schema = new OgcJsonSchema
+        {
+            Id = new Uri(baseUri, $"collections/{collectionOptions.Id}/sortables"),
+            Title = schemaOptions.Title,
+            Description = schemaOptions.Description,
+            AdditionalProperties = schemaOptions.AdditionalProperties,
+            Properties = []
+        };
+
+        return schema;
     }
 
     private SchemaOptions GetSchemaOptions(CollectionOptions collectionOptions)

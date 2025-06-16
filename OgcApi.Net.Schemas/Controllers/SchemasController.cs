@@ -58,7 +58,7 @@ public class SchemasController : ControllerBase
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Collection> Get(string collectionId)
+    public ActionResult<Collection> GetSchema(string collectionId)
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
@@ -68,6 +68,50 @@ public class SchemasController : ControllerBase
         if (collectionOptions != null)
         {
             var schema = _schemaGenerator.GenerateSchema(baseUri, collectionOptions);
+
+            var json = JsonSerializer.Serialize(schema, _jsonSerializerOptions);
+            return Content(json, "application/json");
+        }
+
+        return NotFound();
+    }
+
+    [HttpGet("{collectionId}/queryables")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<Collection> GetQueryables(string collectionId)
+    {
+        var baseUri = Utils.GetBaseUrl(Request);
+
+        _logger.LogTrace("Get collection with parameters {query}", Request.QueryString);
+
+        var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+        if (collectionOptions != null)
+        {
+            var schema = _schemaGenerator.GenerateQueryablesSchema(baseUri, collectionOptions);
+
+            var json = JsonSerializer.Serialize(schema, _jsonSerializerOptions);
+            return Content(json, "application/json");
+        }
+
+        return NotFound();
+    }
+
+    [HttpGet("{collectionId}/sortables")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<Collection> GetSortables(string collectionId)
+    {
+        var baseUri = Utils.GetBaseUrl(Request);
+
+        _logger.LogTrace("Get collection with parameters {query}", Request.QueryString);
+
+        var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
+        if (collectionOptions != null)
+        {
+            var schema = _schemaGenerator.GenerateSortablesSchema(baseUri, collectionOptions);
 
             var json = JsonSerializer.Serialize(schema, _jsonSerializerOptions);
             return Content(json, "application/json");

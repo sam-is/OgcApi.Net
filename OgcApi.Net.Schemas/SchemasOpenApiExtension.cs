@@ -117,8 +117,102 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                         [
                             new() { Name = collection.Title }
                         ],
-                        Summary = "Feature collection schema",
-                        Description = collection.Description,
+                        Summary = "Get the JSON Schema of the feature collection",
+                        Description = "Returns a JSON Schema that describes the structure and metadata of the features in this collection.",
+                        Responses = new OpenApiResponses
+                        {
+                            ["200"] = new()
+                            {
+                                Description = "Success",
+                                Content = new Dictionary<string, OpenApiMediaType>
+                                {
+                                    ["application/json"] = new()
+                                    {
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Reference = new OpenApiReference { Id = "OgcJsonSchema", Type = ReferenceType.Schema }
+                                        }
+                                    }
+                                }
+                            },
+                            ["404"] = new()
+                            {
+                                Description = "Not Found",
+                                Content = new Dictionary<string, OpenApiMediaType>
+                                {
+                                    ["application/json"] = new()
+                                    {
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Reference = new OpenApiReference { Id = "ProblemDetails", Type = ReferenceType.Schema }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            });
+
+            document.Paths.Add($"/collections/{collection.Id}/queryables", new OpenApiPathItem
+            {
+                Operations = new Dictionary<OperationType, OpenApiOperation>
+                {
+                    [OperationType.Get] = new()
+                    {
+                        Tags =
+                        [
+                            new() { Name = collection.Title }
+                        ],
+                        Summary = "Get queryable properties of the feature collection",
+                        Description = "Returns a list of properties that can be used for filtering features.",
+                        Responses = new OpenApiResponses
+                        {
+                            ["200"] = new()
+                            {
+                                Description = "Success",
+                                Content = new Dictionary<string, OpenApiMediaType>
+                                {
+                                    ["application/json"] = new()
+                                    {
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Reference = new OpenApiReference { Id = "OgcJsonSchema", Type = ReferenceType.Schema }
+                                        }
+                                    }
+                                }
+                            },
+                            ["404"] = new()
+                            {
+                                Description = "Not Found",
+                                Content = new Dictionary<string, OpenApiMediaType>
+                                {
+                                    ["application/json"] = new()
+                                    {
+                                        Schema = new OpenApiSchema
+                                        {
+                                            Reference = new OpenApiReference { Id = "ProblemDetails", Type = ReferenceType.Schema }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            });
+
+            document.Paths.Add($"/collections/{collection.Id}/sortables", new OpenApiPathItem
+            {
+                Operations = new Dictionary<OperationType, OpenApiOperation>
+                {
+                    [OperationType.Get] = new()
+                    {
+                        Tags =
+                        [
+                            new() { Name = collection.Title }
+                        ],
+                        Summary = "Get sortable properties of the feature collection",
+                        Description = "Returns a list of properties that can be used to sort features.",
                         Responses = new OpenApiResponses
                         {
                             ["200"] = new()
