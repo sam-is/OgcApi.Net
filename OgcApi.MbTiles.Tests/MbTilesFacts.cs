@@ -340,7 +340,7 @@ public class MbTilesFacts
         var expected = new Dictionary<string, string>
         {
             { "fid", "number" },
-            { "geometry", "Polygon" },
+            { "geometry", "polygon" },
             { "name", "string" },
             { "value", "number" }
         };
