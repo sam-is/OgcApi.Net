@@ -48,23 +48,20 @@
         "SchemaOptions": {
           "Properties": {
             "Name": {
-              "Type": "string",
-              "Title": "Название"
+              "Title": "Name",
+              "Type":  "string"
             },
             "Number": {
-              "Type": "number",
-              "Title": "Число"
+              "Title": "Number"
             },
             "Geom": {
               "Title": "geometry"
             },
             "Id": {
-              "Title": "id",
-              "Type": "number",
-              "XOgcRole": "id"
+              "Title": "id"
             },
             "Date": {
-              "Title": "дата"
+              "Title": "Date"
             }
           }
         }

@@ -118,7 +118,7 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
             {
                 var dateTimeColumn = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.DateTimeColumn);
 
-                if (dateTimeColumn.Key != null && dateTimeColumn.Value.Type == null)
+                if (dateTimeColumn.Key != null && dateTimeColumn.Value.Format == null)
                     dateTimeColumn.Value.Format = DateTimeFormat;
             }
 
@@ -215,15 +215,15 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
         return [];
     }
 
-    private static string GetGeometryFormat(string geometryGeoJsonType) => geometryGeoJsonType switch
+    private static string GetGeometryFormat(string? geometryType) => geometryType?.ToLower() switch
     {
-        "Point" => "geometry-point",
-        "MultiPoint" => "geometry-multipoint",
-        "LineString" => "geometry-linestring",
-        "MultiLineString" => "geometry-multilinestring",
-        "Polygon" => "geometry-polygon",
-        "MultiPolygon" => "geometry-multipolygon",
-        "GeometryCollection" => "geometry-geometrycollection",
+        "point" => "geometry-point",
+        "multipoint" => "geometry-multipoint",
+        "linestring" => "geometry-linestring",
+        "multilinestring" => "geometry-multilinestring",
+        "polygon" => "geometry-polygon",
+        "multipolygon" => "geometry-multipolygon",
+        "geometrycollection" => "geometry-geometrycollection",
         _ => "geometry-any"
     };
 }
