@@ -638,4 +638,22 @@ public class SqlServerFacts : IClassFixture<DatabaseFixture>
                         limits[i].MaxTileCol == (1 << i) - 1 && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == (1 << i) - 1);
         }
     }
+
+    [Fact]
+    public void GetPropertyMetadata()
+    {
+        var expected = new Dictionary<string, string>
+        {
+            { "Id", "number" },
+            { "Geom", "geometry" },
+            { "Name", "string" },
+            { "Number", "number" },
+            { "S", "number" },
+            { "Date", "string" }
+        };
+
+        var actual = TestProviders.GetDefaultProvider().GetPropertyMetadata("Polygons");
+
+        Assert.Equal(expected, actual);
+    }
 }

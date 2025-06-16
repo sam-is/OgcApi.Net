@@ -333,4 +333,20 @@ public class MbTilesFacts
         foreach (var layer in tile.Layers)
             Assert.Equal(featuresCount[layer.Name], layer.Features.Count);
     }
+
+    [Fact]
+    public void GetPropertyMetadata()
+    {
+        var expected = new Dictionary<string, string>
+        {
+            { "fid", "number" },
+            { "geometry", "Polygon" },
+            { "name", "string" },
+            { "value", "number" }
+        };
+
+        var actual = TestProviders.GetDefaultProvider().GetPropertyMetadata("data");
+
+        Assert.Equal(expected, actual);
+    }
 }

@@ -219,12 +219,12 @@ public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<Og
         return result;
     }
 
-    private static string CastTypeToSimple(string type) => type switch
+    private static string CastTypeToSimple(string type) => type.ToLower() switch
     {
-        "String" or "Mixed" => "string",
-        "Number" => "number",
-        "Point" or "MultiPoint" or "LineString" or "MultiLineString" or
-        "Polygon" or "MultiPolygon" or "GeometryCollection" => type,
+        "string" or "mixed" => "string",
+        "number" => "number",
+        "point" or "multipoint" or "linestring" or "multilinestring" or
+        "polygon" or "multipolygon" or "geometrycollection" => type.ToLower(),
         _ => "unknown",
     };
 }

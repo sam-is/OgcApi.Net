@@ -41,6 +41,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.Schemas", "OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj", "{139B75DA-7F72-4E8D-87BE-E46B5444F409}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Schemas.Tests", "OgcApi.Schemas.Tests\OgcApi.Schemas.Tests.csproj", "{6015EF18-C418-483F-84BA-756C04AEBD0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{139B75DA-7F72-4E8D-87BE-E46B5444F409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{139B75DA-7F72-4E8D-87BE-E46B5444F409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{139B75DA-7F72-4E8D-87BE-E46B5444F409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6015EF18-C418-483F-84BA-756C04AEBD0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6015EF18-C418-483F-84BA-756C04AEBD0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6015EF18-C418-483F-84BA-756C04AEBD0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6015EF18-C418-483F-84BA-756C04AEBD0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{94136B91-6CD0-4049-B3BE-D85979CD6571} = {3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}
 		{5B012609-0E3C-4066-B123-0E27FBE82472} = {3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}
 		{C3B27CBE-BFAF-4A0C-91F9-72892161BAA8} = {BF7D6BFB-A511-417D-9C0C-4707DF1E7D4F}
+		{6015EF18-C418-483F-84BA-756C04AEBD0C} = {3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08E94841-4EB6-46AC-A9E2-F2D6AF5C249B}

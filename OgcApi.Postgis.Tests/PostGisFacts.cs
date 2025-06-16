@@ -244,9 +244,9 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
-    [InlineData(["s","0.25"])]
-    [InlineData(["name","Simple polygon"])]
-    public void GetFeaturesPropertyFilter(string key,string value)
+    [InlineData(["s", "0.25"])]
+    [InlineData(["name", "Simple polygon"])]
+    public void GetFeaturesPropertyFilter(string key, string value)
     {
         var filter = new Dictionary<string, string>() { { key, value } };
         var features = TestProviders.GetDefaultProvider().GetFeatures("Polygons", propertyFilter: filter);
@@ -254,7 +254,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         Assert.Single(features);
         Assert.NotNull(features[0]);
         Assert.Equal("Simple polygon", features[0].Attributes["name"]);
-        Assert.Equal(0.25, (double)features[0].Attributes["s"] );
+        Assert.Equal(0.25, (double)features[0].Attributes["s"]);
     }
 
     [Fact]
@@ -614,7 +614,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
 
         using var decompressedStream = new MemoryStream();
         await decompressor.CopyToAsync(decompressedStream);
-   
+
         var reader = new MapboxTileReader();
         var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));
         Assert.True(tile.IsEmpty);
@@ -632,8 +632,26 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         var limits = TestProviders.GetDefaultProvider().GetLimits("Polygons");
         for (var i = 0; i <= 22; i++)
         {
-            Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 && 
+            Assert.True(limits[i].TileMatrix == i && limits[i].MinTileCol == 0 &&
                         limits[i].MaxTileCol == (1 << i) - 1 && limits[i].MinTileRow == 0 && limits[i].MaxTileRow == (1 << i) - 1);
         }
+    }
+
+    [Fact]
+    public void GetPropertyMetadata()
+    {
+        var expected = new Dictionary<string, string>
+        {
+            { "id", "number" },
+            { "geom", "unknown" },
+            { "name", "string" },
+            { "num", "number" },
+            { "s", "number" },
+            { "date", "string" }
+        };
+
+        var actual = TestProviders.GetDefaultProvider().GetPropertyMetadata("Polygons");
+
+        Assert.Equal(expected, actual);
     }
 }
