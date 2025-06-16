@@ -1,10 +1,11 @@
-﻿using OgcApi.Net.Options;
+﻿using OgcApi.Net.DataProviders;
+using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.Schemas.Options;
 using OgcApi.Net.Schemas.Schema.Model;
 
 namespace OgcApi.Net.Schemas.Schema;
-public class SchemaGenerator() : ISchemaGenerator
+public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider? tilesProvider) : ISchemaGenerator
 {
     private const string PrimaryGeometryXOgcRole = "primary-geometry";
 
@@ -44,27 +45,42 @@ public class SchemaGenerator() : ISchemaGenerator
         if (collectionOptions is SchemaCollectionOptions schemaCollectionOptions && schemaCollectionOptions.SchemaOptions != null)
             return schemaCollectionOptions.SchemaOptions;
 
-        return new SchemaOptions { Properties = [] };
+        var propertyMetadata = GetPropertyMetadata(collectionOptions.Id);
+
+        var properties = new Dictionary<string, PropertyDescription>();
+
+        foreach (var metadata in propertyMetadata)
+        {
+            if (metadata.Key == "geometry")
+                properties.Add(metadata.Key, new PropertyDescription
+                {
+                    Format = GetGeometryFormat(metadata.Value),
+                    XOgcRole = PrimaryGeometryXOgcRole
+                });
+            else
+                properties.Add(metadata.Key, new PropertyDescription { Type = metadata.Value });
+        }
+
+        return new SchemaOptions { Properties = properties };
     }
 
     private static Dictionary<string, OgcJsonSchemaProperty> CastProperties(Dictionary<string, PropertyDescription> properties)
     {
         var result = new Dictionary<string, OgcJsonSchemaProperty>();
 
-        foreach (var kvp in properties)
+        foreach (var property in properties)
         {
-            var propDesc = kvp.Value;
+            var propertyData = property.Value;
 
-            var schemaProp = new OgcJsonSchemaProperty
+            result[property.Key] = new OgcJsonSchemaProperty
             {
-                XOgcRole = propDesc.XOgcRole,
-                Type = propDesc.Type,
-                Title = propDesc.Title,
-                Format = propDesc.Format,
-                XOgcPropertySeq = propDesc.XOgcPropertySeq
+                XOgcRole = propertyData.XOgcRole,
+                Type = propertyData.Type,
+                Title = propertyData.Title,
+                Description = propertyData.Description,
+                Format = propertyData.Format,
+                XOgcPropertySeq = propertyData.XOgcPropertySeq
             };
-
-            result[kvp.Key] = schemaProp;
         }
 
         return result;
@@ -72,25 +88,40 @@ public class SchemaGenerator() : ISchemaGenerator
 
     private Dictionary<string, OgcJsonSchemaProperty> PrepareProperties(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
     {
+        if (collectionOptions.Features?.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
+        {
+            if (sqlFeaturesSourceOptions.DateTimeColumn != null)
+            {
+                var dateTimeColumn = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.DateTimeColumn);
+
+                if (dateTimeColumn.Key != null && dateTimeColumn.Value.Type == null)
+                    dateTimeColumn.Value.Format = DateTimeFormat;
+            }
+
+            if (sqlFeaturesSourceOptions.Properties != null && sqlFeaturesSourceOptions.Properties.Count > 0)
+            {
+                foreach (var property in properties)
+                {
+                    if (!sqlFeaturesSourceOptions.Properties.Contains(property.Key))
+                        properties.Remove(property.Key);
+                }
+            }
+        }
+
         if (!properties.Where(p => p.Value.XOgcRole == PrimaryGeometryXOgcRole).Any())
             properties = AddOrUpdateGeometryProperty(properties, collectionOptions);
 
         if (!properties.Where(p => p.Value.XOgcRole == IdXOgcRole).Any())
             properties = AddOrUpdateIdProperty(properties, collectionOptions);
 
-        if (collectionOptions.Features.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions && sqlFeaturesSourceOptions.DateTimeColumn != null)
-        {
-            var dateTimeColumn = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.DateTimeColumn);
+        var withoutTypeProperties = properties.Where(p => p.Value.Type == null && p.Value.XOgcRole != PrimaryGeometryXOgcRole);
 
-            if (dateTimeColumn.Key != null && dateTimeColumn.Value.Type == null)
-                dateTimeColumn.Value.Format = DateTimeFormat;
-        }
-
-        var withoutTypeProperties = properties.Where(p => p.Value.Type == null);
+        var propertyMetadata = GetPropertyMetadata(collectionOptions.Id);
 
         foreach (var (name, schemaProperty) in withoutTypeProperties)
         {
-
+            if (propertyMetadata.TryGetValue(name, out string? value))
+                schemaProperty.Type = value;
         }
 
         return properties;
@@ -98,7 +129,7 @@ public class SchemaGenerator() : ISchemaGenerator
 
     private Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateGeometryProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
     {
-        if (collectionOptions.Features.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
+        if (collectionOptions.Features?.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
         {
             var geometryProperty = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.GeometryColumn);
             if (geometryProperty.Key == null)
@@ -113,6 +144,7 @@ public class SchemaGenerator() : ISchemaGenerator
             {
                 geometryProperty.Value.XOgcRole = PrimaryGeometryXOgcRole;
                 geometryProperty.Value.Format = GetGeometryFormat(sqlFeaturesSourceOptions.GeometryGeoJsonType);
+                geometryProperty.Value.Type = null;
             }
         }
 
@@ -121,15 +153,14 @@ public class SchemaGenerator() : ISchemaGenerator
 
     private Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateIdProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
     {
-        if (collectionOptions.Features.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
+        if (collectionOptions.Features?.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
         {
             var idProperty = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.IdentifierColumn);
             if (idProperty.Key == null)
             {
                 properties.Add(sqlFeaturesSourceOptions.IdentifierColumn, new OgcJsonSchemaProperty
                 {
-                    XOgcRole = IdXOgcRole,
-                    Format = GetGeometryFormat(sqlFeaturesSourceOptions.GeometryGeoJsonType)
+                    XOgcRole = IdXOgcRole
                 });
             }
             else if (idProperty.Value.XOgcRole == null)
@@ -139,6 +170,25 @@ public class SchemaGenerator() : ISchemaGenerator
         }
 
         return properties;
+    }
+
+    private Dictionary<string, string> GetPropertyMetadata(string collectionId)
+    {
+        if (featureProvider != null && featureProvider is IPropertyMetadataProvider featuresMetadataProvider)
+        {
+            var metadata = featuresMetadataProvider.GetPropertyMetadata(collectionId);
+            if (metadata != null)
+                return metadata;
+        }
+
+        if (tilesProvider != null && tilesProvider is IPropertyMetadataProvider tilesMetadataProvider)
+        {
+            var metadata = tilesMetadataProvider.GetPropertyMetadata(collectionId);
+            if (metadata != null)
+                return metadata;
+        }
+
+        return [];
     }
 
     private static string GetGeometryFormat(string geometryGeoJsonType) => geometryGeoJsonType switch

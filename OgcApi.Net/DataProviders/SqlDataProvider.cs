@@ -604,14 +604,14 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         {
             Logger.LogTrace(
                 "The source collection with ID = {collectionId} was not found in the provided options", collectionId);
-            throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
+            return null;
         }
         var sourceOptions = (SqlFeaturesSourceOptions)collectionOptions.Features?.Storage;
         if (sourceOptions == null)
         {
             Logger.LogTrace(
                 "The source collection with ID = {collectionId} was found, yet it contains no storage options", collectionId);
-            throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
+            return null;
         }
 
         using var connection = GetDbConnection(sourceOptions.ConnectionString);
@@ -620,10 +620,13 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         using var command = connection.CreateCommand();
         command.CommandText = """
             SELECT 
-                column_name,
-                data_type
-            FROM information_schema.columns
-            WHERE table_name = @Table AND table_schema = @Schema;
+                COLUMN_NAME,
+                DATA_TYPE
+            FROM 
+                INFORMATION_SCHEMA.COLUMNS
+            WHERE 
+                TABLE_NAME = @Table
+                AND TABLE_SCHEMA = @Schema;
             """;
 
         var tableParameter = command.CreateParameter();
@@ -646,7 +649,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
             var name = reader.GetString(0);
             var type = reader.GetString(1);
 
-            result.Add(name, type);
+            result.Add(name, DbTypeMapper.MapDbTypeToSimpleType(type));
         }
 
         return result;

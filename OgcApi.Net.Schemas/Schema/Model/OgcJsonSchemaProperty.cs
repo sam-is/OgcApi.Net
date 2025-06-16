@@ -12,6 +12,9 @@ public class OgcJsonSchemaProperty
     [JsonPropertyName("title")]
     public string? Title { get; set; }
 
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
     [JsonPropertyName("format")]
     public string? Format { get; set; }
 

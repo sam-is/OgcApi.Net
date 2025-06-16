@@ -9,9 +9,9 @@ using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OgcApi.Net.MbTiles;
 
@@ -117,9 +117,9 @@ public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<Og
             {
                 fileName =
                     (from timestampFile in tileOptions.TimestampFiles
-                        where dateTimeInterval.Start >= timestampFile.DateTime
-                        orderby timestampFile.DateTime descending
-                        select timestampFile.FileName).FirstOrDefault();
+                     where dateTimeInterval.Start >= timestampFile.DateTime
+                     orderby timestampFile.DateTime descending
+                     select timestampFile.FileName).FirstOrDefault();
 
                 if (fileName == null || !File.Exists(fileName))
                 {
@@ -168,15 +168,41 @@ public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<Og
 
         using var command = connection.CreateCommand();
         command.CommandText = """
+            WITH LayerCount AS (
+              SELECT COUNT(*) AS count
+              FROM json_each((SELECT value FROM metadata WHERE name = 'json'), '$.tilestats.layers')
+            ),
+            TileLayerGeometry AS (
+              SELECT 
+                json_extract(tile_layer.value, '$.layer') AS layer_name,
+                json_extract(tile_layer.value, '$.geometry') AS geometry_type
+              FROM json_each((SELECT value FROM metadata WHERE name = 'json'), '$.tilestats.layers') AS tile_layer
+            )
             SELECT 
-              json_extract(layer.value, '$.id') AS layer_name,
               field.key AS field_name,
               field.value AS field_type
             FROM metadata m
             JOIN json_each(m.value, '$.vector_layers') AS layer
             JOIN json_each(json_extract(layer.value, '$.fields')) AS field
-            WHERE m.name = 'json';
+            CROSS JOIN LayerCount
+            WHERE m.name = 'json'
+              AND (json_extract(layer.value, '$.id') = @LayerName OR LayerCount.count <= 1)
+
+            UNION
+
+            SELECT 
+              'geometry' AS field_name,
+              geometry.geometry_type AS field_type
+            FROM TileLayerGeometry geometry
+            JOIN json_each(
+              (SELECT value FROM metadata WHERE name = 'json'),
+              '$.vector_layers'
+            ) AS layer
+            WHERE json_extract(layer.value, '$.id') = geometry.layer_name
+              AND (geometry.layer_name = @LayerName OR (SELECT count FROM LayerCount) <= 1);
             """;
+
+        command.Parameters.AddWithValue("LayerName", collectionId);
 
         using var reader = command.ExecuteReader();
 
@@ -187,9 +213,18 @@ public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<Og
             var name = reader.GetString(0);
             var type = reader.GetString(1);
 
-            result.Add(name, type);
+            result.Add(name, CastTypeToSimple(type));
         }
 
         return result;
     }
+
+    private static string CastTypeToSimple(string type) => type switch
+    {
+        "String" or "Mixed" => "string",
+        "Number" => "number",
+        "Point" or "MultiPoint" or "LineString" or "MultiLineString" or
+        "Polygon" or "MultiPolygon" or "GeometryCollection" => type,
+        _ => "unknown",
+    };
 }
