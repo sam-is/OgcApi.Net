@@ -92,18 +92,16 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
     {
         var result = new Dictionary<string, OgcJsonSchemaProperty>();
 
-        foreach (var property in properties)
+        foreach (var (propertyName, propertyDescription) in properties)
         {
-            var propertyData = property.Value;
-
-            result[property.Key] = new OgcJsonSchemaProperty
+            result[propertyName] = new OgcJsonSchemaProperty
             {
-                XOgcRole = propertyData.XOgcRole,
-                Type = propertyData.Type,
-                Title = propertyData.Title,
-                Description = propertyData.Description,
-                Format = propertyData.Format,
-                XOgcPropertySeq = propertyData.XOgcPropertySeq
+                XOgcRole = propertyDescription.XOgcRole,
+                Type = propertyDescription.Type,
+                Title = propertyDescription.Title,
+                Description = propertyDescription.Description,
+                Format = propertyDescription.Format,
+                XOgcPropertySeq = propertyDescription.XOgcPropertySeq
             };
         }
 
@@ -118,11 +116,11 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
             {
                 var dateTimeColumn = properties.FirstOrDefault(p => p.Key == sqlFeaturesSourceOptions.DateTimeColumn);
 
-                if (dateTimeColumn.Key != null && dateTimeColumn.Value.Format == null)
+                if (dateTimeColumn is { Key: not null, Value.Format: null })
                     dateTimeColumn.Value.Format = DateTimeFormat;
             }
 
-            if (sqlFeaturesSourceOptions.Properties != null && sqlFeaturesSourceOptions.Properties.Count > 0)
+            if (sqlFeaturesSourceOptions.Properties is { Count: > 0 })
             {
                 foreach (var property in properties)
                 {
@@ -132,10 +130,10 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
             }
         }
 
-        if (!properties.Where(p => p.Value.XOgcRole == PrimaryGeometryXOgcRole).Any())
+        if (properties.All(p => p.Value.XOgcRole != PrimaryGeometryXOgcRole))
             properties = AddOrUpdateGeometryProperty(properties, collectionOptions);
 
-        if (!properties.Where(p => p.Value.XOgcRole == IdXOgcRole).Any())
+        if (properties.All(p => p.Value.XOgcRole != IdXOgcRole))
             properties = AddOrUpdateIdProperty(properties, collectionOptions);
 
         var withoutTypeProperties = properties.Where(p => p.Value.Type == null && p.Value.XOgcRole != PrimaryGeometryXOgcRole);
@@ -144,14 +142,14 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
 
         foreach (var (name, schemaProperty) in withoutTypeProperties)
         {
-            if (propertyMetadata.TryGetValue(name, out string? value))
+            if (propertyMetadata.TryGetValue(name, out var value))
                 schemaProperty.Type = value;
         }
 
         return properties;
     }
 
-    private Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateGeometryProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
+    private static Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateGeometryProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
     {
         if (collectionOptions.Features?.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
         {
@@ -198,14 +196,14 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
 
     private Dictionary<string, string> GetPropertyMetadata(string collectionId)
     {
-        if (featureProvider != null && featureProvider is IPropertyMetadataProvider featuresMetadataProvider)
+        if (featureProvider is IPropertyMetadataProvider featuresMetadataProvider)
         {
             var metadata = featuresMetadataProvider.GetPropertyMetadata(collectionId);
             if (metadata != null)
                 return metadata;
         }
 
-        if (tilesProvider != null && tilesProvider is IPropertyMetadataProvider tilesMetadataProvider)
+        if (tilesProvider is IPropertyMetadataProvider tilesMetadataProvider)
         {
             var metadata = tilesMetadataProvider.GetPropertyMetadata(collectionId);
             if (metadata != null)

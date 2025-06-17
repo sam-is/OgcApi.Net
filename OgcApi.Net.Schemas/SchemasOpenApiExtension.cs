@@ -115,13 +115,13 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                     {
                         Tags =
                         [
-                            new() { Name = collection.Title }
+                            new OpenApiTag { Name = collection.Title }
                         ],
                         Summary = "Get the JSON Schema of the feature collection",
                         Description = "Returns a JSON Schema that describes the structure and metadata of the features in this collection.",
                         Responses = new OpenApiResponses
                         {
-                            ["200"] = new()
+                            ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
                                 Content = new Dictionary<string, OpenApiMediaType>
@@ -135,7 +135,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                     }
                                 }
                             },
-                            ["404"] = new()
+                            ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
                                 Content = new Dictionary<string, OpenApiMediaType>
@@ -162,13 +162,13 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                     {
                         Tags =
                         [
-                            new() { Name = collection.Title }
+                            new OpenApiTag { Name = collection.Title }
                         ],
                         Summary = "Get queryable properties of the feature collection",
                         Description = "Returns a list of properties that can be used for filtering features.",
                         Responses = new OpenApiResponses
                         {
-                            ["200"] = new()
+                            ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
                                 Content = new Dictionary<string, OpenApiMediaType>
@@ -182,7 +182,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                     }
                                 }
                             },
-                            ["404"] = new()
+                            ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
                                 Content = new Dictionary<string, OpenApiMediaType>
@@ -209,13 +209,13 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                     {
                         Tags =
                         [
-                            new() { Name = collection.Title }
+                            new OpenApiTag { Name = collection.Title }
                         ],
                         Summary = "Get sortable properties of the feature collection",
                         Description = "Returns a list of properties that can be used to sort features.",
                         Responses = new OpenApiResponses
                         {
-                            ["200"] = new()
+                            ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
                                 Content = new Dictionary<string, OpenApiMediaType>
@@ -229,7 +229,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                     }
                                 }
                             },
-                            ["404"] = new()
+                            ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
                                 Content = new Dictionary<string, OpenApiMediaType>
