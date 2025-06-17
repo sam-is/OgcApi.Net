@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OgcApi.PostGis.Tests;
@@ -591,20 +592,20 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async void GetTile()
+    public async Task GetTile()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 0, 1);
         Assert.NotNull(tile);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileUnknownCollection()
+    public async Task GetTileUnknownCollection()
     {
         await Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
     }
 
     [Fact]
-    public async void GetTileEmptyTile()
+    public async Task GetTileEmptyTile()
     {
         var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 1, 250);
         using var memoryStream = new MemoryStream(rawTile);

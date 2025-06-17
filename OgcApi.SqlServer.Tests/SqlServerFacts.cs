@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OgcApi.SqlServer.Tests;
@@ -246,8 +247,8 @@ public class SqlServerFacts : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
-    [InlineData(["S", "0.25"])]
-    [InlineData(["Name", "Simple polygon"])]
+    [InlineData("S", "0.25")]
+    [InlineData("Name", "Simple polygon")]
     public void GetFeaturesPropertyFilter(string key, string value)
     {
         var filter = new Dictionary<string, string>() { { key, value } };
@@ -593,20 +594,20 @@ public class SqlServerFacts : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async void GetTile()
+    public async Task GetTile()
     {
         var tile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 1, 0, 1);
         Assert.NotNull(tile);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTileUnknownCollection()
+    public async Task GetTileUnknownCollection()
     {
         await Assert.ThrowsAsync<ArgumentException>(() => TestProviders.GetDefaultProvider().GetTileAsync("test", 1, 1, 1));
     }
 
     [Fact]
-    public async void GetTileEmptyTile()
+    public async Task GetTileEmptyTile()
     {
         var rawTile = await TestProviders.GetDefaultProvider().GetTileAsync("Polygons", 8, 1, 250);
         using var memoryStream = new MemoryStream(rawTile);
