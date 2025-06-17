@@ -14,6 +14,7 @@ Standard | Data Providers
 [OGC API - Features - Part 1: Core](http://www.opengis.net/doc/IS/ogcapi-features-1/1.0) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](http://www.opengis.net/doc/IS/ogcapi-features-2/1.0) | Independent 
 [OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis 
+[OGC API - Features - Part 5: Schemas](https://portal.ogc.org/files/108199) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> Sqlite/MbTiles 
 [OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles 
 
 This project uses:
@@ -30,6 +31,7 @@ OgcApi.Net | OGC API - Features implementation without specific implementations 
 OgcApi.Net.SqlServer | Sql Server features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.SqlServer)](https://www.nuget.org/packages/OgcApi.Net.SqlServer/)
 OgcApi.Net.PostGis | PostgreSQL/PostGis features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.PostGis)](https://www.nuget.org/packages/OgcApi.Net.PostGis/)
 OgcApi.Net.MbTiles | MbTiles tiles provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.MbTiles)](https://www.nuget.org/packages/OgcApi.Net.MbTiles/)
+OgcApi.Net.Schemas | Schemas standart implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Schemas)](https://www.nuget.org/packages/OgcApi.Net.Schemas/)
 
 ## API configuration
 
@@ -334,6 +336,95 @@ Tiles API options include:
 }
 ```
 </details>
+
+### Schemas support
+
+Schema support is implemented in a separate library: OgcApi.Net.Schemas. It supports both SQL and MbTiles data providers.
+
+To enable schema support in your application, install the module and register it using the `AddSchemasOpenApiExtension()` method **before** calling `AddOgcApi()`:
+
+```csharp
+services.AddSchemasOpenApiExtension();
+services.AddOgcApi("ogcapi.json");
+```
+
+Once registered, the following endpoints will be available:
+Endpoint | Description 
+--- | --- 
+GET /collections/{collectionId}/schema | Returns full JSON Schema describing features in the collection
+GET /collections/{collectionId}/queryables | Returns schema with all queryable properties (response equal /schema path)
+GET /collections/{collectionId}/sortables | Returns schema with all sortable properties (currently always empty)
+
+`SchemaOptions` contains:
+- `Title` - title of the collection
+- `Description` - description of the collection
+- `AdditionalProperties` - boolean flag that indicates whether additional properties are allowed in feature objects
+- `Properties` - dictionary mapping property names to their `PropertyDescription`
+
+`PropertyDescription` contains:
+- `Type` - type of the property. The standard recommends using one of the following: `string`, `number`, `integer`, `boolean`, `object` or `array`
+- `Title` - human-readable title for the property
+- `Description` - description of the property
+- `XOgcRole` - `x-ogc-role`, custom OGC role (`id`, `primary-geometry`, `type`, etc.)
+- `Format` - format of the property: for geometry property is one of: `geometry-point`, `geometry-multipoint`, `geometry-linestring`, `geometry-multilinestring`, `geometry-polygon`, `geometry-multipolygon`, `geometry-geometrycollection`, `geometry-any`, for date/date-time property is `date`/`date-time`
+- `XOgcPropertySeq` - sequence number of the property (not used yet)
+
+<details>
+  <summary>Options example</summary>
+  
+```json
+{
+	"Id": "Test",
+	"Title": "Test collection",
+	"Features": {
+		"Crs": [
+			"http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+			"http://www.opengis.net/def/crs/EPSG/0/3857"
+		],
+		"StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+		"Storage": {
+			"Type": "PostGis",
+			"ConnectionString": "Host=localhost;User Id=postgre;Password=myStrongP@ssword;Database=Tests;Port=5432;Timeout=50;",
+			"Schema": "test",
+			"Table": "test_table",
+			"GeometryColumn": "geom",
+			"GeometrySrid": 3857,
+			"GeometryDataType": "geometry",
+			"GeometryGeoJsonType": "MultiPolygon",
+			"IdentifierColumn": "id",
+			"DateTimeColumn": "date"
+		}
+	},
+	"SchemaOptions": {
+		"Title": "collection title",
+		"Description": "collection description",
+		"Properties": {
+			"name": {
+				"Title": "Name",
+				"Description": "decription of property",
+				"Type": "string"
+			},
+			"number": {
+				"Title": "Number"
+			},
+			"id": {
+				"Title": "Id"
+			},
+			"date": {
+				"Title": "Date"
+			}
+		}
+	}
+}
+```
+</details>
+
+#### Notes
+- If the `SchemaOptions` section is not specified in the configuration, property names and types will be retrieved from the data provider. Only minimal data — property name and type — will be returned
+- If the `Features.Storage.Properties` list is defined in the settings, the generated schema will include only those properties
+- If a property does not have an explicit `Type` defined in `SchemaOptions`, the type will be inferred from the data source.
+- The `format` and `x-ogc-role` must be explicitly set for the geometry property. If the format is not specified, it will be obtained: for mbtiles - it will be read from mbtiles metadata, for collections that have `Features.Storage.GeometryGeoJsonType` - from this field. If x-ogc-role is not provided, it will default to `primary-geometry` for geometry property.
+- If the `IdentifierColumn` is set in `Features.Storage`, the corresponding property with the same name will be assigned the `x-ogc-role` value: `id`.
 
 ### Swagger generation
 
