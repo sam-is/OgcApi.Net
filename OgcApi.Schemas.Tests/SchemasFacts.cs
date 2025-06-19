@@ -388,4 +388,233 @@ public class SchemasFacts
         foreach (var property in actual.Properties)
             Assert.Equivalent(expected.Properties.FirstOrDefault(p => p.Key == property.Key), property);
     }
+
+    [Fact]
+    public void TitleOnlyOptionsWithAllPropertiesTest()
+    {
+        var expected = new OgcJsonSchema
+        {
+            Id = new Uri($"{BaseUrl}/collections/test/schema"),
+            Properties = new Dictionary<string, OgcJsonSchemaProperty>
+            {
+                {
+                    "Id",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number",
+                        XOgcRole = "id",
+                        Title = "Id"
+                    }
+                },
+                {
+                    "Number",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number",
+                        Title = "number"
+                    }
+                },
+                {
+                    "String",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "string",
+                        Title = "string"
+                    }
+                },
+                {
+                    "Date",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "string",
+                        Format = "date-time",
+                        Title = "date"
+                    }
+                },
+                {
+                    "Geometry",
+                    new OgcJsonSchemaProperty
+                    {
+                        Format = "geometry-polygon",
+                        XOgcRole = "primary-geometry",
+                        Title = "geometry"
+                    }
+                }
+            }
+        };
+
+        var options = new SchemaCollectionOptions
+        {
+            Id = "test",
+            Features = new CollectionFeaturesOptions
+            {
+                Storage = new SqlFeaturesSourceOptions
+                {
+                    IdentifierColumn = "Id",
+                    GeometryColumn = "Geometry",
+                    DateTimeColumn = "Date",
+                    GeometryGeoJsonType = "Polygon",
+                    Properties = ["Number", "String", "Date"]
+                }
+            },
+            SchemaOptions = new SchemaOptions
+            {
+                Properties = new Dictionary<string, PropertyDescription>
+                {
+                    {
+                        "Id",
+                        new PropertyDescription
+                        {
+                            Title = "Id"
+                        }
+                    },
+                    {
+                        "Number",
+                        new PropertyDescription
+                        {
+                            Title = "number"
+                        }
+                    },
+                    {
+                        "String",
+                        new PropertyDescription
+                        {
+                            Title = "string"
+                        }
+                    },
+                    {
+                        "Date",
+                        new PropertyDescription
+                        {
+                            Title = "date"
+                        }
+                    },
+                    {
+                        "Geometry",
+                        new PropertyDescription
+                        {
+                            Title = "geometry"
+                        }
+                    }
+                }
+            }
+        };
+
+        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+
+        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+
+        var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
+
+        Assert.Equal(expected.Id, actual.Id);
+
+        foreach (var property in actual.Properties)
+            Assert.Equivalent(expected.Properties.FirstOrDefault(p => p.Key == property.Key), property);
+    }
+
+    [Fact]
+    public void TitleOnlyOptionsWithSomePropertiesTest()
+    {
+        var expected = new OgcJsonSchema
+        {
+            Id = new Uri($"{BaseUrl}/collections/test/schema"),
+            Properties = new Dictionary<string, OgcJsonSchemaProperty>
+            {
+                {
+                    "Id",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number",
+                        XOgcRole = "id",
+                        Title = "Id"
+                    }
+                },
+                {
+                    "Number",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number",
+                        Title = "number"
+                    }
+                },
+                {
+                    "Geometry",
+                    new OgcJsonSchemaProperty
+                    {
+                        Format = "geometry-polygon",
+                        XOgcRole = "primary-geometry",
+                        Title = "geometry"
+                    }
+                }
+            }
+        };
+
+        var options = new SchemaCollectionOptions
+        {
+            Id = "test",
+            Features = new CollectionFeaturesOptions
+            {
+                Storage = new SqlFeaturesSourceOptions
+                {
+                    IdentifierColumn = "Id",
+                    GeometryColumn = "Geometry",
+                    DateTimeColumn = "Date",
+                    GeometryGeoJsonType = "Polygon",
+                    Properties = ["Number"]
+                }
+            },
+            SchemaOptions = new SchemaOptions
+            {
+                Properties = new Dictionary<string, PropertyDescription>
+                {
+                    {
+                        "Id",
+                        new PropertyDescription
+                        {
+                            Title = "Id"
+                        }
+                    },
+                    {
+                        "Number",
+                        new PropertyDescription
+                        {
+                            Title = "number"
+                        }
+                    },
+                    {
+                        "String",
+                        new PropertyDescription
+                        {
+                            Title = "string"
+                        }
+                    },
+                    {
+                        "Date",
+                        new PropertyDescription
+                        {
+                            Title = "date"
+                        }
+                    },
+                    {
+                        "Geometry",
+                        new PropertyDescription
+                        {
+                            Title = "geometry"
+                        }
+                    }
+                }
+            }
+        };
+
+        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+
+        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+
+        var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
+
+        Assert.Equal(expected.Id, actual.Id);
+
+        foreach (var property in actual.Properties)
+            Assert.Equivalent(expected.Properties.FirstOrDefault(p => p.Key == property.Key), property);
+    }
 }
