@@ -124,6 +124,9 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
             {
                 foreach (var property in properties)
                 {
+                    if (property.Key == sqlFeaturesSourceOptions.IdentifierColumn || property.Key == sqlFeaturesSourceOptions.GeometryColumn)
+                        continue;
+
                     if (!sqlFeaturesSourceOptions.Properties.Contains(property.Key))
                         properties.Remove(property.Key);
                 }
