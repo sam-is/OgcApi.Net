@@ -339,7 +339,8 @@ Tiles API options include:
 
 ### Schemas support
 
-Schema support is implemented in a separate library: OgcApi.Net.Schemas. It supports both SQL and MbTiles data providers.
+Schema support is implemented in a separate library: `OgcApi.Net.Schemas`. It supports both SQL and MbTiles data providers.
+Related documentation in the Standart: [OGC API - Features - Part 5: Schemas](https://portal.ogc.org/files/108199)
 
 To enable schema support in your application, install the module and register it using the `AddSchemasOpenApiExtension()` method **before** calling `AddOgcApi()`:
 
