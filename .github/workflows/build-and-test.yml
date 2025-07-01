@@ -11,9 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    - name: Install SpatiLite
-      run: sudo apt-get install libsqlite3-mod-spatialite
-
     env:
       CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=VeryStrong!P@ssword111;TrustServerCertificate=true
 
@@ -33,6 +30,8 @@ jobs:
           - 5432:5432
 
     steps:
+    - name: Install SpatiLite
+      run: sudo apt-get install libsqlite3-mod-spatialite
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
