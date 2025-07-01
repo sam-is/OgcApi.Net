@@ -2,7 +2,6 @@
 using OgcApi.Net.SpatiaLite;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace OgcApi.SpatiaLite.Tests.Utils;
 
@@ -10,7 +9,7 @@ public static class DatabaseUtils
 {
     public const string DatabaseName = "OgcApiTests.db";
 
-    private const string ConnectionStringTemplateEnvVariable = "CONNECTION_STRING_TEMPLATE";
+    private const string ConnectionStringTemplateEnvVariable = "SQLITE_CONNECTION_STRING_TEMPLATE";
 
     private const string DbConnectionString = "Data Source={0}";
 
@@ -19,19 +18,17 @@ public static class DatabaseUtils
         if (File.Exists(DatabaseName))
             File.Delete(DatabaseName);
 
-        using (var sqlConnection = new SpatiaLiteConnection(string.Format(GetConnectionStringTemplate(), DatabaseName)))
-        {
-            sqlConnection.Open();
+        using var sqlConnection = new SpatiaLiteConnection(string.Format(GetConnectionStringTemplate(), DatabaseName));
+        sqlConnection.Open();
 
-            string script = string.Format(GetInstallSpatiaLiteScript("DatabaseInstall"), DatabaseName);
+        var script = string.Format(GetInstallSpatiaLiteScript("DatabaseInstall"), DatabaseName);
 
-            using var installDatabaseCommand = new SqliteCommand(script, sqlConnection);
-            installDatabaseCommand.ExecuteNonQuery();
-            // FIXME: this second command intentional
-            // Geometry columns only work when table is created, dropped and created again
-            // nasty hack needs to be fixed
-            installDatabaseCommand.ExecuteNonQuery();
-        }
+        using var installDatabaseCommand = new SqliteCommand(script, sqlConnection);
+        installDatabaseCommand.ExecuteNonQuery();
+        // FIXME: this second command intentional
+        // Geometry columns only work when table is created, dropped and created again
+        // nasty hack needs to be fixed
+        installDatabaseCommand.ExecuteNonQuery();
     }
 
     private static string GetInstallSpatiaLiteScript(string scriptName)
