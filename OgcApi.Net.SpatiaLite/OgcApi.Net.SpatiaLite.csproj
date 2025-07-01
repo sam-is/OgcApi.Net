@@ -7,16 +7,7 @@
 
   <ItemGroup>  
 	  <PackageReference Include="NetTopologySuite.IO.SpatiaLite" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Label="Windows only includes" Condition="$([System.OperatingSystem]::IsWindows())">
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.17" />
-    <PackageReference Include="mod_spatialite" Version="4.3.0.1" />
-  </ItemGroup>
-
-  <ItemGroup Label="Linux only includes" Condition="$([System.OperatingSystem]::IsLinux()) ">
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.17" />
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.6" />
   </ItemGroup>
 
   <ItemGroup>

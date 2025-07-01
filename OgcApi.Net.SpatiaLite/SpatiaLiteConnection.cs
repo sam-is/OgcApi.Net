@@ -72,10 +72,4 @@ public class SpatiaLiteConnection : SqliteConnection
             await command.ExecuteScalarAsync(token);
         }
     }
-
-    static SpatiaLiteConnection()
-    {
-        // ensure SQLitePCLRaw is initialized - this should be done once at application startup.
-        SQLitePCL.Batteries.Init();
-    }
 }
