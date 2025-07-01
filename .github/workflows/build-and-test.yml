@@ -10,23 +10,26 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
+    - name: Install SpatiLite
+      run: sudo apt-get install libsqlite3-mod-spatialite
+
     env:
       CONNECTION_STRING_TEMPLATE: Server=tcp:127.0.0.1,1433;Database={0};User Id=sa;Password=VeryStrong!P@ssword111;TrustServerCertificate=true
-      
+
     services:
-      sql:        
+      sql:
         image: mcr.microsoft.com/mssql/server:2019-latest
         env:
           SA_PASSWORD: VeryStrong!P@ssword111
-          ACCEPT_EULA: Y          
+          ACCEPT_EULA: Y
         ports:
           - "1433:1433"
       postgis:
         image: postgis/postgis
         env:
-          POSTGRES_PASSWORD: password 
-        ports:         
+          POSTGRES_PASSWORD: password
+        ports:
           - 5432:5432
 
     steps:
@@ -34,7 +37,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x      
+        dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore OgcApi.Net.sln
     - name: Build
