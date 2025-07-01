@@ -4,6 +4,19 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>MbTiles/MVT tiles provider implementation</Title>
+    <Description>A package to support publishing MVT using the OGC API Tiles standard in ASP.NET Core applications</Description>
+    <Authors>Nikolay Chupshev, Alexander Belov</Authors>
+    <Company>SAMIS</Company>
+    <Product>OgcApi.Net</Product>
+    <Copyright>Copyright © 2025 SAMIS</Copyright>
+    <PackageProjectUrl>https://github.com/sam-is/OgcApi.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sam-is/OgcApi.Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.5" />
   </ItemGroup>

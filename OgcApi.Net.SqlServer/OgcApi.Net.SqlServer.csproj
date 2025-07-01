@@ -1,8 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net8.0</TargetFramework>
-    <Description>SQL Server provider for the OGC API Features Standard implementation</Description>    
+	  <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>SQL Server OGC API data provider implementation</Title>
+    <Description>SQL Server provider for the OGC API Features Standard implementation</Description>
+    <Authors>Nikolay Chupshev, Aleksei Maksimov</Authors>
+    <Company>SAMIS</Company>
+    <Product>OgcApi.Net</Product>
+    <Copyright>Copyright © 2025 SAMIS</Copyright>
+    <PackageProjectUrl>https://github.com/sam-is/OgcApi.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sam-is/OgcApi.Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

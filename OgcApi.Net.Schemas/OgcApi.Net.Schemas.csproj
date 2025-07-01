@@ -4,7 +4,19 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Description>Schemas standard implementation for OGC API Features </Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>Schemas standard implementation for OGC API</Title>
+    <Description>Schemas standard implementation for OGC API in ASP.NET Core applications</Description>
+    <Authors>Danila Glazkov, Nikolay Chupshev</Authors>
+    <Company>SAMIS</Company>
+    <Product>OgcApi.Net</Product>
+    <Copyright>Copyright © 2025 SAMIS</Copyright>
+    <PackageProjectUrl>https://github.com/sam-is/OgcApi.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sam-is/OgcApi.Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
