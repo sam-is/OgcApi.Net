@@ -12,10 +12,10 @@ Currently, this project implements the following standards:
 Standard | Data Providers
 --- | ---
 [OGC API - Features - Part 1: Core](http://www.opengis.net/doc/IS/ogcapi-features-1/1.0) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> SQLite/SpatiaLite
-[OGC API - Features - Part 2: Coordinate Reference Systems by Reference](http://www.opengis.net/doc/IS/ogcapi-features-2/1.0) | Independent 
+[OGC API - Features - Part 2: Coordinate Reference Systems by Reference](http://www.opengis.net/doc/IS/ogcapi-features-2/1.0) | Independent
 [OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> SQLite/SpatiaLite
-[OGC API - Features - Part 5: Schemas](https://portal.ogc.org/files/108199) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> Sqlite/MbTiles 
-[OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles 
+[OGC API - Features - Part 5: Schemas](https://portal.ogc.org/files/108199) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> Sqlite/MbTiles
+[OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles
 
 This project uses:
 - ASP.NET Core 8 for building web API
@@ -33,6 +33,15 @@ OgcApi.Net.PostGis | PostgreSQL/PostGis features data provider implementation | 
 OgcApi.Net.SpatiaLite | SQLite/SpatiaLite features data provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.SpatiaLite)](https://www.nuget.org/packages/OgcApi.Net.SpatiaLite/)
 OgcApi.Net.MbTiles | MbTiles tiles provider implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.MbTiles)](https://www.nuget.org/packages/OgcApi.Net.MbTiles/)
 OgcApi.Net.Schemas | Schemas standart implementation | [![Nuget](https://img.shields.io/nuget/v/OgcApi.Net.Schemas)](https://www.nuget.org/packages/OgcApi.Net.Schemas/)
+
+To use SpatiaLite, you will need to add some additional NuGet package dependencies to your project.
+For Windows, you will need the Microsoft.Data.SQLite and mod_spatialite packages.
+For Linux and macOS, you will need the SQLitePCLRaw.bundle_sqlite3 package.
+If you are deploying your application to Linux or macOS, it is recommended that you install the SpatiaLite library on your operating system before doing so:
+`Debian/Ubuntu`
+```apt-get install libsqlite3-mod-spatialite```
+`MacOS`
+```brew install libspatialite```
 
 ## API configuration
 
@@ -57,9 +66,9 @@ API configuration can be made by configuration file named ogcsettings.json that 
 
 <details>
   <summary>Configuration example</summary>
-  
+
 ```json
-{  
+{
   "LandingPage": {
     "Title": "OGC API Implementation",
     "Description": "The implementation of the OGC API family of standards that being developed to make it easy for anyone to provide geospatial data to the web",
@@ -150,7 +159,7 @@ Currently, only the database providers are supported: Sql Server, PostgreSQL/Pos
 Use can publish geospatial data to the web from any table or view. Each table or view is treated as a separate data source.
 To provide settings, you must set options.
 
-Feature collection options include: 
+Feature collection options include:
 - **Crs** - supported coordinate systems for the operations
 - **StorageCrs** - coordinate system used by data provider to store features
 
@@ -166,7 +175,7 @@ Storage options include:
 
 <details>
   <summary>Options example</summary>
-  
+
 ```json
 {
   "Id": "Test",
@@ -210,7 +219,7 @@ Defining one or more of these options automatically expands API to the OGC API -
 
 <details>
   <summary>Options example</summary>
-  
+
 ```json
 {
   "Id": "Test",
@@ -247,11 +256,11 @@ Defining one or more of these options automatically expands API to the OGC API -
 
 You can restrict access to the features by providing predicates that will be included in WHERE statement for all database queries. To do this you must include in the features storage configuration the following settings: **ApiKeyPredicateForGet**, **ApiKeyPredicateForCreate**, **ApiKeyPredicateForUpdate**, **ApiKeyPredicateForDelete**.
 
-All predicates can contain @ApiKey parameter that is used to filter allowed features in the data source. This parameter can be, for example, user name or session id. 
+All predicates can contain @ApiKey parameter that is used to filter allowed features in the data source. This parameter can be, for example, user name or session id.
 
 <details>
   <summary>Options example</summary>
-  
+
 ```json
 {
   "Id": "Test",
@@ -291,7 +300,7 @@ All predicates can contain @ApiKey parameter that is used to filter allowed feat
 
 Current implementation supports only MapBox Vector Tiles to publish through API. Vector tiles must be stored in MbTiles format. You can generate tiles from GeoJson files by  [tippecanoe](https://github.com/mapbox/tippecanoe).
 
-You can add tiles API to the existing collection or create a new collection that will contain only tiles without features API. 
+You can add tiles API to the existing collection or create a new collection that will contain only tiles without features API.
 
 Tiles API options include:
 - Crs - coordinate system used to store tiles
@@ -300,7 +309,7 @@ Tiles API options include:
 
 <details>
   <summary>Options example</summary>
-  
+
 ```json
 {
   "Id": "Test",
@@ -351,8 +360,8 @@ services.AddOgcApi("ogcapi.json");
 ```
 
 Once registered, the following endpoints will be available:
-Endpoint | Description 
---- | --- 
+Endpoint | Description
+--- | ---
 GET /collections/{collectionId}/schema | Returns full JSON Schema describing features in the collection
 GET /collections/{collectionId}/queryables | Returns schema with all queryable properties (response equal /schema path)
 GET /collections/{collectionId}/sortables | Returns schema with all sortable properties (currently always empty)
@@ -373,7 +382,7 @@ GET /collections/{collectionId}/sortables | Returns schema with all sortable pro
 
 <details>
   <summary>Options example</summary>
-  
+
 ```json
 {
 	"Id": "Test",
@@ -441,7 +450,7 @@ app.UseSwaggerUI(swaggerOptions =>
 });
 ```
 
-OpenAPI json definition is available on /api/ogc/swagger.json route in your application. 
+OpenAPI json definition is available on /api/ogc/swagger.json route in your application.
 
 ### CORS support
 
@@ -454,7 +463,7 @@ services.AddCors(c => c.AddPolicy(name: "OgcApi", options =>
 }));
 ```
 
-Don't forget to add 
+Don't forget to add
 ```csharp
 app.UseCors("OgcApi");
 ```
@@ -463,13 +472,13 @@ in Configure method.
 ### Coordinate systems
 
 API supports any coordinate system identified by SRID. Each coordinate system must have corresponding URI.
-To add your custom coordinate system, modify file SRID.csv provided by the NuGet package. 
+To add your custom coordinate system, modify file SRID.csv provided by the NuGet package.
 
 ### Tests
 
 Currently, this project contains tests for the data providers. Testing the entire API can be done by [OGC API - Features Conformance Test Suite](https://cite.opengeospatial.org/te2/about/ogcapi-features-1.0/1.0/site/)
 
-A test application is included in the repository (SampleWebApplication). It is recommended to use docker-compose debugging to run it. Included containers: 
+A test application is included in the repository (SampleWebApplication). It is recommended to use docker-compose debugging to run it. Included containers:
 - Sql Server as a database
 - Tomcat with TEAM Engine and OGC API - Features test suite
 
