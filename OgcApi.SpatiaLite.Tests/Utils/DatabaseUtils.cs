@@ -18,7 +18,7 @@ public static class DatabaseUtils
         if (File.Exists(DatabaseName))
             File.Delete(DatabaseName);
 
-        using var sqlConnection = new SpatiaLiteConnection(string.Format(GetConnectionStringTemplate(), DatabaseName));
+        using var sqlConnection = new SpatiaLiteConnection(GetConnectionString());
         sqlConnection.Open();
 
         var script = string.Format(GetInstallSpatiaLiteScript("DatabaseInstall"), DatabaseName);
