@@ -1,20 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Utils\DatabaseCreate.sql" />
-    <None Remove="Utils\DatabaseInstall.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Utils\DatabaseCreate.sql" />
-    <EmbeddedResource Include="Utils\DatabaseInstall.sql" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
@@ -31,8 +21,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\data_12-02-2018.mbtiles">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\data.mbtiles">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\featureAccessData.mbtiles">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

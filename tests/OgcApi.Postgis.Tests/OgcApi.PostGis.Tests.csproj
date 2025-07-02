@@ -1,27 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	
-	<PropertyGroup>
+
+  <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
-
-    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Utils\DatabaseCreate.sql" />
     <None Remove="Utils\DatabaseInstall.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Utils\DatabaseCreate.sql" />
     <EmbeddedResource Include="Utils\DatabaseInstall.sql" />
   </ItemGroup>
-
-	<ItemGroup>
-		<AssemblyAttribute Include="Xunit.CollectionBehaviorAttribute">
-			<_Parameter1>DisableTestParallelization = true</_Parameter1>
-			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
-		</AssemblyAttribute>
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
@@ -37,20 +30,9 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Label="Windows only includes" Condition="$([System.OperatingSystem]::IsWindows())">
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.17" />
-    <PackageReference Include="mod_spatialite" Version="4.3.0.1" />
-  </ItemGroup>
-
-  <ItemGroup Label="Linux only includes" Condition="$([System.OperatingSystem]::IsLinux()) ">
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.6" />
-  </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.SpatiaLite\OgcApi.Net.SpatiaLite.csproj">
-      <Private>True</Private>
-      <CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
-    </ProjectReference>
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
   </ItemGroup>
+
 </Project>

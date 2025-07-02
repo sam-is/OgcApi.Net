@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
-    <ProjectReference Include="..\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>PostgreSQL/PostGis OGC API data provider implementation</Title>
-    <Description>PostgreSQL/PostGis provider for the OGC API Features Standard implementation</Description>
-    <Authors>Nikolay Chupshev, Aleksei Maksimov</Authors>
+    <Title>Schemas standard implementation for OGC API</Title>
+    <Description>Schemas standard implementation for OGC API in ASP.NET Core applications</Description>
+    <Authors>Danila Glazkov, Nikolay Chupshev</Authors>
     <Company>SAMIS</Company>
     <Product>OgcApi.Net</Product>
     <Copyright>Copyright © 2025 SAMIS</Copyright>
@@ -18,12 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
-    <PackageReference Include="Npgsql" Version="8.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
 </Project>

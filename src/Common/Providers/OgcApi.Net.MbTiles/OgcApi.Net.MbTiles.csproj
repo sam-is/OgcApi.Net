@@ -2,15 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>Schemas standard implementation for OGC API</Title>
-    <Description>Schemas standard implementation for OGC API in ASP.NET Core applications</Description>
-    <Authors>Danila Glazkov, Nikolay Chupshev</Authors>
+    <Title>MbTiles/MVT tiles provider implementation</Title>
+    <Description>A package to support publishing MVT using the OGC API Tiles standard in ASP.NET Core applications</Description>
+    <Authors>Nikolay Chupshev, Alexander Belov</Authors>
     <Company>SAMIS</Company>
     <Product>OgcApi.Net</Product>
     <Copyright>Copyright © 2025 SAMIS</Copyright>
@@ -20,7 +18,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
 </Project>

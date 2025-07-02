@@ -38,9 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
-    <ProjectReference Include="..\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
-    <ProjectReference Include="..\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Common\Standarts\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
   </ItemGroup>
 
   <ItemGroup>

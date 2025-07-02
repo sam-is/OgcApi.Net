@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>SQLite/SpatiLite OGC API data provider implementation</Title>
-    <Description>SQLite provider for the OGC API Features Standard implementation</Description>
-    <Authors>Ondrej Kováč, Nikolay Chupshev</Authors>
+    <Title>SQL Server OGC API data provider implementation</Title>
+    <Description>SQL Server provider for the OGC API Features Standard implementation</Description>
+    <Authors>Nikolay Chupshev, Aleksei Maksimov</Authors>
     <Company>SAMIS</Company>
     <Product>OgcApi.Net</Product>
     <Copyright>Copyright © 2025 SAMIS</Copyright>
@@ -17,13 +17,13 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-  <ItemGroup>  
-	  <PackageReference Include="NetTopologySuite.IO.SpatiaLite" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.17" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+    <PackageReference Include="NetTopologySuite.IO.SqlServerBytes" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
 </Project>

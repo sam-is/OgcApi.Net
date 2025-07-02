@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
+    <ProjectReference Include="..\..\src\Common\Standarts\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
   </ItemGroup>
 
   <ItemGroup>
