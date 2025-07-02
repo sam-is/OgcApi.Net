@@ -29,7 +29,7 @@ public static class DatabaseUtils
     private static string GetInstallSqlScript(string scriptName)
     {
         var assembly = typeof(DatabaseUtils).Assembly;
-        using var stream = assembly.GetManifestResourceStream($"OgcApi.SqlServer.Tests.Utils.{scriptName}.sql");
+        using var stream = assembly.GetManifestResourceStream($"OgcApi.Net.SqlServer.Tests.Utils.{scriptName}.sql");
 
         if (stream == null)
         {
