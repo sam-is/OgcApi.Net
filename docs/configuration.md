@@ -34,41 +34,43 @@ API configuration can be done using a configuration file named `ogcsettings.json
     "ApiDocumentPage": "/api/ogc/index.html",
     "ApiDescriptionPage": "/api/ogc/swagger.json"
   },
-  "Collections": [
-    {
-      "Id": "Test",
-      "Title": "Test collection",
-      "Features": {
-        "Crs": [
-          "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-          "http://www.opengis.net/def/crs/EPSG/0/3857"
-        ],
-        "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
-        "Storage": {
-          "Type": "PostGis",
-          "ConnectionString": "Host=localhost;User Id=postgre;Password=myStrongP@ssword;Database=Tests;Port=5432;Timeout=50;",
-          "Schema": "test",
-          "Table": "test_table",
-          "GeometryColumn": "geom",
-          "GeometrySrid": 3857,
-          "GeometryDataType": "geometry",
-          "GeometryGeoJsonType": "MultiPolygon",
-          "IdentifierColumn": "id",
-          "Properties": [
-            "name",
-            "region"
-          ]
-        }
-      },
-      "Tiles": {
-        "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
-        "Storage": {
-          "Type": "MbTiles",
-          "FileName": "TilesData\\data.mbtiles"
+  "Collections": {
+    "Items": [
+      {
+        "Id": "Test",
+        "Title": "Test collection",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "Host=localhost;User Id=postgre;Password=myStrongP@ssword;Database=Tests;Port=5432;Timeout=50;",
+            "Schema": "test",
+            "Table": "test_table",
+            "GeometryColumn": "geom",
+            "GeometrySrid": 3857,
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "MultiPolygon",
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name",
+              "region"
+            ]
+          }
+        },
+        "Tiles": {
+          "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "MbTiles",
+            "FileName": "TilesData\\data.mbtiles"
+          }
         }
       }
-    }
-  ]
+    ]
+  }
 }
 ```
 </details>
