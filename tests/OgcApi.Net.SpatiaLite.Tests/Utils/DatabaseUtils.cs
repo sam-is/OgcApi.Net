@@ -34,7 +34,7 @@ public static class DatabaseUtils
     private static string GetInstallSpatiaLiteScript(string scriptName)
     {
         var assembly = typeof(DatabaseUtils).Assembly;
-        using var stream = assembly.GetManifestResourceStream($"OgcApi.SpatiaLite.Tests.Utils.{scriptName}.sql");
+        using var stream = assembly.GetManifestResourceStream($"OgcApi.Net.SpatiaLite.Tests.Utils.{scriptName}.sql");
 
         if (stream == null)
         {

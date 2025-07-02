@@ -18,20 +18,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.SqlServer", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3BB5EAB4-3F1E-4911-95A8-CCE8EA48FAC9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.SqlServer.Tests", "tests\OgcApi.SqlServer.Tests\OgcApi.SqlServer.Tests.csproj", "{8DC0179F-88AE-4974-A0F0-00B5C64966FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.SqlServer.Tests", "tests\OgcApi.Net.SqlServer.Tests\OgcApi.Net.SqlServer.Tests.csproj", "{8DC0179F-88AE-4974-A0F0-00B5C64966FA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{656A879F-2D07-4E5A-8D2C-65A31A515B84} = {656A879F-2D07-4E5A-8D2C-65A31A515B84}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.PostGis", "src\Common\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj", "{AE8CB98D-19AB-49AC-82C1-12BD6C08483D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.PostGis.Tests", "tests\OgcApi.Postgis.Tests\OgcApi.PostGis.Tests.csproj", "{68A87D43-AB1E-48C1-ABE0-28394D5AA2C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.PostGis.Tests", "tests\OgcApi.Net.Postgis.Tests\OgcApi.Net.PostGis.Tests.csproj", "{68A87D43-AB1E-48C1-ABE0-28394D5AA2C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.MbTiles", "src\Common\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj", "{1BD86BB2-4B64-48CE-B446-7AFB5CA67B39}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.MbTiles.Tests", "tests\OgcApi.MbTiles.Tests\OgcApi.MbTiles.Tests.csproj", "{94136B91-6CD0-4049-B3BE-D85979CD6571}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.MbTiles.Tests", "tests\OgcApi.Net.MbTiles.Tests\OgcApi.Net.MbTiles.Tests.csproj", "{94136B91-6CD0-4049-B3BE-D85979CD6571}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Options.Tests", "tests\OgcApi.Options.Tests\OgcApi.Options.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OgcApi.Net.Options.Tests", "tests\OgcApi.Net.Options.Tests\OgcApi.Net.Options.Tests.csproj", "{5B012609-0E3C-4066-B123-0E27FBE82472}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BF7D6BFB-A511-417D-9C0C-4707DF1E7D4F}"
 EndProject
@@ -41,11 +41,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "samples\d
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.SpatiaLite", "src\Common\Providers\OgcApi.Net.SpatiaLite\OgcApi.Net.SpatiaLite.csproj", "{DE7DACB3-C830-437F-B9AC-34D12E064AA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.SpatiaLite.Tests", "tests\OgcApi.SpatiaLite.Tests\OgcApi.SpatiaLite.Tests.csproj", "{631ED134-8063-43AB-AC00-FC1A2F0CAC37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.SpatiaLite.Tests", "tests\OgcApi.Net.SpatiaLite.Tests\OgcApi.Net.SpatiaLite.Tests.csproj", "{631ED134-8063-43AB-AC00-FC1A2F0CAC37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.Schemas", "src\Common\Standarts\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj", "{139B75DA-7F72-4E8D-87BE-E46B5444F409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Schemas.Tests", "tests\OgcApi.Schemas.Tests\OgcApi.Schemas.Tests.csproj", "{6015EF18-C418-483F-84BA-756C04AEBD0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OgcApi.Net.Schemas.Tests", "tests\OgcApi.Net.Schemas.Tests\OgcApi.Net.Schemas.Tests.csproj", "{6015EF18-C418-483F-84BA-756C04AEBD0C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
