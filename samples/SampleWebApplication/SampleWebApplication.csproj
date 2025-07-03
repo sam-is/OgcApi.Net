@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
+    <UserSecretsId>f8618acf-d5b7-42cc-811e-4152448e89ab</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="ogcapi-features.json" />
+    <Content Remove="ogcapi.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Utils\DatabaseCreate.sql" />
+    <None Remove="Utils\DatabaseInstall.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Utils\DatabaseCreate.sql" />
+    <EmbeddedResource Include="Utils\DatabaseInstall.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ogcapi-features.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ogcapi.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Common\Standards\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\data.mbtiles">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OgcApiSample.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,40 @@
+services:
+  sqlserver:
+    hostname: 'sqlserver'
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: 'sqlserver'
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: SqlServer_Password    
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools*/bin/sqlcmd -S localhost -U sa -P SqlServer_Password -Q 'SELECT 1' -C || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+
+  ogc-tests:
+    hostname: 'ogcciteapp'
+    image: ogccite/ets-ogcapi-features10
+    container_name: 'ogcciteapp'
+    ports:
+      - 8082:8080        
+
+  samplewebapplication:
+    hostname: 'webapp'
+    container_name: 'webapp'    
+    build:
+      context: .
+      dockerfile: ../SampleWebApplication/Dockerfile    
+    ports:
+      - 80:8080
+      - 443:8081
+    depends_on:      
+      sqlserver:
+        condition: service_healthy
+
+networks:
+  ogc-api:    
+    driver: bridge
