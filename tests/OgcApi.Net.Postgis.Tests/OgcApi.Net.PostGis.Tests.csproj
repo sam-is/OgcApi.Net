@@ -31,8 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
-    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
   </ItemGroup>
 
 </Project>

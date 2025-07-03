@@ -47,8 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
-    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.SpatiaLite\OgcApi.Net.SpatiaLite.csproj">
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.SpatiaLite\OgcApi.Net.SpatiaLite.csproj">
       <Private>True</Private>
       <CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
     </ProjectReference>

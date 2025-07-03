@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\Common\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
 </Project>

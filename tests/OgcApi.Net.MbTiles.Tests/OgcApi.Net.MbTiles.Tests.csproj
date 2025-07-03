@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Common\OgcApi.Net\OgcApi.Net.csproj" />
-    <ProjectReference Include="..\..\src\Common\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
   </ItemGroup>
 
   <ItemGroup>

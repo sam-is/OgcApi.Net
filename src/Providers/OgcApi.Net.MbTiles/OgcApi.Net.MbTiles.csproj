@@ -6,9 +6,9 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>PostgreSQL/PostGis OGC API data provider implementation</Title>
-    <Description>PostgreSQL/PostGis provider for the OGC API Features Standard implementation</Description>
-    <Authors>Nikolay Chupshev, Aleksei Maksimov</Authors>
+    <Title>MbTiles/MVT tiles provider implementation</Title>
+    <Description>A package to support publishing MVT using the OGC API Tiles standard in ASP.NET Core applications</Description>
+    <Authors>Nikolay Chupshev, Alexander Belov</Authors>
     <Company>SAMIS</Company>
     <Product>OgcApi.Net</Product>
     <Copyright>Copyright © 2025 SAMIS</Copyright>
@@ -18,12 +18,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
-    <PackageReference Include="Npgsql" Version="8.0.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
+    <ProjectReference Include="..\..\Common\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
 </Project>
