@@ -17,15 +17,12 @@
     <PackageProjectUrl>https://github.com/sam-is/OgcApi.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sam-is/OgcApi.Net</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\"/>
