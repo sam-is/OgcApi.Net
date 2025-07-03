@@ -9,11 +9,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["samples/SampleWebApplication/SampleWebApplication.csproj", "samples/SampleWebApplication/"]
-COPY ["src/Common/Providers/OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj", "src/Common/Providers/OgcApi.Net.MbTiles/"]
-COPY ["src/Common/OgcApi.Net/OgcApi.Net.csproj", "src/Common/OgcApi.Net/"]
-COPY ["src/Common/Providers/OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj", "src/Common/Providers/OgcApi.Net.SqlServer/"]
-COPY ["src/Common/Standarts/OgcApi.Net.Schemas/OgcApi.Net.Schemas.csproj", "src/Common/Standarts/OgcApi.Net.Schemas/"]
+COPY ["../SampleWebApplication/SampleWebApplication.csproj", "samples/SampleWebApplication/"]
+COPY ["../../src/Providers/OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj", "src/Providers/OgcApi.Net.MbTiles/"]
+COPY ["../../src/Common/OgcApi.Net/OgcApi.Net.csproj", "src/Common/OgcApi.Net/"]
+COPY ["../../src/Providers/OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj", "src/Providers/OgcApi.Net.SqlServer/"]
+COPY ["../../src/Common/Standards/OgcApi.Net.Schemas/OgcApi.Net.Schemas.csproj", "src/Common/Standards/OgcApi.Net.Schemas/"]
 RUN dotnet restore "./samples/SampleWebApplication/SampleWebApplication.csproj"
 COPY . .
 WORKDIR "/src/samples/SampleWebApplication"
