@@ -5,7 +5,7 @@ using OgcApi.Net.Schemas.Options;
 using OgcApi.Net.Schemas.Schema.Model;
 
 namespace OgcApi.Net.Schemas.Schema;
-public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider? tilesProvider) : ISchemaGenerator
+public class SchemaGenerator(IServiceProvider serviceProvider) : ISchemaGenerator
 {
     private const string PrimaryGeometryXOgcRole = "primary-geometry";
 
@@ -69,7 +69,7 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
         if (collectionOptions is SchemaCollectionOptions schemaCollectionOptions && schemaCollectionOptions.SchemaOptions != null)
             return schemaCollectionOptions.SchemaOptions;
 
-        var propertyMetadata = GetPropertyMetadata(collectionOptions.Id);
+        var propertyMetadata = GetPropertyMetadata(collectionOptions);
 
         var properties = new Dictionary<string, PropertyDescription>();
 
@@ -141,7 +141,7 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
 
         var withoutTypeProperties = properties.Where(p => p.Value.Type == null && p.Value.XOgcRole != PrimaryGeometryXOgcRole);
 
-        var propertyMetadata = GetPropertyMetadata(collectionOptions.Id);
+        var propertyMetadata = GetPropertyMetadata(collectionOptions);
 
         foreach (var (name, schemaProperty) in withoutTypeProperties)
         {
@@ -176,7 +176,7 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
         return properties;
     }
 
-    private Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateIdProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
+    private static Dictionary<string, OgcJsonSchemaProperty> AddOrUpdateIdProperty(Dictionary<string, OgcJsonSchemaProperty> properties, CollectionOptions collectionOptions)
     {
         if (collectionOptions.Features?.Storage is SqlFeaturesSourceOptions sqlFeaturesSourceOptions)
         {
@@ -197,20 +197,28 @@ public class SchemaGenerator(IFeaturesProvider? featureProvider, ITilesProvider?
         return properties;
     }
 
-    private Dictionary<string, string> GetPropertyMetadata(string collectionId)
+    private Dictionary<string, string> GetPropertyMetadata(CollectionOptions collectionOptions)
     {
-        if (featureProvider is IPropertyMetadataProvider featuresMetadataProvider)
+        if (collectionOptions.Features != null)
         {
-            var metadata = featuresMetadataProvider.GetPropertyMetadata(collectionId);
-            if (metadata != null)
-                return metadata;
+            var featureProvider = Utils.GetFeaturesProvider(serviceProvider, collectionOptions.Features.Storage.Type);
+            if (featureProvider is IPropertyMetadataProvider featuresMetadataProvider)
+            {
+                var metadata = featuresMetadataProvider.GetPropertyMetadata(collectionOptions.Id);
+                if (metadata != null)
+                    return metadata;
+            }
         }
 
-        if (tilesProvider is IPropertyMetadataProvider tilesMetadataProvider)
+        if (collectionOptions.Tiles != null)
         {
-            var metadata = tilesMetadataProvider.GetPropertyMetadata(collectionId);
-            if (metadata != null)
-                return metadata;
+            var tilesProvider = Utils.GetTilesProvider(serviceProvider, collectionOptions.Tiles.Storage.Type);
+            if (tilesProvider is IPropertyMetadataProvider tilesMetadataProvider)
+            {
+                var metadata = tilesMetadataProvider.GetPropertyMetadata(collectionOptions.Id);
+                if (metadata != null)
+                    return metadata;
+            }
         }
 
         return [];
