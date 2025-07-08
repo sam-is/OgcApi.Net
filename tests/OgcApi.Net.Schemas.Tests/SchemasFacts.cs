@@ -2,8 +2,9 @@ using OgcApi.Net.Options.Features;
 using OgcApi.Net.Schemas.Options;
 using OgcApi.Net.Schemas.Schema;
 using OgcApi.Net.Schemas.Schema.Model;
+using OgcApi.Net.Schemas.Tests.Mock;
 
-namespace OgcApi.Schemas.Tests;
+namespace OgcApi.Net.Schemas.Tests;
 
 public class SchemasFacts
 {
@@ -117,7 +118,9 @@ public class SchemasFacts
             }
         };
 
-        var schemaGenerator = new SchemaGenerator(null, null);
+        var serviceProvider = MockUtils.CreateEmptyServiceProvider();
+
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
@@ -128,7 +131,7 @@ public class SchemasFacts
     }
 
     [Fact]
-    public void WitoutOptionsTest()
+    public void WithoutOptionsTest()
     {
         var expected = new OgcJsonSchema
         {
@@ -186,14 +189,15 @@ public class SchemasFacts
                     IdentifierColumn = "Id",
                     GeometryColumn = "Geometry",
                     DateTimeColumn = "Date",
-                    GeometryGeoJsonType = "Polygon"
+                    GeometryGeoJsonType = "Polygon",
+                    Type = "Test"
                 }
             }
         };
 
-        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+        var serviceProvider = MockUtils.CreateServiceProviderWithFeaturesProvider();
 
-        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
@@ -267,7 +271,8 @@ public class SchemasFacts
                     IdentifierColumn = "Id",
                     GeometryColumn = "Geometry",
                     DateTimeColumn = "Date",
-                    GeometryGeoJsonType = "Polygon"
+                    GeometryGeoJsonType = "Polygon",
+                    Type = "Test"
                 }
             },
             SchemaOptions = new SchemaOptions
@@ -313,9 +318,9 @@ public class SchemasFacts
             }
         };
 
-        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+        var serviceProvider = MockUtils.CreateServiceProviderWithFeaturesProvider();
 
-        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
@@ -377,9 +382,9 @@ public class SchemasFacts
             Id = "test"
         };
 
-        var tilesProvider = MoqUtils.GetITilesProviderWithIPropertyMetadataProvider();
+        var serviceProvider = MockUtils.CreateServiceProviderWithTilesProviders();
 
-        var schemaGenerator = new SchemaGenerator(null, tilesProvider);
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
@@ -454,6 +459,7 @@ public class SchemasFacts
                     GeometryColumn = "Geometry",
                     DateTimeColumn = "Date",
                     GeometryGeoJsonType = "Polygon",
+                    Type = "Test",
                     Properties = ["Number", "String", "Date"]
                 }
             },
@@ -500,9 +506,9 @@ public class SchemasFacts
             }
         };
 
-        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+        var serviceProvider = MockUtils.CreateServiceProviderWithFeaturesProvider();
 
-        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
@@ -560,6 +566,7 @@ public class SchemasFacts
                     GeometryColumn = "Geometry",
                     DateTimeColumn = "Date",
                     GeometryGeoJsonType = "Polygon",
+                    Type = "Test",
                     Properties = ["Number"]
                 }
             },
@@ -606,9 +613,86 @@ public class SchemasFacts
             }
         };
 
-        var featureProvider = MoqUtils.GetIFeatureProviderWithIPropertyMetadataProvider();
+        var serviceProvider = MockUtils.CreateServiceProviderWithFeaturesProvider();
 
-        var schemaGenerator = new SchemaGenerator(featureProvider, null);
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
+
+        var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
+
+        Assert.Equal(expected.Id, actual.Id);
+
+        foreach (var property in actual.Properties)
+            Assert.Equivalent(expected.Properties.FirstOrDefault(p => p.Key == property.Key), property);
+    }
+
+    [Fact]
+    public void ManyTest()
+    {
+        var expected = new OgcJsonSchema
+        {
+            Id = new Uri($"{BaseUrl}/collections/test/schema"),
+            Properties = new Dictionary<string, OgcJsonSchemaProperty>
+            {
+                {
+                    "Id",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number",
+                        XOgcRole = "id"
+                    }
+                },
+                {
+                    "Number",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "number"
+                    }
+                },
+                {
+                    "String",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "string"
+                    }
+                },
+                {
+                    "Date",
+                    new OgcJsonSchemaProperty
+                    {
+                        Type = "string",
+                        Format = "date-time"
+                    }
+                },
+                {
+                    "Geometry",
+                    new OgcJsonSchemaProperty
+                    {
+                        Format = "geometry-polygon",
+                        XOgcRole = "primary-geometry"
+                    }
+                }
+            }
+        };
+
+        var options = new SchemaCollectionOptions
+        {
+            Id = "test",
+            Features = new CollectionFeaturesOptions
+            {
+                Storage = new SqlFeaturesSourceOptions
+                {
+                    IdentifierColumn = "Id",
+                    GeometryColumn = "Geometry",
+                    DateTimeColumn = "Date",
+                    GeometryGeoJsonType = "Polygon",
+                    Type = "Test"
+                }
+            }
+        };
+
+        var serviceProvider = MockUtils.CreateServiceProviderWithFeaturesProviders();
+
+        var schemaGenerator = new SchemaGenerator(serviceProvider);
 
         var actual = schemaGenerator.GenerateSchema(new Uri($"{BaseUrl}/"), options);
 
