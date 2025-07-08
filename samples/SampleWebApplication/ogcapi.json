@@ -8,14 +8,14 @@
     "ContactUrl": "http://example.com",
     "LicenseName": "test",
     "LicenseUrl": "http://example.com",
-    "Version": "1.0.0" 
+    "Version": "1.0.0"
   },
   "UseApiKeyAuthorization": true,
   "Collections": {
     "Items": [
       {
-        "Id": "Polygons",
-        "Title": "Polygons",
+        "Id": "PolygonsSqlserver",
+        "Title": "Polygons sqlserver",
         "Features": {
           "Crs": [
             "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
@@ -24,7 +24,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
+            "ConnectionString": "",
             "Schema": "dbo",
             "Table": "Polygons",
             "GeometryColumn": "Geom",
@@ -51,11 +51,34 @@
             "Type": "MbTiles",
             "FileName": "Data\\data.mbtiles"
           }
+        },
+        "SchemaOptions": {
+          "Title": "Polygons sqlserver",
+          "Description": "Properties are partially described",
+          "Properties": {
+            "Name": {
+              "Title": "Name",
+              "Description": "decription of property",
+              "Type": "string"
+            },
+            "Number": {
+              "Title": "Number"
+            },
+            "Id": {
+              "Title": "Id"
+            },
+            "Date": {
+              "Title": "Date"
+            },
+            "S": {
+              "Title": "S"
+            }
+          }
         }
       },
       {
-        "Id": "LineStrings",
-        "Title": "LineStrings",
+        "Id": "LineStringsSqlserver",
+        "Title": "LineStrings sqlserver",
         "Features": {
           "Crs": [
             "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
@@ -64,7 +87,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
+            "ConnectionString": "",
             "Schema": "dbo",
             "Table": "LineStrings",
             "GeometryColumn": "Geom",
@@ -83,8 +106,8 @@
         }
       },
       {
-        "Id": "Points",
-        "Title": "Points",
+        "Id": "PointsSqlServer",
+        "Title": "Points sqlserver",
         "Features": {
           "Crs": [
             "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
@@ -93,7 +116,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
+            "ConnectionString": "",
             "Schema": "dbo",
             "Table": "Points",
             "GeometryColumn": "Geom",
@@ -109,11 +132,23 @@
             "AllowUpdate": true,
             "AllowDelete": true
           }
+        },
+        "SchemaOptions": {
+          "Title": "Points sqlserver",
+          "Description": "Only the Title fields are described",
+          "Properties": {
+            "Name": {
+              "Title": "Name"
+            },
+            "Id": {
+              "Title": "Id"
+            }
+          }
         }
       },
       {
-        "Id": "PointsWithApiKey",
-        "Title": "PointsWithApiKey",
+        "Id": "PointsWithApiKeySqlServer",
+        "Title": "Points with apiKey sqlserver",
         "Features": {
           "Crs": [
             "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
@@ -122,7 +157,7 @@
           "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "SqlServer",
-            "ConnectionString": "Server=sqlserver; Database=OgcApiSamples; User Id=sa; Password=SqlServer_Password; Encrypt=false;",
+            "ConnectionString": "",
             "Schema": "dbo",
             "Table": "PointsWithApiKey",
             "GeometryColumn": "Geom",
@@ -135,11 +170,216 @@
             ],
             "ApiKeyPredicateForGet": "[Key] = @ApiKey"
           }
+        },
+        "SchemaOptions": {
+          "Title": "Points with apiKey sqlserver",
+          "Description": "All properties are fully described",
+          "Properties": {
+            "Name": {
+              "Title": "Name",
+              "Description": "name of feature",
+              "Type": "string"
+            },
+            "Id": {
+              "Title": "Id",
+              "Description": "id of feature",
+              "Type": "number",
+              "XOgcRole": "id"
+            },
+            "Geom": {
+              "Type": "primary-geometry",
+              "Description": "geometry of feature",
+              "XOgcRole": "primary-geometry",
+              "Format": "geometry-point"
+            }
+          }
         }
       },
       {
-        "Id": "PolygonsWithApiKey",
-        "Title": "PolygonsWithApiKey",
+        "Id": "PolygonsPostgres",
+        "Title": "Polygons postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "polygons",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Polygon",
+            "GeometrySrid": 3857,
+            "DateTimeColumn": "date",
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name",
+              "number",
+              "s",
+              "date"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        },
+        "Tiles": {
+          "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "MbTiles",
+            "FileName": "Data\\data.mbtiles"
+          }
+        },
+        "SchemaOptions": {
+          "Title": "Polygons postgres",
+          "Description": "Properties are partially described",
+          "Properties": {
+            "name": {
+              "Title": "Name",
+              "Description": "decription of property",
+              "Type": "string"
+            },
+            "number": {
+              "Title": "Number"
+            },
+            "id": {
+              "Title": "Id"
+            },
+            "date": {
+              "Title": "Date"
+            },
+            "s": {
+              "Title": "S"
+            }
+          }
+        }
+      },
+      {
+        "Id": "LineStringsPostgres",
+        "Title": "LineStrings postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "line_strings",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "LineString",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "PointsPostgres",
+        "Title": "Points postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "points",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Point",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        },
+        "SchemaOptions": {
+          "Title": "Points postgres",
+          "Description": "Only the Title fields are described",
+          "Properties": {
+            "name": {
+              "Title": "Name"
+            },
+            "id": {
+              "Title": "Id"
+            }
+          }
+        }
+      },
+      {
+        "Id": "PointsWithApiKeyPostgres",
+        "Title": "Points with apiKey postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "points_with_api_key",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Point",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name"
+            ],
+            "ApiKeyPredicateForGet": "\"key\" = @ApiKey"
+          }
+        },
+        "SchemaOptions": {
+          "Title": "Points with apiKey postgres",
+          "Description": "All properties are fully described",
+          "Properties": {
+            "name": {
+              "Title": "Name",
+              "Description": "name of feature",
+              "Type": "string"
+            },
+            "id": {
+              "Title": "Id",
+              "Description": "id of feature",
+              "Type": "number",
+              "XOgcRole": "id"
+            },
+            "geom": {
+              "Type": "primary-geometry",
+              "Description": "geometry of feature",
+              "XOgcRole": "primary-geometry",
+              "Format": "geometry-point"
+            }
+          }
+        }
+      },
+      {
+        "Id": "MbTilesPolygonsWithApiKey",
+        "Title": "MbTiles polygons with apiKey",
         "Tiles": {
           "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
@@ -149,13 +389,24 @@
         }
       },
       {
-        "Id": "FeatureAccessData",
-        "Title": "FeatureAccessData",
+        "Id": "MbtilesFeatureAccessData",
+        "Title": "Mbtiles feature access data",
         "Tiles": {
           "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
           "Storage": {
             "Type": "MbTiles",
             "FileName": "Data\\featureAccessData.mbtiles"
+          }
+        },
+        "SchemaOptions": {
+          "Properties": {
+            "roleAccess": {
+              "Title": "Role Name",
+              "Description": "The name of the role that has access to this feature. This property specifies which role is authorized to interact with or manage the associated functionality."
+            },
+            "value": {
+              "Title": "Value"
+            }
           }
         }
       }

@@ -9,22 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="ogcapi-features.json" />
+    <Content Remove="ogcapi-tests.json" />
     <Content Remove="ogcapi.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Utils\DatabaseCreate.sql" />
-    <None Remove="Utils\DatabaseInstall.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Utils\DatabaseCreate.sql" />
-    <EmbeddedResource Include="Utils\DatabaseInstall.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ogcapi-features.json">
+    <None Include="ogcapi-tests.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ogcapi.json">
@@ -39,8 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
     <ProjectReference Include="..\..\src\Providers\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\Common\Standards\OgcApi.Net.Schemas\OgcApi.Net.Schemas.csproj" />
+    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>

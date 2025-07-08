@@ -1,0 +1,200 @@
+{
+  "LandingPage": {
+    "Title": "OGC API Sample Application",
+    "Description": "OGC API Sample Application",
+    "ApiDocumentPage": "http://host.docker.internal:5000/api/index.html",
+    "ApiDescriptionPage": "http://host.docker.internal:5000/api/ogc/swagger.json",
+    "ContactName": "test",
+    "ContactUrl": "http://example.com",
+    "LicenseName": "test",
+    "LicenseUrl": "http://example.com",
+    "Version": "1.0.0"
+  },
+  "UseApiKeyAuthorization": true,
+  "Collections": {
+    "Items": [
+      {
+        "Id": "PolygonsSqlserver",
+        "Title": "Polygons sqlserver",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "SqlServer",
+            "ConnectionString": "",
+            "Schema": "dbo",
+            "Table": "Polygons",
+            "GeometryColumn": "Geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Polygon",
+            "GeometrySrid": 3857,
+            "DateTimeColumn": "Date",
+            "IdentifierColumn": "Id",
+            "Properties": [
+              "Name",
+              "Number",
+              "S",
+              "Date"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "LineStringsSqlserver",
+        "Title": "LineStrings sqlserver",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "SqlServer",
+            "ConnectionString": "",
+            "Schema": "dbo",
+            "Table": "LineStrings",
+            "GeometryColumn": "Geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "LineString",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "Id",
+            "Properties": [
+              "Name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "PointsSqlServer",
+        "Title": "Points sqlserver",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "SqlServer",
+            "ConnectionString": "",
+            "Schema": "dbo",
+            "Table": "Points",
+            "GeometryColumn": "Geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Point",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "Id",
+            "Properties": [
+              "Name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "PolygonsPostgres",
+        "Title": "Polygons postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "polygons",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Polygon",
+            "GeometrySrid": 3857,
+            "DateTimeColumn": "date",
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name",
+              "number",
+              "s",
+              "date"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "LineStringsPostgres",
+        "Title": "LineStrings postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "line_strings",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "LineString",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      },
+      {
+        "Id": "PointsPostgres",
+        "Title": "Points postgres",
+        "Features": {
+          "Crs": [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+          ],
+          "StorageCrs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "Storage": {
+            "Type": "PostGis",
+            "ConnectionString": "",
+            "Schema": "samples",
+            "Table": "points",
+            "GeometryColumn": "geom",
+            "GeometryDataType": "geometry",
+            "GeometryGeoJsonType": "Point",
+            "GeometrySrid": 3857,
+            "IdentifierColumn": "id",
+            "Properties": [
+              "name"
+            ],
+            "AllowCreate": true,
+            "AllowReplace": true,
+            "AllowUpdate": true,
+            "AllowDelete": true
+          }
+        }
+      }
+    ]
+  }
+}

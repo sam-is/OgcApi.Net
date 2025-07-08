@@ -1,7 +1,13 @@
 ﻿SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
-USE [{0}];
+IF DB_ID('OgcApiSamples') IS NULL
+BEGIN
+    CREATE DATABASE OgcApiSamples;
+END;
+GO
+
+USE OgcApiSamples;
 
 CREATE TABLE [dbo].[Polygons] (
 	[Id] [int] NOT NULL IDENTITY(1,1),
