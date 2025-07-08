@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace OgcApi.PostGis.Tests.Utils;
+namespace OgcApi.Net.PostGis.Tests.Utils;
 
 public static class DatabaseUtils
 {

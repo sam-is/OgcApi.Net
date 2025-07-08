@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.IO.VectorTiles.Mapbox;
-using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Tiles;
 using System;
@@ -12,7 +11,7 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OgcApi.MbTiles.Tests;
+namespace OgcApi.Net.MbTiles.Tests;
 
 public class MbTilesFacts
 {

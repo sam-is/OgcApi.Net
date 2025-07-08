@@ -6,17 +6,16 @@ using NetTopologySuite.IO.VectorTiles.Mapbox;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
-using OgcApi.SpatiaLite.Tests.Utils;
+using OgcApi.Net.SpatiaLite.Tests.Utils;
 using System;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using Xunit;
-using OgcApi.Net.SpatiaLite;
 using System.Threading.Tasks;
+using Xunit;
 
-namespace OgcApi.SpatiaLite.Tests;
+namespace OgcApi.Net.SpatiaLite.Tests;
 
 public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
 {

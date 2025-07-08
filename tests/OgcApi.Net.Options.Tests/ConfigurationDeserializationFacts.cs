@@ -1,7 +1,7 @@
 using OgcApi.Net.Options.Features;
 using Xunit;
 
-namespace OgcApi.Options.Tests;
+namespace OgcApi.Net.Options.Tests;
 
 public class ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixture)
     : IClassFixture<ConfigurationOptionsFixture>

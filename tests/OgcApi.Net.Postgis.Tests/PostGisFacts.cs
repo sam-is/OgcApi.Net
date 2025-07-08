@@ -6,7 +6,7 @@ using Npgsql;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
-using OgcApi.PostGis.Tests.Utils;
+using OgcApi.Net.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OgcApi.PostGis.Tests;
+namespace OgcApi.Net.PostGis.Tests;
 
 public class PostGisFacts : IClassFixture<DatabaseFixture>
 {

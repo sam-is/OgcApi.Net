@@ -3,11 +3,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
-using OgcApi.Net.SqlServer;
-using OgcApi.SqlServer.Tests.Utils;
+using OgcApi.Net.SqlServer.Tests.Utils;
 using System;
 
-namespace OgcApi.SqlServer.Tests;
+namespace OgcApi.Net.SqlServer.Tests;
 
 public static class TestProviders
 {

@@ -1,10 +1,10 @@
-﻿using OgcApi.SpatiaLite.Tests.Utils;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using OgcApi.Net.SpatiaLite.Tests.Utils;
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
-namespace OgcApi.SpatiaLite.Tests;
+namespace OgcApi.Net.SpatiaLite.Tests;
 
 public class DatabaseFixture
 {

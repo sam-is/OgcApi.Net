@@ -1,9 +1,9 @@
 using OgcApi.Net.Options.Converters;
-using OgcApi.Options.Tests.Utils;
+using OgcApi.Net.Options.Tests.Utils;
 using System.Text.Json;
 using Xunit;
 
-namespace OgcApi.Options.Tests;
+namespace OgcApi.Net.Options.Tests;
 
 public class OgcApiOptionsSerializationFacts
 {

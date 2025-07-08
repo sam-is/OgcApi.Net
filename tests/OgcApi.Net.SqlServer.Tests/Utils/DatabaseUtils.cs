@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace OgcApi.SqlServer.Tests.Utils;
+namespace OgcApi.Net.SqlServer.Tests.Utils;
 
 public static class DatabaseUtils
 {

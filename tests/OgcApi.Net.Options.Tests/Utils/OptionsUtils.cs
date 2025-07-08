@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using OgcApi.Net;
-using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.PostGis;
@@ -10,7 +8,7 @@ using OgcApi.Net.SqlServer;
 using System;
 using System.Text.Json;
 
-namespace OgcApi.Options.Tests.Utils;
+namespace OgcApi.Net.Options.Tests.Utils;
 
 public static class OptionsUtils
 {

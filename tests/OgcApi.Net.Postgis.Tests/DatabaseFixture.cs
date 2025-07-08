@@ -1,6 +1,6 @@
-﻿using OgcApi.PostGis.Tests.Utils;
+﻿using OgcApi.Net.PostGis.Tests.Utils;
 
-namespace OgcApi.PostGis.Tests;
+namespace OgcApi.Net.PostGis.Tests;
 
 public class DatabaseFixture
 {

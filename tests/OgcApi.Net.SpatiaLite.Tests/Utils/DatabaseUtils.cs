@@ -1,9 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
-using OgcApi.Net.SpatiaLite;
 using System;
 using System.IO;
 
-namespace OgcApi.SpatiaLite.Tests.Utils;
+namespace OgcApi.Net.SpatiaLite.Tests.Utils;
 
 public static class DatabaseUtils
 {

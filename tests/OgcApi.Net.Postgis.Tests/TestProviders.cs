@@ -3,11 +3,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
-using OgcApi.Net.PostGis;
-using OgcApi.PostGis.Tests.Utils;
+using OgcApi.Net.PostGis.Tests.Utils;
 using System;
 
-namespace OgcApi.PostGis.Tests;
+namespace OgcApi.Net.PostGis.Tests;
 
 public static class TestProviders
 {

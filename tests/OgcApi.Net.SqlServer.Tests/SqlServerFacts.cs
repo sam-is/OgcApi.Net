@@ -6,7 +6,7 @@ using NetTopologySuite.IO.VectorTiles.Mapbox;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
-using OgcApi.SqlServer.Tests.Utils;
+using OgcApi.Net.SqlServer.Tests.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OgcApi.SqlServer.Tests;
+namespace OgcApi.Net.SqlServer.Tests;
 
 public class SqlServerFacts : IClassFixture<DatabaseFixture>
 {

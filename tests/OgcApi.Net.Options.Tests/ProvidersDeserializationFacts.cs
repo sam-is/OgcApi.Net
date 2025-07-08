@@ -1,10 +1,9 @@
-using OgcApi.Net.Options;
 using OgcApi.Net.Options.Features;
-using OgcApi.Options.Tests.Utils;
+using OgcApi.Net.Options.Tests.Utils;
 using System.Linq;
 using Xunit;
 
-namespace OgcApi.Options.Tests;
+namespace OgcApi.Net.Options.Tests;
 
 public class ProvidersDeserializationFacts(ConfigurationOptionsFixture fixture)
     : IClassFixture<ConfigurationOptionsFixture>

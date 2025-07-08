@@ -1,13 +1,12 @@
-﻿using OgcApi.Net.Options.Features;
-using OgcApi.Net.Options;
-using System;
-using OgcApi.SpatiaLite.Tests.Utils;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using OgcApi.Net.SpatiaLite;
+using OgcApi.Net.Options;
+using OgcApi.Net.Options.Features;
+using OgcApi.Net.SpatiaLite.Tests.Utils;
+using System;
 
-namespace OgcApi.SpatiaLite.Tests;
+namespace OgcApi.Net.SpatiaLite.Tests;
 
 public static class TestProviders
 {
