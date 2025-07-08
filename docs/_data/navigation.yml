@@ -13,12 +13,14 @@
 - title: Schemas Support
   url: /schemas
 - title: Authorization and Security
-  url: /security
+  url: /authorization
 - title: Swagger Generation
   url: /swagger-generation
 - title: CORS Support
   url: /cors-support
 - title: Coordinate Systems
   url: /coordinate-systems
+- title: Sample Application
+  url: /sample-application
 - title: Testing
   url: /testing
