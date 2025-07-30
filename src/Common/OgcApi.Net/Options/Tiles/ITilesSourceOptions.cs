@@ -1,5 +1,6 @@
 ﻿using NetTopologySuite.Features;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OgcApi.Net.Options.Tiles;
 
@@ -22,10 +23,13 @@ public delegate bool TileAccessDelegate(string collectionId, int tileMatrix, int
 /// <param name="apiKey"></param>
 /// <returns></returns>
 public delegate bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey);
+
 public interface ITilesSourceOptions
 {
+    [JsonIgnore]
     TileAccessDelegate TileAccessDelegate { get; set; }
 
+    [JsonIgnore]
     FeatureAccessDelegate FeatureAccessDelegate { get; set; }
 
     string Type { get; set; }
