@@ -17,20 +17,22 @@ public class SchemaCollectionOptionsConverter : JsonConverter<CollectionOptions>
             PropertyNameCaseInsensitive = options.PropertyNameCaseInsensitive
         };
 
+        // ? jsonOptions.Converters.Remove(this);
         jsonOptions.Converters.Clear();
         foreach (var converter in options.Converters.Where(c => c != this))
             jsonOptions.Converters.Add(converter);
 
-        var root = JsonDocument.ParseValue(ref reader).RootElement;
+        using var jsonDocument = JsonDocument.ParseValue(ref reader);
 
-        if (root.Deserialize<SchemaCollectionOptions>(jsonOptions) is CollectionOptions result)
+        if (jsonDocument.RootElement.Deserialize<SchemaCollectionOptions>(jsonOptions) is { } result)
         {
             reader.Skip();
             return result;
         }
 
-        throw new JsonException();
+        throw new JsonException($"Cannot read json element `{jsonDocument.RootElement}` as {nameof(SchemaCollectionOptions)}.");
     }
 
-    public override void Write(Utf8JsonWriter writer, CollectionOptions value, JsonSerializerOptions options) => JsonSerializer.Serialize(writer, value, options);
+    public override void Write(Utf8JsonWriter writer, CollectionOptions value, JsonSerializerOptions options) =>
+        JsonSerializer.Serialize(writer, value, options);
 }

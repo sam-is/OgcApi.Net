@@ -331,7 +331,7 @@ public class SchemasFacts
     }
 
     [Fact]
-    public void MbtilesWitoutOptionsTest()
+    public void MbtilesWithoutOptionsTest()
     {
         var expected = new OgcJsonSchema
         {
