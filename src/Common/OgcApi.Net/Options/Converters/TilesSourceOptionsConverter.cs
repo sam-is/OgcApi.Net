@@ -3,14 +3,16 @@ using OgcApi.Net.Options.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OgcApi.Net.Options.Converters;
 
 public class TilesSourceOptionsConverter : JsonConverter<ITilesSourceOptions>
 {
-    private readonly Dictionary<string, Type> _providersOptionsTypes = new();
+    private readonly Dictionary<string, Type> _providersOptionsTypes = [];
 
     public TilesSourceOptionsConverter()
     {
@@ -22,9 +24,7 @@ public class TilesSourceOptionsConverter : JsonConverter<ITilesSourceOptions>
 
         foreach (var type in providersTypes)
         {
-            var attribute =
-                (OgcTilesProviderAttribute)Attribute.GetCustomAttribute(type,
-                    typeof(OgcTilesProviderAttribute));
+            var attribute = type.GetCustomAttribute<OgcTilesProviderAttribute>();
 
             if (attribute != null)
                 _providersOptionsTypes[attribute.Name] = attribute.OptionsType;
@@ -36,26 +36,48 @@ public class TilesSourceOptionsConverter : JsonConverter<ITilesSourceOptions>
     {
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
 
-        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString() ?? throw new JsonException("Type element is not defined");
-        var optionsType = _providersOptionsTypes[storageType];
-        if (optionsType != null)
-        {
-            return JsonSerializer.Deserialize(jsonDocument.RootElement.ToString(), optionsType, options) as ITilesSourceOptions;
-        }
+        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString()
+            ?? throw new JsonException("Type element is not defined");
 
-        throw new JsonException($"Cannot find type with {storageType} OgcTilesProviderAttribute value");
+        return jsonDocument.RootElement.Deserialize(GetOptionType(storageType), options) as ITilesSourceOptions;
     }
 
+    public static void IgnoreDelegateProperties(JsonTypeInfo typeInfo)
+    {
+        foreach (var prop in typeInfo.Properties)
+        {
+            if (prop.PropertyType.IsSubclassOf(typeof(Delegate)))
+            {
+                // Should skip delegate properties
+                prop.ShouldSerialize = static (context, value) => false;
+            }
+        }
+    }
     public override void Write(Utf8JsonWriter writer, ITilesSourceOptions value, JsonSerializerOptions options)
     {
-        var optionsType = _providersOptionsTypes[value.Type];
-        if (optionsType != null)
+        var specialOptions = new JsonSerializerOptions(options);
+        if (specialOptions.TypeInfoResolver == null)
         {
-            JsonSerializer.Serialize(writer, value, optionsType, options);
+            specialOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+            {
+                Modifiers = { IgnoreDelegateProperties }
+            };
         }
         else
         {
-            throw new JsonException($"Cannot find type with {value.Type} OgcTilesProviderAttribute value");
+            specialOptions.TypeInfoResolver = specialOptions.TypeInfoResolver.WithAddedModifier(IgnoreDelegateProperties);
         }
+        JsonSerializer.Serialize(writer, value, value.GetType(), specialOptions);
+    }
+
+    private Type GetOptionType(string typeName)
+    {
+        if (!_providersOptionsTypes.TryGetValue(typeName, out var optionsType))
+            throw new JsonException($"Cannot find type with `{typeName}` {nameof(OgcTilesProviderAttribute)} value");
+
+        if (optionsType == null)
+            throw new JsonException($"Attribute {nameof(OgcTilesProviderAttribute)} with name `{typeName}` does not supply OptionsType");
+
+        return optionsType;
     }
 }
