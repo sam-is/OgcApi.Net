@@ -3,6 +3,7 @@ using OgcApi.Net.Options.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -22,9 +23,7 @@ public class FeaturesSourceOptionsConverter : JsonConverter<IFeaturesSourceOptio
 
         foreach (var type in providersTypes)
         {
-            var attribute =
-                (OgcFeaturesProviderAttribute)Attribute.GetCustomAttribute(type,
-                    typeof(OgcFeaturesProviderAttribute));
+            var attribute = type.GetCustomAttribute<OgcFeaturesProviderAttribute>();
 
             if (attribute != null)
                 _providersOptionsTypes[attribute.Name] = attribute.OptionsType;
@@ -36,26 +35,25 @@ public class FeaturesSourceOptionsConverter : JsonConverter<IFeaturesSourceOptio
     {
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
 
-        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString() ?? throw new JsonException("Type element is not defined");
-        var optionsType = _providersOptionsTypes[storageType];
-        if (optionsType != null)
-        {
-            return JsonSerializer.Deserialize(jsonDocument.RootElement.ToString(), optionsType, options) as IFeaturesSourceOptions;
-        }
+        var storageType = jsonDocument.RootElement.GetProperty("Type").GetString()
+            ?? throw new JsonException("Type element is not defined");
 
-        throw new JsonException($"Cannot find type with {storageType} OgcFeaturesProviderAttribute value");
+        return jsonDocument.RootElement.Deserialize(GetOptionType(storageType), options) as IFeaturesSourceOptions;
     }
 
     public override void Write(Utf8JsonWriter writer, IFeaturesSourceOptions value, JsonSerializerOptions options)
     {
-        var optionsType = _providersOptionsTypes[value.Type];
-        if (optionsType != null)
-        {
-            JsonSerializer.Serialize(writer, value, optionsType, options);
-        }
-        else
-        {
-            throw new JsonException($"Cannot find type with {value.Type} OgcFeaturesProviderAttribute value");
-        }
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
+
+    private Type GetOptionType(string typeName)
+    {
+        if (!_providersOptionsTypes.TryGetValue(typeName, out var optionsType))
+            throw new JsonException($"Cannot find type with `{typeName}` {nameof(OgcFeaturesProviderAttribute)} value");
+
+        if (optionsType == null)
+            throw new JsonException($"Attribute {nameof(OgcFeaturesProviderAttribute)} with name `{typeName}` does not supply OptionsType");
+
+        return optionsType;
     }
 }

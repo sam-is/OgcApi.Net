@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
     <ProjectReference Include="..\..\src\Providers\OgcApi.Net.PostGis\OgcApi.Net.PostGis.csproj" />
     <ProjectReference Include="..\..\src\Providers\OgcApi.Net.SqlServer\OgcApi.Net.SqlServer.csproj" />
   </ItemGroup>

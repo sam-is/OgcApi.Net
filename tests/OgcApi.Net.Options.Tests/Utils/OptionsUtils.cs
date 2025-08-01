@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OgcApi.Net.MbTiles;
 using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Features;
 using OgcApi.Net.PostGis;
@@ -7,6 +8,7 @@ using OgcApi.Net.Resources;
 using OgcApi.Net.SqlServer;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OgcApi.Net.Options.Tests.Utils;
 
@@ -16,7 +18,15 @@ public static class OptionsUtils
 
     public static readonly JsonSerializerOptions SerializerOptions = new()
     {
-        Converters = { new FeaturesSourceOptionsConverter() }
+        Converters = 
+        { 
+            new FeaturesSourceOptionsConverter(), 
+            new TilesSourceOptionsConverter() 
+        },
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        {
+            Modifiers = { TilesSourceOptionsConverter.IgnoreDelegateProperties }
+        }
     };
 
     public static OgcApiOptions GetOptionsFromJsonConfig()
@@ -25,6 +35,7 @@ public static class OptionsUtils
         serviceCollection.AddLogging();
         serviceCollection.AddOgcApiPostGisProvider();
         serviceCollection.AddOgcApiSqlServerProvider();
+        serviceCollection.AddOgcApiMbTilesProvider();
         serviceCollection.AddOgcApi("ogcsettings.json");
 
         Provider = serviceCollection.BuildServiceProvider();

@@ -158,6 +158,23 @@
             "ApiKeyPredicateForDelete": "EXISTS(SELECT ... WHERE @ApiKey = apiKey)"
           }
         }
+      },
+      {
+        "Id": "Collection3",
+        "Title": "Tiles only Collection (3)",
+        "Description": "Collection description 3",
+        "ItemType": "Collection3 ItemType",
+        "Tiles": {
+          "Crs": "http://www.opengis.net/def/crs/EPSG/0/3857",
+          "TileMatrixSet": "http://www.opengis.net/def/tilematrixset/OGC/1.0/WebMercatorQuad",
+          "Storage": {
+            "Type": "MbTiles",
+            "FileName": "data\\mvt\\Collection3.mbtiles",
+            "MinZoom": 0,
+            "MaxZoom": 15,
+            "TimestampFiles": []
+          }
+        }
       }
     ]
   }

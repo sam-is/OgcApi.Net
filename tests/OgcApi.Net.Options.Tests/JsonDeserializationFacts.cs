@@ -65,7 +65,7 @@ public class JsonDeserializationFacts(ConfigurationOptionsFixture fixture) : ICl
         Assert.NotNull(fixture.Options.Collections);
         Assert.NotNull(fixture.Options.Collections.Items);
         Assert.NotEmpty(fixture.Options.Collections.Items);
-        Assert.Equal(2, fixture.Options.Collections.Items.Count);
+        Assert.Equal(3, fixture.Options.Collections.Items.Count);
     }
 
     [Fact]
