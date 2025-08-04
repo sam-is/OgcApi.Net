@@ -9,30 +9,25 @@ public class SchemaCollectionOptionsConverter : JsonConverter<CollectionOptions>
 {
     public override bool CanConvert(Type typeToConvert) => typeof(CollectionOptions).IsAssignableFrom(typeToConvert);
 
-    public override CollectionOptions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override CollectionOptions? Read(ref Utf8JsonReader reader, Type typeToConvert,
+        JsonSerializerOptions options)
     {
-        var jsonOptions = new JsonSerializerOptions(options)
-        {
-            WriteIndented = options.WriteIndented,
-            PropertyNameCaseInsensitive = options.PropertyNameCaseInsensitive
-        };
-
-        // ? jsonOptions.Converters.Remove(this);
-        jsonOptions.Converters.Clear();
-        foreach (var converter in options.Converters.Where(c => c != this))
-            jsonOptions.Converters.Add(converter);
-
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
-
-        if (jsonDocument.RootElement.Deserialize<SchemaCollectionOptions>(jsonOptions) is { } result)
-        {
-            reader.Skip();
-            return result;
-        }
-
-        throw new JsonException($"Cannot read json element `{jsonDocument.RootElement}` as {nameof(SchemaCollectionOptions)}.");
+        return jsonDocument.RootElement.Deserialize<SchemaCollectionOptions>(GetJsonOptionsWithoutSchemaConverter(options));
     }
 
-    public override void Write(Utf8JsonWriter writer, CollectionOptions value, JsonSerializerOptions options) =>
-        JsonSerializer.Serialize(writer, value, options);
+    public override void Write(Utf8JsonWriter writer, CollectionOptions value, JsonSerializerOptions options)
+    {
+        JsonSerializer.Serialize(writer, value, typeof(SchemaCollectionOptions), GetJsonOptionsWithoutSchemaConverter(options));
+    }
+
+    private static JsonSerializerOptions GetJsonOptionsWithoutSchemaConverter(JsonSerializerOptions options)
+    {
+        var result = new JsonSerializerOptions(options);
+        result.Converters.Remove(
+            result.Converters.FirstOrDefault(c => c is SchemaCollectionOptionsConverter)!
+        );
+
+        return result;
+    }
 }
