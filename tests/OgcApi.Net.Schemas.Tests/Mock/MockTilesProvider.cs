@@ -3,8 +3,8 @@ using OgcApi.Net.Resources;
 
 namespace OgcApi.Net.Schemas.Tests.Mock;
 
-[OgcTilesProvider("Test", null)]
-internal class MockTilesProvider : ITilesProvider, IPropertyMetadataProvider
+[OgcTilesProvider("Test", typeof(MockTileSourceOptions))]
+public class MockTilesProvider : ITilesProvider, IPropertyMetadataProvider
 {
     public Dictionary<string, string> GetPropertyMetadata(string collectionId) => new()
     {

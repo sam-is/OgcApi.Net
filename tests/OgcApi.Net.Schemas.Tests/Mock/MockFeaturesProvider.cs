@@ -7,7 +7,7 @@ using OgcApi.Net.Options.Features;
 namespace OgcApi.Net.Schemas.Tests.Mock;
 
 [OgcFeaturesProvider("Test", typeof(SqlFeaturesSourceOptions))]
-internal class MockFeaturesProvider : IFeaturesProvider, IPropertyMetadataProvider
+public class MockFeaturesProvider : IFeaturesProvider, IPropertyMetadataProvider
 {
     public virtual Dictionary<string, string> GetPropertyMetadata(string collectionId) => new()
     {
