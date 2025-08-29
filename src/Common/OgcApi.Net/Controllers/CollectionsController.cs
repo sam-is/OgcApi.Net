@@ -286,21 +286,29 @@ public class CollectionsController : ControllerBase
             try
             {
                 Dictionary<string, string> propertyFilter = null;
-		        if (properties is {Count: > 0})
-		        {
-			        propertyFilter = Request.Query.Keys.Where(properties.Contains)
-				        .ToDictionary(key => key, key => Request.Query[key].First());
-		        }
+                if (properties is {Count: > 0})
+                {
+                    propertyFilter = Request.Query.Keys.Where(properties.Contains)
+                        .ToDictionary(key => key, key => Request.Query[key].First());
+                }
 
                 var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
-                    limit,
+                    limit + 1,
                     offset,
                     envelope,
                     dateTimeInterval.Start,
                     dateTimeInterval.End,
                     apiKey,
                     propertyFilter);
+                
+                bool nextPageExists = features.Count > limit;
+                
+                if (nextPageExists)
+                {
+                    features.RemoveAt(limit);
+                }
+                
                 features.Transform(collectionOptions.Features.StorageCrs, crs);
 
                 features.Links =
@@ -321,15 +329,7 @@ public class CollectionsController : ControllerBase
                     }
                 ];
 
-                features.TotalMatched = dataProvider.GetFeaturesCount(
-                    collectionOptions.Id,
-                    envelope,
-                    dateTimeInterval.Start,
-                    dateTimeInterval.End,
-                    apiKey,
-                    propertyFilter);
-
-                if (offset + limit < features.TotalMatched)
+                if (nextPageExists)
                 {
                     var parameters = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                     parameters.Set("offset", (offset + limit).ToString());
@@ -340,6 +340,21 @@ public class CollectionsController : ControllerBase
                         Rel = "next",
                         Type = "application/geo+json"
                     });
+                }
+
+                if (collectionOptions.CalculateNumberMatched)
+                {
+                    features.TotalMatched = dataProvider.GetFeaturesCount(
+                        collectionOptions.Id,
+                        envelope,
+                        dateTimeInterval.Start,
+                        dateTimeInterval.End,
+                        apiKey,
+                        propertyFilter);
+                }
+                else
+                {
+                    features.TotalMatched = null;
                 }
 
                 Response.Headers.Append("Content-Crs", $"<{crs}>");
