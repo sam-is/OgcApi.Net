@@ -25,7 +25,7 @@ This implementation supports automatic API generation from metadata descriptions
 
 This implementation uses attribute routing. All API endpoints will be accessible via the `/api/ogc` path.
 
-API configuration can be done using a configuration file named `ogcsettings.json`, which has the following structure:
+API configuration can be done using a configuration file named `ogcapi.json` or `ogcsettings.json`, which has the following structure:
 
 ### Options example
 
@@ -96,6 +96,11 @@ In the landing page options, you must specify:
 - **ApiDocumentPage** - URL to the API definition (Swagger or custom HTML page with API description)
 - **ApiDescriptionPage** - URL to the API documentation (OpenAPI JSON)
 
+In the landing page options, you can optionally specify:
+- **LicenseName** - Name of the license
+- **LicenseUrl** - URL to the license definition
+- **Links** - A list of other links
+
 In collection options, you must specify:
 - **Id** - unique identifier of the collection
 - **Title**
@@ -108,3 +113,10 @@ Collection can be:
 - hybrid: features + tiles. That means that API consumer can use tiles API for fast data queries and features API to get precise objects coordinates or modify objects
 
 Tiles and features providers for one collection can be different. For example, you can create collection that publishes features from the database, but the tiles can be taken from mbtiles file.
+
+In collection options, you can optionally specify:
+- **Description**
+- **Links** - a list of other links
+- **Extent** - the spatial and/or temporal extent of the collection
+- **ItemType** - indicator of the type of items in the collection, defaults to `feature`
+- **CalculateNumberMatched** - a boolean flag indicating if the number of matched items by a query should be returned in the response. It is recommended to set to `false` for large tables. Defaults to `true`
