@@ -9,5 +9,5 @@ public class OgcFeatureCollection() : Collection<IFeature>(new List<IFeature>())
 {
     public List<Link> Links { get; set; }
 
-    public long TotalMatched { get; set; }
+    public long? TotalMatched { get; set; }
 }
