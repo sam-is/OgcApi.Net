@@ -19,6 +19,9 @@ public class Collection
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string ItemType { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool CalculateNumberMatched { get; set; } = true;
+
     public List<Uri> Crs { get; set; }
 
     public Uri StorageCrs { get; set; }
