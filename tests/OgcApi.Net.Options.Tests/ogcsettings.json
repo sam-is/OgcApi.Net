@@ -40,6 +40,7 @@
         "Title": "Collection title 1",
         "Description": "Collection description 1",
         "ItemType": "Collection1 ItemType",
+        "CalculateNumberMatched": false,
         "Extent": {
           "Spatial": {
             "Bbox": [

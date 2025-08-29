@@ -77,6 +77,7 @@ public class ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixtu
         Assert.Equal("Collection title 1", fixture.Options.Collections.Items[0].Title);
         Assert.Equal("Collection description 1", fixture.Options.Collections.Items[0].Description);
         Assert.Equal("Collection1 ItemType", fixture.Options.Collections.Items[0].ItemType);
+        Assert.False(fixture.Options.Collections.Items[0].CalculateNumberMatched);
         Assert.NotNull(fixture.Options.Collections.Items[0].Features);
     }
 
@@ -88,6 +89,7 @@ public class ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixtu
         Assert.Equal("Collection title 2", fixture.Options.Collections.Items[1].Title);
         Assert.Equal("Collection description 2", fixture.Options.Collections.Items[1].Description);
         Assert.Equal("Collection2 ItemType", fixture.Options.Collections.Items[1].ItemType);
+        Assert.True(fixture.Options.Collections.Items[1].CalculateNumberMatched);
         Assert.NotNull(fixture.Options.Collections.Items[1].Features);
     }
 
