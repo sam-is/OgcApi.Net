@@ -294,7 +294,7 @@ public class CollectionsController : ControllerBase
 
                 var features = dataProvider.GetFeatures(
                     collectionOptions.Id,
-                    limit + 1,
+                    limit + 1,  // Retrieve one more feature to see if there is a next page
                     offset,
                     envelope,
                     dateTimeInterval.Start,
@@ -302,7 +302,7 @@ public class CollectionsController : ControllerBase
                     apiKey,
                     propertyFilter);
                 
-                bool nextPageExists = features.Count > limit;
+                var nextPageExists = features.Count > limit;
                 
                 if (nextPageExists)
                 {
