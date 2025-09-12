@@ -47,7 +47,7 @@ public class CollectionOptions : ICollectionOptions
     /// <summary>
     /// An optional indicator that specifies whether the number of items in the collection should be calculated (true) or not (false).
     /// </summary>
-    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingDefault)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool CalculateNumberMatched { get; set; } = true;
 
     public Func<string, Uri> FeatureHtmlPage { get; set; }
