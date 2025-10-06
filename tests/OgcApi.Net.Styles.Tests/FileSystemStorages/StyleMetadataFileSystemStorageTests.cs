@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OgcApi.Net.Styles.Tests.FileSystemStorages;
 
+[Collection("FileSystemStorageTests")]
 public class StyleMetadataFileSystemStorageTests
 {
     private readonly StyleMetadataFileSystemStorage _metadataStorage;

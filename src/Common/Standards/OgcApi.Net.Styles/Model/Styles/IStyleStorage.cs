@@ -36,16 +36,18 @@ public interface IStyleStorage
     /// Gets a list of available styles for the resource
     /// </summary>
     /// <param name="baseResource">Resource identifier</param>
+    /// <param name="baseUrl">Base URL</param>
     /// <returns>OgcStyles object containing available styles</returns>
-    public Task<OgcStyles> GetStyles(string baseResource);
+    public Task<OgcStyles> GetStyles(string baseResource, Uri baseUrl);
 
     /// <summary>
     /// Get the style information including stylesheet links
     /// </summary>
     /// <param name="baseResource">Resource identifier</param>
     /// <param name="styleId">Style identifier</param>
+    /// <param name="baseUrl">Base URL</param>
     /// <returns>OgcStyle object representing style information</returns>
-    public Task<OgcStyle> GetStyle(string baseResource, string styleId);
+    public Task<OgcStyle> GetStyle(string baseResource, string styleId, Uri baseUrl);
 
     /// <summary>
     /// Adds a new style to the styles storage

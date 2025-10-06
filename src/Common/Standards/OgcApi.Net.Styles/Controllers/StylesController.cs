@@ -21,7 +21,8 @@ public class StylesController(IStyleStorage stylesStorage, IMetadataStorage meta
     {
         try
         {
-            var styles = await stylesStorage.GetStyles(collectionId);
+            var baseUrl = Utils.GetBaseUrl(Request);
+            var styles = await stylesStorage.GetStyles(collectionId, baseUrl);
             return Ok(styles);
         }
         catch (KeyNotFoundException)
@@ -44,7 +45,8 @@ public class StylesController(IStyleStorage stylesStorage, IMetadataStorage meta
         {
             if (string.IsNullOrEmpty(f))
             {
-                var style = await stylesStorage.GetStyle(collectionId, styleId);
+                var baseUrl = Utils.GetBaseUrl(Request);
+                var style = await stylesStorage.GetStyle(collectionId, styleId, baseUrl);
                 return Ok(style);
             }
 
@@ -59,7 +61,7 @@ public class StylesController(IStyleStorage stylesStorage, IMetadataStorage meta
 
     [HttpPost]
     [Consumes("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> PostStyle(string collectionId, [FromBody] StylesheetAddParameters addStyleParameters)
     {

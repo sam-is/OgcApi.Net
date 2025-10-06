@@ -4,15 +4,16 @@ using OgcApi.Net.Resources;
 using OgcApi.Net.Styles.Model.Metadata;
 using OgcApi.Net.Styles.Model.Styles;
 using OgcApi.Net.Styles.Model.Stylesheets;
+using System.Collections.Concurrent;
+using System.IO;
 using System.Text.Json;
 
 namespace OgcApi.Net.Styles.Storage.FileSystem;
 
-public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> options,
-    IHttpContextAccessor httpContextAccessor) : IStyleStorage
+public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> options) : IStyleStorage
 {
     private readonly StyleFileSystemStorageOptions _options = options.CurrentValue;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private static readonly ConcurrentDictionary<string, object> _locks = new();
 
     public Task<bool> StyleExists(string baseResource, string styleId)
     {
@@ -37,6 +38,9 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
             return Task.FromResult(new List<string>());
 
         var stylesheets = Directory.GetFiles(stylesheetsPath);
+
+        // every stylesheet is stored in format "style.[stylesheet format].[extension]"
+        // so here we split filename by points and get stylesheet format
         var availableFormats = stylesheets
             .Select(stylesheet => Path.GetFileName(stylesheet))
             .Where(stylesheet => stylesheet != _options.DefaultStyleFilename && stylesheet != _options.MetadataFilename)
@@ -50,29 +54,41 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         return Task.FromResult(availableFormats);
     }
 
-    public async Task AddStylesheet(string baseResource, StylesheetAddParameters parameters)
+    public Task AddStylesheet(string baseResource, StylesheetAddParameters parameters)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(parameters.Format);
         var stylesheetName = $"{_options.StylesheetFilename}.{parameters.Format}.{stylesheetExtension}";
         var savePath = Path.Combine(_options.BaseDirectory, baseResource, parameters.StyleId);
-        if (!Directory.Exists(savePath))
-            Directory.CreateDirectory(savePath);
 
-        await File.WriteAllTextAsync(Path.Combine(savePath, stylesheetName), parameters.Content);
+        var lockKey = $"{baseResource}_{parameters.StyleId}";
+        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        {
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+
+            File.WriteAllText(Path.Combine(savePath, stylesheetName), parameters.Content);
+        }
+
+        return Task.CompletedTask;
     }
 
     public Task DeleteStyle(string baseResource, string styleId)
     {
         var stylePath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
 
-        if (!Directory.Exists(stylePath))
-            return Task.CompletedTask;
+        var lockKey = $"{baseResource}_{styleId}";
+        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        {
+            if (!Directory.Exists(stylePath))
+                return Task.CompletedTask;
 
-        Directory.Delete(stylePath, true);
+            Directory.Delete(stylePath, true);
+        }
+
         return Task.CompletedTask;
     }
 
-    public async Task<OgcStyle> GetStyle(string baseResource, string styleId)
+    public async Task<OgcStyle> GetStyle(string baseResource, string styleId, Uri baseUrl)
     {
         var metadataPath = Path.Combine(_options.BaseDirectory, baseResource, styleId, _options.MetadataFilename);
         if (!File.Exists(metadataPath))
@@ -86,8 +102,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         var links = availableFormats
             .Select(format => new Link
             {
-                Href = new Uri(Utils.GetBaseUrl(_httpContextAccessor.HttpContext?.Request),
-                $"collections/{baseResource}/styles/{styleId}?f={format}"),
+                Href = new Uri(baseUrl, $"collections/{baseResource}/styles/{styleId}?f={format}"),
                 Rel = "stylesheet",
                 Type = FormatToContentType.GetContentTypeForFormat(format)
             }).ToList();
@@ -100,7 +115,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         };
     }
 
-    public async Task<OgcStyles> GetStyles(string baseResource)
+    public async Task<OgcStyles> GetStyles(string baseResource, Uri baseUrl)
     {
         var baseResourcePath = Path.Combine(_options.BaseDirectory, baseResource);
 
@@ -112,7 +127,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         foreach (var styleDirectory in stylesDirectories)
         {
             var styleId = Path.GetFileNameWithoutExtension(styleDirectory);
-            var style = await GetStyle(baseResource, styleId);
+            var style = await GetStyle(baseResource, styleId, baseUrl);
             styles.Styles.Add(style);
         }
 
@@ -147,7 +162,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         return content;
     }
 
-    public async Task ReplaceStyle(string baseResource, string styleId, StylesheetAddParameters stylePostParameters)
+    public Task ReplaceStyle(string baseResource, string styleId, StylesheetAddParameters stylePostParameters)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(stylePostParameters.Format);
         var stylesheetName = $"{_options.StylesheetFilename}.{stylePostParameters.Format}.{stylesheetExtension}";
@@ -155,16 +170,28 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         if (!File.Exists(path))
             throw new KeyNotFoundException("Stylesheet not found");
 
-        await File.WriteAllTextAsync(path, stylePostParameters.Content);
+        var lockKey = $"{baseResource}_{styleId}";
+        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        {
+            File.WriteAllText(path, stylePostParameters.Content);
+        }
+
+        return Task.CompletedTask;
     }
 
-    public async Task UpdateDefaultStyle(string baseResource, DefaultStyle updateDefaultStyleRequest)
+    public Task UpdateDefaultStyle(string baseResource, DefaultStyle updateDefaultStyleRequest)
     {
         var defaultStyleFilePath = Path.Combine(_options.BaseDirectory, baseResource);
-        if (!Directory.Exists(defaultStyleFilePath))
-            Directory.CreateDirectory(defaultStyleFilePath);
+        var lockKey = $"{baseResource}_updateDefaultStyle";
+        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        {
+            if (!Directory.Exists(defaultStyleFilePath))
+                Directory.CreateDirectory(defaultStyleFilePath);
 
-        var defaultStyleFileContent = JsonSerializer.Serialize(updateDefaultStyleRequest);
-        await File.WriteAllTextAsync(Path.Combine(defaultStyleFilePath, _options.DefaultStyleFilename), defaultStyleFileContent);
+            var defaultStyleFileContent = JsonSerializer.Serialize(updateDefaultStyleRequest);
+            File.WriteAllText(Path.Combine(defaultStyleFilePath, _options.DefaultStyleFilename), defaultStyleFileContent);
+        }
+
+        return Task.CompletedTask;
     }
 }

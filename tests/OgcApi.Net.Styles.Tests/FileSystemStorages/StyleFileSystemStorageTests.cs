@@ -5,6 +5,7 @@ using OgcApi.Net.Styles.Tests.Mocks;
 
 namespace OgcApi.Net.Styles.Tests.FileSystemStorages;
 
+[Collection("FileSystemStorageTests")]
 public sealed class StyleFileSystemStorageTests : IDisposable
 {
     private readonly StyleFileSystemStorageOptions _options;
@@ -13,8 +14,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
     public StyleFileSystemStorageTests()
     {
         var optionsMonitor = OptionsMonitorMock.Instance;
-        var httpContextAccessor = HttpContextAccessorMock.Instance;
-        _styleFileSystemStorage = new StyleFileSystemStorage(optionsMonitor, httpContextAccessor);
+        _styleFileSystemStorage = new StyleFileSystemStorage(optionsMonitor);
         _options = optionsMonitor.CurrentValue;
 
         FileSystemFixture.CreateInitialStyle(_options);
@@ -149,7 +149,9 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         const string expectedTitle = "ExistingStyleTitle";
         const string expectedHref = "http://localhost/api/ogc/collections/testCollection/styles/existingStyleId?f=mapbox";
 
-        var style = await _styleFileSystemStorage.GetStyle(collectionId, styleId);
+        var baseUrl = new Uri("http://localhost/api/ogc/");
+        var style = await _styleFileSystemStorage.GetStyle(collectionId, styleId, baseUrl);
+
         Assert.NotNull(style);
         Assert.Equal(expectedTitle, style.Title);
         Assert.Single(style.Links);
@@ -160,8 +162,9 @@ public sealed class StyleFileSystemStorageTests : IDisposable
     public async Task GetStyles_ShouldReturnStyles()
     {
         const string collectionId = FileSystemFixture.CollectionId;
-        
-        var styles = await _styleFileSystemStorage.GetStyles(collectionId);
+
+        var baseUrl = new Uri("http://localhost/api/ogc/");
+        var styles = await _styleFileSystemStorage.GetStyles(collectionId, baseUrl);
 
         Assert.NotNull(styles);
         Assert.Single(styles.Styles);
@@ -208,7 +211,8 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         const string collectionId = FileSystemFixture.CollectionId;
         const string styleId = FileSystemFixture.ExistingStyleId;
 
-        var stylesInfo = await _styleFileSystemStorage.GetStyles(collectionId);
+        var baseUrl = new Uri("http://localhost");
+        var stylesInfo = await _styleFileSystemStorage.GetStyles(collectionId, baseUrl);
         Assert.Null(stylesInfo.Default);
 
         var defaultStyle = new DefaultStyle
@@ -217,7 +221,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         };
         await _styleFileSystemStorage.UpdateDefaultStyle(collectionId, defaultStyle);
 
-        stylesInfo = await _styleFileSystemStorage.GetStyles(collectionId);
+        stylesInfo = await _styleFileSystemStorage.GetStyles(collectionId, baseUrl);
         Assert.Equal(styleId, stylesInfo.Default);
     }
 
