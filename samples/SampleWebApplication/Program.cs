@@ -24,7 +24,7 @@ builder.Services.AddSchemasOpenApiExtension();
 builder.Services.AddSampleOgcStyles(builder.Configuration);
 
 // If the connection string is configured in the ogcapi.json file
-builder.Services.AddOgcApi("ogcapi.json", TileAccess.TilesAccessDelegate, TileAccess.FeatureAccessDelegate);
+//builder.Services.AddOgcApi("ogcapi.json", TileAccess.TilesAccessDelegate, TileAccess.FeatureAccessDelegate);
 
 // If the connection string is determined at runtime
 builder.Services.AddSingleton<IConfigureOptions<OgcApiOptions>, ConfigureOgcApiOptions>();
