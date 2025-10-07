@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using OgcApi.Net.Options;
 using OgcApi.Net.Resources;
 using OgcApi.Net.Styles.Model.Metadata;
 using OgcApi.Net.Styles.Model.Styles;
@@ -8,29 +10,29 @@ using System.Text.Json;
 
 namespace OgcApi.Net.Styles.Storage.FileSystem;
 
-public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> options) : IStyleStorage
+public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> styleFileSystemOptions) : IStyleStorage
 {
     private static readonly ConcurrentDictionary<string, object> Locks = new();
-    private readonly StyleFileSystemStorageOptions _options = options.CurrentValue;
+    private readonly StyleFileSystemStorageOptions _storageOptions = styleFileSystemOptions.CurrentValue;
 
     public Task<bool> StyleExists(string baseResource, string styleId)
     {
-        var styleDirectory = Path.Combine(_options.BaseDirectory, baseResource, styleId);
+        var styleDirectory = Path.Combine(_storageOptions.BaseDirectory, baseResource, styleId);
         return Task.FromResult(Directory.Exists(styleDirectory));
     }
 
     public Task<bool> StylesheetExists(string baseResource, string styleId, string format)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(format);
-        var stylesheetName = $"{_options.StylesheetFilename}.{format}.{stylesheetExtension}";
-        var stylesheetPath = Path.Combine(_options.BaseDirectory, baseResource, styleId, stylesheetName);
+        var stylesheetName = $"{_storageOptions.StylesheetFilename}.{format}.{stylesheetExtension}";
+        var stylesheetPath = Path.Combine(_storageOptions.BaseDirectory, baseResource, styleId, stylesheetName);
 
         return Task.FromResult(File.Exists(stylesheetPath));
     }
 
     public Task<List<string>> GetAvailableFormats(string baseResource, string styleId)
     {
-        var stylesheetsPath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
+        var stylesheetsPath = Path.Combine(_storageOptions.BaseDirectory, baseResource, styleId);
 
         if (!Directory.Exists(stylesheetsPath))
             return Task.FromResult(new List<string>());
@@ -41,7 +43,9 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         // so here we split filename by points and get stylesheet format
         var availableFormats = stylesheets
             .Select(Path.GetFileName)
-            .Where(stylesheet => stylesheet != _options.DefaultStyleFilename && stylesheet != _options.MetadataFilename)
+            .Where(stylesheet => 
+                stylesheet != _storageOptions.DefaultStyleFilename &&
+                stylesheet != _storageOptions.MetadataFilename)
             .Select(stylesheet =>
                 stylesheet!.Split(".")
                 .Skip(1)
@@ -54,8 +58,8 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
     public Task AddStylesheet(string baseResource, StylesheetAddParameters parameters)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(parameters.Format);
-        var stylesheetName = $"{_options.StylesheetFilename}.{parameters.Format}.{stylesheetExtension}";
-        var savePath = Path.Combine(_options.BaseDirectory, baseResource, parameters.StyleId);
+        var stylesheetName = $"{_storageOptions.StylesheetFilename}.{parameters.Format}.{stylesheetExtension}";
+        var savePath = Path.Combine(_storageOptions.BaseDirectory, baseResource, parameters.StyleId);
 
         var lockKey = $"{baseResource}_{parameters.StyleId}";
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
@@ -79,7 +83,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
 
     public Task DeleteStyle(string baseResource, string styleId)
     {
-        var stylePath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
+        var stylePath = Path.Combine(_storageOptions.BaseDirectory, baseResource, styleId);
 
         var lockKey = $"{baseResource}_{styleId}";
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
@@ -103,7 +107,10 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
 
     public async Task<OgcStyle> GetStyle(string baseResource, string styleId, Uri baseUrl)
     {
-        var metadataPath = Path.Combine(_options.BaseDirectory, baseResource, styleId, _options.MetadataFilename);
+        var metadataPath = Path.Combine(
+            _storageOptions.BaseDirectory,
+            baseResource, styleId,
+            _storageOptions.MetadataFilename);
         if (!File.Exists(metadataPath))
             throw new KeyNotFoundException("Style metadata not found");
 
@@ -139,7 +146,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
 
     public async Task<OgcStyles> GetStyles(string baseResource, Uri baseUrl)
     {
-        var baseResourcePath = Path.Combine(_options.BaseDirectory, baseResource);
+        var baseResourcePath = Path.Combine(_storageOptions.BaseDirectory, baseResource);
 
         if (!Directory.Exists(baseResourcePath))
             throw new KeyNotFoundException($"Styles for {baseResource} not found");
@@ -153,7 +160,10 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
             styles.Styles.Add(style);
         }
 
-        var defaultStyleFilePath = Path.Combine(_options.BaseDirectory, baseResource, _options.DefaultStyleFilename);
+        var defaultStyleFilePath = Path.Combine(
+            _storageOptions.BaseDirectory,
+            baseResource,
+            _storageOptions.DefaultStyleFilename);
         DefaultStyle? defaultStyle;
         var lockKey = $"{baseResource}_defaultStyle";
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
@@ -184,8 +194,8 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
     public async Task<string> GetStylesheet(string baseResource, string styleId, string format)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(format);
-        var stylesheetFilename = $"{_options.StylesheetFilename}.{format}.{stylesheetExtension}";
-        var stylesheetPath = Path.Combine(_options.BaseDirectory, baseResource, styleId, stylesheetFilename);
+        var stylesheetFilename = $"{_storageOptions.StylesheetFilename}.{format}.{stylesheetExtension}";
+        var stylesheetPath = Path.Combine(_storageOptions.BaseDirectory, baseResource, styleId, stylesheetFilename);
         if (!File.Exists(stylesheetPath))
             throw new KeyNotFoundException("Stylesheet not found");
 
@@ -205,8 +215,8 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
     public Task ReplaceStyle(string baseResource, string styleId, StylesheetAddParameters stylePostParameters)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(stylePostParameters.Format);
-        var stylesheetName = $"{_options.StylesheetFilename}.{stylePostParameters.Format}.{stylesheetExtension}";
-        var path = Path.Combine(_options.BaseDirectory, baseResource, stylePostParameters.StyleId, stylesheetName);
+        var stylesheetName = $"{_storageOptions.StylesheetFilename}.{stylePostParameters.Format}.{stylesheetExtension}";
+        var path = Path.Combine(_storageOptions.BaseDirectory, baseResource, stylePostParameters.StyleId, stylesheetName);
         if (!File.Exists(path))
             throw new KeyNotFoundException("Stylesheet not found");
 
@@ -229,7 +239,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
 
     public Task UpdateDefaultStyle(string baseResource, DefaultStyle updateDefaultStyleRequest)
     {
-        var defaultStyleFilePath = Path.Combine(_options.BaseDirectory, baseResource);
+        var defaultStyleFilePath = Path.Combine(_storageOptions.BaseDirectory, baseResource);
         var lockKey = $"{baseResource}_defaultStyle";
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
@@ -240,7 +250,10 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
                     Directory.CreateDirectory(defaultStyleFilePath);
 
                 var defaultStyleFileContent = JsonSerializer.Serialize(updateDefaultStyleRequest);
-                File.WriteAllText(Path.Combine(defaultStyleFilePath, _options.DefaultStyleFilename), defaultStyleFileContent);
+                File.WriteAllText(Path.Combine(
+                    defaultStyleFilePath,
+                    _storageOptions.DefaultStyleFilename
+                    ), defaultStyleFileContent);
             }
         }
         finally

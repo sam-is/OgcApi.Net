@@ -4,6 +4,7 @@ using OgcApi.Net.Modules;
 using OgcApi.Net.OpenApi.Interfaces;
 using OgcApi.Net.Styles.Model.Metadata;
 using OgcApi.Net.Styles.Model.Styles;
+using OgcApi.Net.Styles.Security;
 using OgcApi.Net.Styles.Storage.FileSystem;
 
 namespace OgcApi.Net.Styles.Extensions;
@@ -17,13 +18,21 @@ public static class StylesServicesExtensions
         return services;
     }
 
-    public static IServiceCollection AddStylesFileSystemStorage(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddStylesStorage<T>(this IServiceCollection services) where T : class, IStyleStorage
     {
-        services.Configure<StyleFileSystemStorageOptions>(configuration.GetSection(nameof(StyleFileSystemStorageOptions)));
-        services.AddHttpContextAccessor();
-        services.AddSingleton<IStyleStorage, StyleFileSystemStorage>();
-        services.AddSingleton<IMetadataStorage, StyleMetadataFileSystemStorage>();
-
+        services.AddSingleton<IStyleStorage, T>();
         return services;
     }
+
+    public static IServiceCollection AddStylesMetadataStorage<T>(this IServiceCollection services) where T : class, IMetadataStorage
+    {
+        services.AddSingleton<IMetadataStorage, T>();
+        return services;
+    }
+
+    public static IServiceCollection AddStyleAuthorization<T>(this IServiceCollection services) where T : class, IStylesAuthorizationService
+    {
+        services.AddSingleton<IStylesAuthorizationService, T>();
+        return services;
+    } 
 }

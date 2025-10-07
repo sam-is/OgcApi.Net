@@ -2,7 +2,6 @@
 using OgcApi.Net.OpenApi;
 using OgcApi.Net.Options;
 using OgcApi.Net.Options.Converters;
-using OgcApi.Net.Options.Features;
 using OgcApi.Net.Options.Tiles;
 using System;
 using System.IO;
