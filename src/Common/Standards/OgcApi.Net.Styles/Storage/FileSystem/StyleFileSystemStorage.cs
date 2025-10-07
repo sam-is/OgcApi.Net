@@ -150,7 +150,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
                 {
                     Href = new Uri(baseUrl, $"collections/{baseResource}/styles/{styleId}?f={format}"),
                     Rel = "stylesheet",
-                    Type = FormatToContentType.GetContentTypeForFormat(format)
+                    Type = FormatToContentTypeMapper.GetContentTypeForFormat(format)
                 }).ToList();
 
             return new OgcStyle
@@ -189,25 +189,19 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
             _storageOptions.BaseDirectory,
             baseResource,
             _storageOptions.DefaultStyleFilename);
-        DefaultStyle? defaultStyle;
+
         var lockKey = $"{baseResource}_defaultStyle";
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
-            if (!File.Exists(defaultStyleFilePath))
-            {
-                defaultStyle = new DefaultStyle
-                {
-                    Default = styles.Styles.FirstOrDefault()?.Id
-                };
-            }
-            else
+            styles.Default = styles.Styles.FirstOrDefault()?.Id;
+
+            if (File.Exists(defaultStyleFilePath))
             {
                 var defaultStyleFileContent = await File.ReadAllTextAsync(defaultStyleFilePath);
-                defaultStyle = JsonSerializer.Deserialize<DefaultStyle>(defaultStyleFileContent);
+                var defaultStyle = JsonSerializer.Deserialize<DefaultStyle>(defaultStyleFileContent);
+                styles.Default = defaultStyle?.Default;
             }
-
-            styles.Default = defaultStyle?.Default;
             return styles;
         }
         finally

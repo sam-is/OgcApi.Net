@@ -16,13 +16,9 @@ public static class FormatToExtensionMapper
     /// </summary>
     /// <param name="format">A format name such as "mapbox" or "sld10".</param>
     /// <returns>The file extension without leading dot (for example, "json" or "xml").</returns>
-    /// <exception cref="System.Exception">Thrown when the format mapping is not found.</exception>
+    /// <exception cref="KeyNotFoundException">Thrown when the format mapping is not found.</exception>
     public static string GetFileExtensionForFormat(string format)
-    {
-        var isExtensionPresent = Mappings.TryGetValue(format, out var extension);
-        if (!isExtensionPresent || extension is null)
-            throw new Exception($"Not found file extension for file format {format}");
-
-        return extension;
-    }
+        => Mappings.TryGetValue(format, out var extension) ?
+            extension :
+            throw new KeyNotFoundException($"File extension for file format {format} not found");
 }
