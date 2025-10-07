@@ -31,6 +31,7 @@ jobs:
         dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.SpatiaLite/OgcApi.Net.SpatiaLite.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
         dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
         dotnet pack -c Release -o artifacts --no-restore src/Common/Standards/OgcApi.Net.Schemas/OgcApi.Net.Schemas.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
+        dotnet pack -c Release -o artifacts --no-restore src/Common/Standards/OgcApi.Net.Styles/OgcApi.Net.Styles.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
     - name: Publish          
       run: |        
         dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}

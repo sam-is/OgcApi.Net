@@ -17,6 +17,7 @@ Currently, this project implements the following standards:
 | [OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> SQLite/SpatiaLite |
 | [OGC API - Features - Part 5: Schemas](https://portal.ogc.org/files/108199 ) | Microsoft SQL Server 2012+ <br> Azure SQL Database <br> PostgreSQL/PostGis <br> Sqlite/MbTiles |
 | [OGC API - Tiles - Part 1: Core](http://docs.ogc.org/DRAFTS/20-057.html) | Sqlite/MbTiles |
+| [OGC API - Styles](https://docs.ogc.org/DRAFTS/20-009.html) | |
 
 This project uses:
 - ASP.NET Core 8 for building Web APIs

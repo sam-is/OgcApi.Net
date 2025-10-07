@@ -20,6 +20,7 @@ Welcome to the OgcApi.Net documentation! This project provides a .NET implementa
 - [Features API](features-api.md)
 - [Tiles API](tiles-api.md)
 - [Schemas Support](schemas.md)
+- [Styles Support](styles.md)
 - [Authorization and Security](authorization.md)
 - [Swagger Generation](swagger-generation.md)
 - [CORS Support](cors-support.md)
