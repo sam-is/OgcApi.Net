@@ -10,7 +10,6 @@ using OgcApi.Net.PostGis;
 using OgcApi.Net.Schemas;
 using OgcApi.Net.SqlServer;
 using SampleWebApplication;
-using SampleWebApplication.Security;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);

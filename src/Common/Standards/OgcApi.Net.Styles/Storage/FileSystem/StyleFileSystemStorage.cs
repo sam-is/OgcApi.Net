@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using OgcApi.Net.Options;
+﻿using Microsoft.Extensions.Options;
 using OgcApi.Net.Resources;
 using OgcApi.Net.Styles.Model.Metadata;
 using OgcApi.Net.Styles.Model.Styles;
