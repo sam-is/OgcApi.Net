@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace OgcApi.Net.Styles.Model.Styles;
 
 /// <summary>
-/// Style
+/// Represents a style entry exposing its identifier, optional title and links to available stylesheets.
 /// </summary>
 public class OgcStyle
 {

@@ -3,7 +3,7 @@
 namespace OgcApi.Net.Styles.Model.Styles;
 
 /// <summary>
-/// Class used for get/update default style for a baseResource
+/// DTO used to get or update the default style identifier for a collection.
 /// </summary>
 public class DefaultStyle
 {

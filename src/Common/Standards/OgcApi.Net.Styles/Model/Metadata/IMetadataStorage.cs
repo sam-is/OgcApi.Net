@@ -1,7 +1,8 @@
 ﻿namespace OgcApi.Net.Styles.Model.Metadata;
 
 /// <summary>
-/// An interface representing style metadata storage
+/// Storage interface for style metadata.
+/// Implement this to provide custom metadata persistence (DB, object storage, etc.).
 /// </summary>
 public interface IMetadataStorage
 {

@@ -4,6 +4,9 @@ using OgcApi.Net.Options;
 
 namespace OgcApi.Net.Styles.Extensions;
 
+/// <summary>
+/// Populates OpenAPI document with schemas and paths for styles endpoints.
+/// </summary>
 public class StylesOpenApiExtension : IOpenApiExtension
 {
     public void Apply(OpenApiDocument document, OgcApiOptions ogcApiOptions)

@@ -3,7 +3,7 @@
 namespace OgcApi.Net.Styles.Model.Styles;
 
 /// <summary>
-/// Styles collection for a resource
+/// Represents the styles available for a base resource (collection), including the default style id.
 /// </summary>
 public class OgcStyles
 {

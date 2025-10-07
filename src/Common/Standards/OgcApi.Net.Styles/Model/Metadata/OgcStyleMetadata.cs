@@ -3,7 +3,7 @@
 namespace OgcApi.Net.Styles.Model.Metadata;
 
 /// <summary>
-/// Style metadata
+/// Represents metadata for a style
 /// </summary>
 public class OgcStyleMetadata
 {

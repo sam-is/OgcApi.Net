@@ -2,6 +2,7 @@
 
 /// <summary>
 /// Defines a service for authorizing access to style-related resources.
+/// Implement this interface to enforce API key or other access control checks.
 /// </summary>
 public interface IStylesAuthorizationService
 {

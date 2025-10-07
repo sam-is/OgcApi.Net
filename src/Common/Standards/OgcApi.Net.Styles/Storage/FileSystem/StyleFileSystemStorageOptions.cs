@@ -1,7 +1,7 @@
 ﻿namespace OgcApi.Net.Styles.Storage.FileSystem;
 
 /// <summary>
-/// Style storage settings in the server file system
+/// Configuration options for the filesystem-based style storage.
 /// </summary>
 public class StyleFileSystemStorageOptions
 {

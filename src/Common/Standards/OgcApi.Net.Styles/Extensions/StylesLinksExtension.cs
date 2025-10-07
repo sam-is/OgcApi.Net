@@ -3,6 +3,9 @@ using OgcApi.Net.Resources;
 
 namespace OgcApi.Net.Styles.Extensions;
 
+/// <summary>
+/// Adds styles-specific landing links and conformances to the API landing page.
+/// </summary>
 public class StylesLinksExtension : ILinksExtension
 {
     public void AddLandingLinks(Uri baseUri, IList<Link> links)
@@ -17,6 +20,9 @@ public class StylesLinksExtension : ILinksExtension
         });
     }
 
+    /// <summary>
+    /// Returns the list of conformance URIs that the styles implementation conforms to.
+    /// </summary>
     public List<Uri> GetConformsTo()
     {
         return [

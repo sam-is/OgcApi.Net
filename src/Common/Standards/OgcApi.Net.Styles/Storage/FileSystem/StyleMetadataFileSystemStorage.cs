@@ -5,11 +5,18 @@ using System.Text.Json;
 
 namespace OgcApi.Net.Styles.Storage.FileSystem;
 
+/// <summary>
+/// Filesystem-backed implementation of <see cref="IMetadataStorage"/>.
+/// Stores and retrieves style metadata files using configured filesystem paths.
+/// </summary>
 public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> options) : IMetadataStorage
 {
     private static readonly ConcurrentDictionary<string, object> Locks = new();
     private readonly StyleFileSystemStorageOptions _options = options.CurrentValue;
 
+    /// <summary>
+    /// Adds metadata for a style. Creates a style folder if it does not exist.
+    /// </summary>
     public Task Add(string baseResource, string styleId, OgcStyleMetadata metadata)
     {
         var metadataPath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
@@ -35,6 +42,9 @@ public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStora
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Reads and returns metadata for the specified style.
+    /// </summary>
     public Task<OgcStyleMetadata> Get(string baseResource, string styleId)
     {
         var metadataPath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
@@ -59,12 +69,18 @@ public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStora
         }
     }
 
+    /// <summary>
+    /// Replaces existing metadata with the provided instance.
+    /// </summary>
     public Task Replace(string baseResource, string styleId, OgcStyleMetadata newMetadata)
     {
         // In case of filesystem storage just override existing metadata file
         return Add(baseResource, styleId, newMetadata);
     }
 
+    /// <summary>
+    /// Updates existing metadata (filesystem implementation simply overwrites the metadata file).
+    /// </summary>
     public Task Update(string baseResource, string styleId, OgcStyleMetadata updatedMetadata)
     {
         // In case of filesystem storage just override existing metadata file

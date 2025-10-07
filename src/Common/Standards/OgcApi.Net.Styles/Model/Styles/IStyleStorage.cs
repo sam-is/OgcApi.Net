@@ -3,7 +3,8 @@
 namespace OgcApi.Net.Styles.Model.Styles;
 
 /// <summary>
-/// An interface representing styles storage
+/// Interface that defines storage operations for styles and stylesheets.
+/// Implement this to back the styles API with a different storage mechanism.
 /// </summary>
 public interface IStyleStorage
 {

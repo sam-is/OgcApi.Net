@@ -3,7 +3,7 @@
 namespace OgcApi.Net.Styles.Model.Stylesheets;
 
 /// <summary>
-/// A class used for adding new stylesheet to a storage
+/// Parameters supplied when adding or replacing a stylesheet for a style.
 /// </summary>
 public class StylesheetAddParameters
 {
