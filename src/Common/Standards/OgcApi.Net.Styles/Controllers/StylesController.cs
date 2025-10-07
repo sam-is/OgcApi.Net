@@ -67,11 +67,11 @@ public class StylesController(IStyleStorage stylesStorage, IMetadataStorage meta
     {
         try
         {
-            var existingStylesheet = await stylesStorage.GetStylesheet(collectionId,
+            await stylesStorage.GetStylesheet(collectionId,
                 addStyleParameters.StyleId, addStyleParameters.Format);
             return Conflict();
         }
-        catch (Exception)
+        catch (KeyNotFoundException)
         {
             // Add new stylesheet
             await stylesStorage.AddStylesheet(collectionId, addStyleParameters);

@@ -525,7 +525,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, OpenApiMediaType>
                             {
-                                ["application/merge-patch+json"] = new OpenApiMediaType
+                                ["application/merge-patch+json"] = new()
                                 {
                                     Schema = new OpenApiSchema
                                     {

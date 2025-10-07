@@ -7,21 +7,29 @@ namespace OgcApi.Net.Styles.Storage.FileSystem;
 
 public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOptions> options) : IMetadataStorage
 {
+    private static readonly ConcurrentDictionary<string, object> Locks = new();
     private readonly StyleFileSystemStorageOptions _options = options.CurrentValue;
-    private static readonly ConcurrentDictionary<string, object> _locks = new();
 
     public Task Add(string baseResource, string styleId, OgcStyleMetadata metadata)
     {
         var metadataPath = Path.Combine(_options.BaseDirectory, baseResource, styleId);
 
         var lockKey = $"{baseResource}_{metadata.Id}";
-        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
+        try
         {
-            if (!Directory.Exists(metadataPath))
-                Directory.CreateDirectory(metadataPath);
+            lock (lockObj)
+            {
+                if (!Directory.Exists(metadataPath))
+                    Directory.CreateDirectory(metadataPath);
 
-            var metadataContent = JsonSerializer.Serialize(metadata);
-            File.WriteAllText(Path.Combine(metadataPath, _options.MetadataFilename), metadataContent);
+                var metadataContent = JsonSerializer.Serialize(metadata);
+                File.WriteAllText(Path.Combine(metadataPath, _options.MetadataFilename), metadataContent);
+            }
+        }
+        finally
+        {
+            Locks.TryRemove(lockKey, out _);
         }
 
         return Task.CompletedTask;
@@ -34,12 +42,20 @@ public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStora
             throw new KeyNotFoundException("Style not found");
 
         var lockKey = $"{baseResource}_{styleId}";
-        lock (_locks.GetOrAdd(lockKey, _ => new object()))
+        var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
+        try
         {
-            var metadataContent = File.ReadAllText(Path.Combine(metadataPath, _options.MetadataFilename));
-            var metadata = JsonSerializer.Deserialize<OgcStyleMetadata>(metadataContent) ??
-                throw new Exception("Failed to deserialize style metadata");
-            return Task.FromResult(metadata);
+            lock (lockObj)
+            {
+                var metadataContent = File.ReadAllText(Path.Combine(metadataPath, _options.MetadataFilename));
+                var metadata = JsonSerializer.Deserialize<OgcStyleMetadata>(metadataContent) ??
+                    throw new Exception("Failed to deserialize style metadata");
+                return Task.FromResult(metadata);
+            }
+        }
+        finally
+        {
+            Locks.TryRemove(lockKey, out _);
         }
     }
 

@@ -35,7 +35,7 @@ public class StyleMetadataFileSystemStorageTests
             Description = expectedDescription,
             Created = DateTime.Today,
             Updated = DateTime.Today,
-            PointOfContant = "test"
+            PointOfContact = "test"
         };
         await _metadataStorage.Add(collectionId, styleId, metadata);
 

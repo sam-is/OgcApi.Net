@@ -211,7 +211,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         const string collectionId = FileSystemFixture.CollectionId;
         const string styleId = FileSystemFixture.ExistingStyleId;
 
-        var baseUrl = new Uri("http://localhost");
+        var baseUrl = new Uri("http://localhost/api/ogc/");
         var stylesInfo = await _styleFileSystemStorage.GetStyles(collectionId, baseUrl);
         Assert.Null(stylesInfo.Default);
 
@@ -225,9 +225,5 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         Assert.Equal(styleId, stylesInfo.Default);
     }
 
-    public void Dispose()
-    {
-        Directory.Delete(_options.BaseDirectory, true);
-        GC.SuppressFinalize(this);
-    }
+    public void Dispose() => Directory.Delete(_options.BaseDirectory, true);
 }

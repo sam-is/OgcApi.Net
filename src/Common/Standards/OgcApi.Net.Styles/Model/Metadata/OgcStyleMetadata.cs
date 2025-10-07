@@ -39,7 +39,7 @@ public class OgcStyleMetadata
     /// </summary>
     [JsonPropertyName("pointOfContact")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? PointOfContant { get; set; }
+    public string? PointOfContact { get; set; }
 
     /// <summary>
     /// License
