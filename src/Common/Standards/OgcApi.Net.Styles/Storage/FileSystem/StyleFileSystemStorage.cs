@@ -138,25 +138,27 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
-            var metadataContent = await File.ReadAllTextAsync(metadataPath);
-            var metadata = JsonSerializer.Deserialize<OgcStyleMetadata>(metadataContent) ??
-                throw new Exception("Style metadata does not exist");
-
             var availableFormats = await GetAvailableFormats(baseResource, styleId);
             var links = availableFormats
-                .Select(format => new Link
-                {
-                    Href = new Uri(baseUrl, $"collections/{baseResource}/styles/{styleId}?f={format}"),
-                    Rel = "stylesheet",
-                    Type = FormatToContentTypeMapper.GetContentTypeForFormat(format)
-                }).ToList();
-
-            return new OgcStyle
+                    .Select(format => new Link
+                    {
+                        Href = new Uri(baseUrl, $"collections/{baseResource}/styles/{styleId}?f={format}"),
+                        Rel = "stylesheet",
+                        Type = FormatToContentTypeMapper.GetContentTypeForFormat(format)
+                    }).ToList();
+            lock (lockObj)
             {
-                Id = styleId,
-                Title = metadata.Title,
-                Links = links
-            };
+                var metadataContent = File.ReadAllText(metadataPath);
+                var metadata = JsonSerializer.Deserialize<OgcStyleMetadata>(metadataContent) ??
+                    throw new Exception("Style metadata does not exist");
+
+                return new OgcStyle
+                {
+                    Id = styleId,
+                    Title = metadata.Title,
+                    Links = links
+                };
+            }
         }
         finally
         {
@@ -192,15 +194,18 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
-            styles.Default = styles.Styles.FirstOrDefault()?.Id;
-
-            if (File.Exists(defaultStyleFilePath))
+            lock(lockObj)
             {
-                var defaultStyleFileContent = await File.ReadAllTextAsync(defaultStyleFilePath);
-                var defaultStyle = JsonSerializer.Deserialize<DefaultStyle>(defaultStyleFileContent);
-                styles.Default = defaultStyle?.Default;
+                styles.Default = styles.Styles.FirstOrDefault()?.Id;
+
+                if (File.Exists(defaultStyleFilePath))
+                {
+                    var defaultStyleFileContent = File.ReadAllText(defaultStyleFilePath);
+                    var defaultStyle = JsonSerializer.Deserialize<DefaultStyle>(defaultStyleFileContent);
+                    styles.Default = defaultStyle?.Default;
+                }
+                return styles;
             }
-            return styles;
         }
         finally
         {
@@ -211,7 +216,7 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
     /// <summary>
     /// Reads and returns the stylesheet content for the given style and format.
     /// </summary>
-    public async Task<string> GetStylesheet(string baseResource, string styleId, string format)
+    public Task<string> GetStylesheet(string baseResource, string styleId, string format)
     {
         var stylesheetExtension = FormatToExtensionMapper.GetFileExtensionForFormat(format);
         var stylesheetFilename = $"{_storageOptions.StylesheetFilename}.{format}.{stylesheetExtension}";
@@ -223,8 +228,11 @@ public class StyleFileSystemStorage(IOptionsMonitor<StyleFileSystemStorageOption
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
-            var content = await File.ReadAllTextAsync(stylesheetPath);
-            return content;
+            lock(lockObj)
+            {
+                var content = File.ReadAllText(stylesheetPath);
+                return Task.FromResult(content);
+            }
         }
         finally
         {

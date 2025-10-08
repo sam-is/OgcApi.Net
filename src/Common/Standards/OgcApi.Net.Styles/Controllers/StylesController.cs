@@ -8,26 +8,26 @@ using OgcApi.Net.Styles.Security;
 
 namespace OgcApi.Net.Styles.Controllers;
 
+/// <summary>
+/// Controller that exposes endpoints to manage and retrieve styles and stylesheets for collections.
+/// </summary>
 [EnableCors("OgcApi")]
 [ApiController]
 [Route("api/ogc/collections/{collectionId}/styles")]
 [ApiExplorerSettings(GroupName = "ogc")]
-/// <summary>
-/// Controller that exposes endpoints to manage and retrieve styles and stylesheets for collections.
-/// </summary>
 public class StylesController(
     IStyleStorage stylesStorage,
     IMetadataStorage metadataStorage,
     IStylesAuthorizationService? authorizationService = null) : ControllerBase
 {
+    /// <summary>
+    /// Returns list of styles for the specified collection and the default style identifier.
+    /// </summary>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    /// <summary>
-    /// Returns list of styles for the specified collection and the default style identifier.
-    /// </summary>
     public async Task<ActionResult<OgcStyles>> GetStyles(string collectionId, [FromQuery] string? apiKey = null)
     {
         try
@@ -52,14 +52,14 @@ public class StylesController(
         }
     }
 
+    /// <summary>
+    /// Returns style information (or a stylesheet when format 'f' is provided) for a given style id.
+    /// </summary>
     [HttpGet("{styleId}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    /// <summary>
-    /// Returns style information (or a stylesheet when format 'f' is provided) for a given style id.
-    /// </summary>
     public async Task<ActionResult> GetStyle(string collectionId, string styleId,
         [FromQuery] string? f = null, [FromQuery] string? apiKey = null)
     {
@@ -87,14 +87,14 @@ public class StylesController(
         }
     }
 
+    /// <summary>
+    /// Adds a new stylesheet for the specified collection. Creates metadata for the new style.
+    /// </summary>
     [HttpPost]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    /// <summary>
-    /// Adds a new stylesheet for the specified collection. Creates metadata for the new style.
-    /// </summary>
     public async Task<ActionResult> PostStyle(string collectionId,
         [FromBody] StylesheetAddParameters addStyleParameters, [FromQuery] string? apiKey = null)
     {
@@ -133,15 +133,15 @@ public class StylesController(
         }
     }
 
+    /// <summary>
+    /// Updates the default style for the specified collection.
+    /// </summary>
     [HttpPatch]
     [Consumes("application/merge-patch+json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    /// <summary>
-    /// Updates the default style for the specified collection.
-    /// </summary>
     public async Task<ActionResult> UpdateDefaultStyle(string collectionId,
         [FromBody] DefaultStyle newDefaultStyle, [FromQuery] string? apiKey = null)
     {
@@ -166,15 +166,15 @@ public class StylesController(
         }
     }
 
+    /// <summary>
+    /// Replaces the existing stylesheet content for the given style identifier.
+    /// </summary>
     [HttpPut("{styleId}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    /// <summary>
-    /// Replaces the existing stylesheet content for the given style identifier.
-    /// </summary>
     public async Task<ActionResult> ReplaceStyle(string collectionId, string styleId,
         [FromBody] StylesheetAddParameters newStylesheet, [FromQuery] string? apiKey = null)
     {
@@ -199,14 +199,14 @@ public class StylesController(
         }
     }
 
+    /// <summary>
+    /// Deletes a style
+    /// </summary>
     [HttpDelete("{styleId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    /// <summary>
-    /// Deletes a style
-    /// </summary>
     public async Task<ActionResult> DeleteStyle(string collectionId, string styleId,
         [FromQuery] string? apiKey = null)
     {

@@ -12,7 +12,7 @@ public interface IStylesAuthorizationService
     /// <param name="apiKey">The API key used for authentication</param>
     /// <param name="baseResource">Base resource identifier</param>
     /// <param name="styleId">Style identifier</param>
-    /// <returns>No value returned if authorization is successfull. If authorization failed then the 
+    /// <returns>No value returned if authorization is successful. If authorization failed then the 
     /// method must throw  UnauthorizedAccessException</returns>
     public Task Authorize(string? apiKey = null, string? baseResource = null, string? styleId = null);
 }

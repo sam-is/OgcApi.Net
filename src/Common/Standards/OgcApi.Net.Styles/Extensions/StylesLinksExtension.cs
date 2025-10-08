@@ -8,6 +8,11 @@ namespace OgcApi.Net.Styles.Extensions;
 /// </summary>
 public class StylesLinksExtension : ILinksExtension
 {
+    /// <summary>
+    /// Adds styles-specific landing links to the API landing page.
+    /// </summary>
+    /// <param name="baseUri">Base URL</param>
+    /// <param name="links">A list of links</param>
     public void AddLandingLinks(Uri baseUri, IList<Link> links)
     {
         links.Add(new Link

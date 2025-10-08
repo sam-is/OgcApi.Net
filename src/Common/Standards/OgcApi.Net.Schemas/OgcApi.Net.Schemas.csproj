@@ -8,9 +8,9 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>Schemas standard implementation for OGC API</Title>
-    <Description>Schemas standard implementation for OGC API in ASP.NET Core applications</Description>
-    <Authors>Danila Glazkov, Nikolay Chupshev</Authors>
+    <Title>OGC API - Styles standard implementation</Title>
+    <Description>Styles standard implementation for OGC API in ASP.NET Core applications</Description>
+    <Authors>Aleksei Mishkin</Authors>
     <Company>SAMIS</Company>
     <Product>OgcApi.Net</Product>
     <Copyright>Copyright © 2025 SAMIS</Copyright>

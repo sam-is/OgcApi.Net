@@ -25,13 +25,14 @@ public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStora
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
+            var metadataFileName = _options.MetadataFilename;
             lock (lockObj)
             {
                 if (!Directory.Exists(metadataPath))
                     Directory.CreateDirectory(metadataPath);
 
                 var metadataContent = JsonSerializer.Serialize(metadata);
-                File.WriteAllText(Path.Combine(metadataPath, _options.MetadataFilename), metadataContent);
+                File.WriteAllText(Path.Combine(metadataPath, metadataFileName), metadataContent);
             }
         }
         finally
@@ -55,9 +56,10 @@ public class StyleMetadataFileSystemStorage(IOptionsMonitor<StyleFileSystemStora
         var lockObj = Locks.GetOrAdd(lockKey, _ => new object());
         try
         {
+            var metadataFileName = _options.MetadataFilename;
             lock (lockObj)
             {
-                var metadataContent = File.ReadAllText(Path.Combine(metadataPath, _options.MetadataFilename));
+                var metadataContent = File.ReadAllText(Path.Combine(metadataPath, metadataFileName));
                 var metadata = JsonSerializer.Deserialize<OgcStyleMetadata>(metadataContent) ??
                     throw new Exception("Failed to deserialize style metadata");
                 return Task.FromResult(metadata);
