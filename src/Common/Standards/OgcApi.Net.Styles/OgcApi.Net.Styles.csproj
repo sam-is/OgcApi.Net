@@ -29,4 +29,7 @@
     <ProjectReference Include="..\..\OgcApi.Net\OgcApi.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
