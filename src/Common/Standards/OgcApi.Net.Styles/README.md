@@ -26,7 +26,7 @@ services.AddStyleAuthorization<SampleStylesAuthorizationService>();
 ```
 
 ## Configuration Example
-Example `appsettings.json` snippet (used in the sample application):
+Example `appsettings.json` snippet:
 
 ```json
 "OgcApiStylesOptions": {
