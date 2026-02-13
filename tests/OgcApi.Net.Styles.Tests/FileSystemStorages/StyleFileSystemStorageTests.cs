@@ -118,7 +118,9 @@ public sealed class StyleFileSystemStorageTests : IDisposable
             Content = newStyleContent
         };
         await _styleFileSystemStorage.AddStylesheet(collectionId, addParameters);
-        var availableFormats = await _styleFileSystemStorage.GetAvailableFormats(collectionId, styleId);
+        var availableFormats = (await _styleFileSystemStorage.GetAvailableFormats(collectionId, styleId))
+            .Order()
+            .ToList();
 
         var path = Path.Combine(_options.BaseDirectory, collectionId, styleId, expectedNewStylesheetName);
         var stylesheetExists = File.Exists(path);
