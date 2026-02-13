@@ -14,8 +14,8 @@
   url: /schemas
 - title: Authorization and Security
   url: /authorization
-- title: Swagger Generation
-  url: /swagger-generation
+- title: OpenAPI Generation
+  url: /openapi-generation
 - title: CORS Support
   url: /cors-support
 - title: Coordinate Systems

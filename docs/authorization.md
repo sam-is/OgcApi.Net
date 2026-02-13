@@ -6,6 +6,17 @@ nav_order: 8
 
 # Authorization and Security
 
+## OpenAPI Specification
+
+In the `ogcapi.json` options file, add:
+
+```json
+"UseApiKeyAuthorization": true
+```
+
+This adds a security schema for API key authorization via query parameters (`apiKey`) to the OpenAPI specification.
+
+## SQL Database Authorization
 You can restrict access to features by providing predicates that will be included in the `WHERE` statement for all database queries. To do this, include the following settings in the features storage configuration:
 
 - **ApiKeyPredicateForGet**: Predicate for `GET` requests.
@@ -52,3 +63,36 @@ All predicates can contain the `@ApiKey` parameter, which is used to filter allo
 ```
 
 For more details about the Features API, see [Features API](features-api.md).
+
+## MBTiles Authorization
+
+### Tile Access
+
+To control tile access, implement the delegate:
+
+```csharp
+public delegate bool TileAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey);
+```
+
+Then configure it in `OgcApiOptions` for the desired collection:
+
+```
+collectionOptions..Tiles.Storage.TileAccessDelegate = TilesAccessDelegate
+```
+
+For an example of `TileAccessDelegate`, see [Sample Application](sample-application.md) 
+
+### Feature Access
+To control feature access within tiles, implement the delegate:
+
+```csharp
+public delegate bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey);
+```
+
+Then configure it in `OgcApiOptions` for the desired collection:
+
+```
+collectionOptions..Tiles.Storage.FeatureAccessDelegate = FeatureAccessDelegate
+```
+
+For an example of `FeatureAccessDelegate`, see [Sample Application](sample-application.md) 

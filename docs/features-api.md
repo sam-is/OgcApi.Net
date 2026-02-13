@@ -8,7 +8,7 @@ nav_order: 5
 
 OGC API - Features is a multi-part standard that provides the capability to create, modify, and query spatial data on the web. It specifies requirements and recommendations for APIs that want to follow a standard way of sharing feature data.
 
-OGC API - Features provides access to collections of geospatial data based on OpenAPI 3. Currently, only database providers are supported: SQL Server, PostgreSQL/PostGis, and SQLite with the SpatiaLite extension.
+OGC API - Features provides access to collections of geospatial data based on OpenAPI. Currently, only database providers are supported: SQL Server, PostgreSQL/PostGis, and SQLite with the SpatiaLite extension.
 
 You can publish geospatial data to the web from any table or view. Each table or view is treated as a separate data source.
 

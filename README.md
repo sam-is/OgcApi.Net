@@ -95,19 +95,29 @@ For more details about installation and configuration, see the [Installation Gui
 
 1. Create an ASP.NET Core WebAPI project.
 2. Install the required NuGet packages.
-3. Configure the API in `Startup.cs`:
+3. Configure the API in `Program.cs`:
 
    ```csharp
-   services.AddOgcApi("ogcapi.json");
+   builder.Services.AddOgcApi("ogcapi.json");
    ```
 
 4. Add controllers:
 
    ```csharp
-   services.AddControllers().AddOgcApiControllers();
+   builder.Services.AddControllers().AddOgcApiControllers();
    ```
 
-5. Run the application and access the API at `/api/ogc`.
+5. Run the application and access the OpenApi specification at `/api/ogc/openapi.json`.
+
+6. Optionally, configure Swagger UI or Scalar:
+
+   ```csharp
+   // Swagger UI (default endpoint /swagger)
+   app.UseSwaggerUI(options => options.SwaggerEndpoint("/api/ogc/openapi.json", "OGC API"));
+
+   // Scalar (default endpoint /scalar)
+   app.MapScalarApiReference(options => options.WithOpenApiRoutePattern("api/ogc/openapi.json"));
+   ```
 
 For a full setup guide, refer to the [API Configuration Documentation](https://sam-is.github.io/OgcApi.Net/configuration).
 

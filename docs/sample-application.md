@@ -27,6 +27,8 @@ builder.Services.AddOgcApi("ogcapi.json");
 
 Alternatively, for more advanced scenarios requiring custom logic, you can implement a custom `ConfigureOgcApiOptions` method to handle the configuration programmatically.
 
+The sample application includes both Swagger UI (`/swagger`) and Scalar (`/scalar`) for API visualization and interaction. Note that Swagger UI does not support OpenAPI 3.2 specification.
+
 ## Prerequisites
 
 To run the Aspire-based project, ensure the following:
@@ -61,7 +63,8 @@ bool TilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int t
 ```csharp
 public static bool TilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey) => (collectionId ?? "") switch
 {
-    "PolygonsWithApiKey" when (apiKey ?? "").Equals("qwerty") && tileMatrix is >= 0 and <= 7 =>
+    "MbTilesPolygonsWithApiKey" when !(apiKey ?? "").Equals("qwerty") => false,
+    "MbTilesPolygonsWithApiKey" when tileMatrix is >= 0 and <= 7 =>
         tileMatrix switch
         {
             0 => tileRow == 0 && tileCol == 0,
@@ -91,7 +94,7 @@ bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey)
 ```csharp
 public static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
 {
-    "FeatureAccessData" => apiKey == "admin" ||
+    "MbtilesFeatureAccessData" => apiKey == "admin" ||
         apiKey == "value" && feature.Attributes.Exists("value") &&
         (feature.Attributes["value"] is long and > 1200 ||
         feature.Attributes["value"] is > 100.0) ||

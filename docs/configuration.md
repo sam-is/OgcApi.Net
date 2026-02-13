@@ -22,6 +22,15 @@ This implementation supports automatic API generation from metadata descriptions
    ```csharp
    services.AddControllers().AddOgcApiControllers();
    ```
+6. Optionally, configure Swagger UI or Scalar:
+
+   ```csharp
+   // Swagger UI (default endpoint /swagger)
+   app.UseSwaggerUI(options => options.SwaggerEndpoint("/api/ogc/openapi.json", "OGC API"));
+
+   // Scalar (default endpoint /scalar)
+   app.MapScalarApiReference(options => options.WithOpenApiRoutePattern("api/ogc/openapi.json"));
+   ```
 
 This implementation uses attribute routing. All API endpoints will be accessible via the `/api/ogc` path.
 
@@ -31,6 +40,8 @@ API configuration can be done using a configuration file named `ogcapi.json` or 
 
 ```json
 {
+  "UseApiKeyAuthorization": true,
+  "OpenApiVersion": "3.0",
   "LandingPage": {
     "Title": "OGC API Implementation",
     "Description": "The implementation of the OGC API family of standards that being developed to make it easy for anyone to provide geospatial data to the web",
@@ -39,6 +50,12 @@ API configuration can be done using a configuration file named `ogcapi.json` or 
     "ContactUrl": "https://www.example.com/",
     "ApiDocumentPage": "/api/ogc/index.html",
     "ApiDescriptionPage": "/api/ogc/swagger.json"
+  },
+  "Conformance": {
+    "ConformsTo": [
+      "https://api.com/conform1.html",
+      "https://api.com/conform2.html"
+    ]
   },
   "Collections": {
     "Items": [
@@ -80,14 +97,21 @@ API configuration can be done using a configuration file named `ogcapi.json` or 
 }
 ```
 
+### Root-level configuration options
+
+- **UseApiKeyAuthorization** (boolean, default: `false`)  
+  Adds a security schema for API key authorization via query parameters to the OpenAPI specification.
+- **OpenApiVersion** (string, default: `3.1`)  
+  Specifies the OpenAPI specification version. Supported values: `2.0`, `3.0`, `3.1`, or `3.2`.
+
 The Landing page element provides links to:
 - the API definition (Swagger documentation and JSON description pages)
 - the Conformance declaration (path /conformance, link relation conformance), and
 - the Collections (path /collections, link relation data).
 
-The Conformance declaration states the conformance classes from standards or community specifications identified by a URI that the API conforms to.
+### Landing page options
 
-In the landing page options, you must specify:
+**Required:**
 - **Title**
 - **Description**
 - **Version** - API version
@@ -96,25 +120,29 @@ In the landing page options, you must specify:
 - **ApiDocumentPage** - URL to the API definition (Swagger or custom HTML page with API description)
 - **ApiDescriptionPage** - URL to the API documentation (OpenAPI JSON)
 
-In the landing page options, you can optionally specify:
+**Optional:**
 - **LicenseName** - Name of the license
 - **LicenseUrl** - URL to the license definition
 - **Links** - A list of other links
 
-In collection options, you must specify:
+The Conformance declaration states the conformance classes from standards or community specifications identified by a URI that the API conforms to.
+
+### Collection options
+
+**Required:**
 - **Id** - unique identifier of the collection
 - **Title**
-- Features options that dependents on the data provider
-- Tiles options that dependents on the data provider
+- Features options that depend on the data provider
+- Tiles options that depend on the data provider
 
 Collection can be:
-- features only. All data will be published as GeoJson objects
-- tiles only. Collection in this case will be published as MapBox Vector Tiles
-- hybrid: features + tiles. That means that API consumer can use tiles API for fast data queries and features API to get precise objects coordinates or modify objects
+- **Features only** - All data will be published as GeoJson objects
+- **Tiles only** - Collection in this case will be published as MapBox Vector Tiles
+- **Hybrid (features + tiles)** - API consumer can use tiles API for fast data queries and features API to get precise objects coordinates or modify objects
 
 Tiles and features providers for one collection can be different. For example, you can create collection that publishes features from the database, but the tiles can be taken from mbtiles file.
 
-In collection options, you can optionally specify:
+**Optional:**
 - **Description**
 - **Links** - a list of other links
 - **Extent** - the spatial and/or temporal extent of the collection

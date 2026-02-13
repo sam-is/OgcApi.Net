@@ -22,7 +22,7 @@ Welcome to the OgcApi.Net documentation! This project provides a .NET implementa
 - [Schemas Support](schemas.md)
 - [Styles Support](styles.md)
 - [Authorization and Security](authorization.md)
-- [Swagger Generation](swagger-generation.md)
+- [OpenAPI Generation](openapi-generation.md)
 - [CORS Support](cors-support.md)
 - [Coordinate Systems](coordinate-systems.md)
 - [Sample Application](sample-application.md) 
