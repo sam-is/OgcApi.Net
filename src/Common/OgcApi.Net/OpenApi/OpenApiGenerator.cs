@@ -480,12 +480,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             {
                 openApiDocument.Paths.Add($"/collections/{collection.Id}/items", new OpenApiPathItem
                 {
-                    Operations = OpenApiGenerator.GetFeatureCollectionOperations(collection)
+                    Operations = GetFeatureCollectionOperations(collection)
                 });
 
                 openApiDocument.Paths.Add($"/collections/{collection.Id}/items/{{featureId}}", new OpenApiPathItem
                 {
-                    Operations = OpenApiGenerator.GetFeatureOperations(collection)
+                    Operations = GetFeatureOperations(collection)
                 });
             }
 
@@ -658,7 +658,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ["features"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Array,
-                    Items = OpenApiGenerator.GetFeatureSchema(collectionOptions)
+                    Items = GetFeatureSchema(collectionOptions)
                 },
                 ["links"] = new OpenApiSchema()
                 {
@@ -974,7 +974,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         {
                             ["application/geo+json"] = new OpenApiMediaType()
                             {
-                                Schema = OpenApiGenerator.GetFeatureSchema(collection)
+                                Schema = GetFeatureSchema(collection)
                             }
                         }
                     },
@@ -1042,7 +1042,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     {
                         ["application/geo+json"] = new OpenApiMediaType()
                         {
-                            Schema = OpenApiGenerator.GetFeatureSchema(collection)
+                            Schema = GetFeatureSchema(collection)
                         }
                     }
                 },
@@ -1191,7 +1191,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     {
                         ["application/geo+json"] = new OpenApiMediaType()
                         {
-                            Schema = OpenApiGenerator.GetFeatureSchema(collection)
+                            Schema = GetFeatureSchema(collection)
                         }
                     }
                 },
@@ -1377,7 +1377,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         {
                             ["application/geo+json"] = new OpenApiMediaType()
                             {
-                                Schema = OpenApiGenerator.GetFeatureCollectionSchema(collection)
+                                Schema = GetFeatureCollectionSchema(collection)
                             }
                         }
                     },
@@ -1437,7 +1437,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     {
                         ["application/geo+json"] = new OpenApiMediaType()
                         {
-                            Schema = OpenApiGenerator.GetFeatureSchema(collection)
+                            Schema = GetFeatureSchema(collection)
                         }
                     }
                 },
