@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net8.0</TargetFramework>
-  </PropertyGroup>  
-	
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+  </PropertyGroup>
+
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>Core package for OGC API support in ASP.NET Core applications</Title>
@@ -17,18 +17,18 @@
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-	
-  <ItemGroup>	
-	<Content Include="Crs\SRID.csv">	  
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  <PackageCopyToOutput>true</PackageCopyToOutput>
-	  <PackageFlatten>true</PackageFlatten>
-	</Content>
-	<Content Include="OgcApi.Net.xml">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  <PackageCopyToOutput>true</PackageCopyToOutput>
-	  <PackageFlatten>true</PackageFlatten>
-	</Content>
+
+  <ItemGroup>
+    <Content Include="Crs\SRID.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <PackageFlatten>true</PackageFlatten>
+    </Content>
+    <Content Include="OgcApi.Net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <PackageFlatten>true</PackageFlatten>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,11 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
-	<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	<PackageReference Include="Microsoft.OpenApi" Version="1.6.14" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.OpenApi" Version="3.3.1" />
     <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="4.0.0" />
-    <PackageReference Include="NetTopologySuite.IO.VectorTiles.Mapbox" Version="1.0.3" />
-    <PackageReference Include="ProjNet" Version="2.0.0" />
+    <PackageReference Include="NetTopologySuite.IO.VectorTiles.Mapbox" Version="1.1.0" />
+    <PackageReference Include="ProjNet" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

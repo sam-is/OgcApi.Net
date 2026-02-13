@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,9 +18,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <ItemGroup>  
-	  <PackageReference Include="NetTopologySuite.IO.SpatiaLite" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.17" />
+  <ItemGroup>
+    <PackageReference Include="NetTopologySuite.IO.SpatiaLite" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
