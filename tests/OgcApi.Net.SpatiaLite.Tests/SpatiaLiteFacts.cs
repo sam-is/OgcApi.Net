@@ -3,22 +3,28 @@ using Microsoft.Extensions.Options;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO.VectorTiles.Mapbox;
-using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.SpatiaLite.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace OgcApi.Net.SpatiaLite.Tests;
 
+[SuppressMessage("Usage",
+    "xUnit1033:Test classes decorated with 'Xunit.IClassFixture<TFixture>' or 'Xunit.ICollectionFixture<TFixture>' should add a constructor argument of type TFixture",
+    Justification = "Fixture used only for side effects (database initialization); instance not accessed in tests")]
 public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
 {
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     [Fact]
     public void DatabaseCreation()
     {
@@ -323,7 +329,7 @@ public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
             endDateTime: new DateTime(2022, 1, 1)));
     }
 
-    private static OgcFeature CreateTestFeature(IFeaturesProvider provider)
+    private static OgcFeature CreateTestFeature(SpatiaLiteProvider provider)
     {
         var feature =
             new OgcFeature
@@ -353,7 +359,7 @@ public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
         return feature;
     }
 
-    private static void DeleteTestFeature(IFeaturesProvider provider, string featureId)
+    private static void DeleteTestFeature(SpatiaLiteProvider provider, string featureId)
     {
         provider.DeleteFeature("PolygonsForInsert", featureId);
     }
@@ -546,7 +552,7 @@ public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
         Assert.Equal(featureReplaceFrom.Attributes["Name"], updatedFeature.Attributes["Name"]);
         Assert.Equal(featureReplaceFrom.Attributes["Number"], updatedFeature.Attributes["Number"]);
         Assert.Equal(featureReplaceFrom.Attributes["Date"], DateTime.Parse((string)updatedFeature.Attributes["Date"]));
-        Assert.True(!updatedFeature.Attributes.GetNames().Contains("S"));
+        Assert.False(updatedFeature.Attributes.GetNames().Contains("S"));
 
         DeleteTestFeature(provider, testFeatureId);
     }
@@ -611,7 +617,7 @@ public class SpatiaLiteFacts : IClassFixture<DatabaseFixture>
         await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
 
         using var decompressedStream = new MemoryStream();
-        await decompressor.CopyToAsync(decompressedStream);
+        await decompressor.CopyToAsync(decompressedStream, cancellationToken);
 
         var reader = new MapboxTileReader();
         var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));

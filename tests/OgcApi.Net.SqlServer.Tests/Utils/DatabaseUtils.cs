@@ -29,13 +29,8 @@ public static class DatabaseUtils
     private static string GetInstallSqlScript(string scriptName)
     {
         var assembly = typeof(DatabaseUtils).Assembly;
-        using var stream = assembly.GetManifestResourceStream($"OgcApi.Net.SqlServer.Tests.Utils.{scriptName}.sql");
-
-        if (stream == null)
-        {
-            throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
-        }
-
+        using var stream = assembly.GetManifestResourceStream($"OgcApi.Net.SqlServer.Tests.Utils.{scriptName}.sql")
+            ?? throw new InvalidOperationException($"Database script is not found in the assembly `{assembly}`.");
         using var streamReader = new StreamReader(stream);
         return streamReader.ReadToEnd();
     }

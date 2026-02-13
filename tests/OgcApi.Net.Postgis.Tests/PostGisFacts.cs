@@ -3,22 +3,28 @@ using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO.VectorTiles.Mapbox;
 using Npgsql;
-using OgcApi.Net.DataProviders;
 using OgcApi.Net.Features;
 using OgcApi.Net.Options;
 using OgcApi.Net.PostGis.Tests.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace OgcApi.Net.PostGis.Tests;
 
+[SuppressMessage("Usage",
+    "xUnit1033:Test classes decorated with 'Xunit.IClassFixture<TFixture>' or 'Xunit.ICollectionFixture<TFixture>' should add a constructor argument of type TFixture",
+    Justification = "Fixture used only for side effects (database initialization); instance not accessed in tests")]
 public class PostGisFacts : IClassFixture<DatabaseFixture>
 {
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     [Fact]
     public void DatabaseCreation()
     {
@@ -326,7 +332,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
             endDateTime: new DateTime(2022, 1, 1)));
     }
 
-    private static OgcFeature CreateTestFeature(IFeaturesProvider provider)
+    private static OgcFeature CreateTestFeature(PostGisProvider provider)
     {
         var feature =
             new OgcFeature
@@ -356,7 +362,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         return feature;
     }
 
-    private static void DeleteTestFeature(IFeaturesProvider provider, string featureId)
+    private static void DeleteTestFeature(PostGisProvider provider, string featureId)
     {
         provider.DeleteFeature("PolygonsForInsert", featureId);
     }
@@ -549,7 +555,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         Assert.Equal(featureReplaceFrom.Attributes["name"], updatedFeature.Attributes["name"]);
         Assert.Equal(featureReplaceFrom.Attributes["num"], updatedFeature.Attributes["num"]);
         Assert.Equal(featureReplaceFrom.Attributes["date"], updatedFeature.Attributes["date"]);
-        Assert.True(!updatedFeature.Attributes.GetNames().Contains("s"));
+        Assert.False(updatedFeature.Attributes.GetNames().Contains("s"));
 
         DeleteTestFeature(provider, testFeatureId);
     }
@@ -614,7 +620,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
 
         using var decompressedStream = new MemoryStream();
-        await decompressor.CopyToAsync(decompressedStream);
+        await decompressor.CopyToAsync(decompressedStream, cancellationToken);
 
         var reader = new MapboxTileReader();
         var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));

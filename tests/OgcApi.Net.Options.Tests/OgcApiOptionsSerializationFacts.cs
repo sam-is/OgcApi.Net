@@ -1,4 +1,3 @@
-using OgcApi.Net.Options.Converters;
 using OgcApi.Net.Options.Tests.Utils;
 using System.Linq;
 using System.Text.Json;

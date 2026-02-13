@@ -8,6 +8,7 @@ namespace OgcApi.Net.Styles.Tests.FileSystemStorages;
 [Collection("FileSystemStorageTests")]
 public class StyleMetadataFileSystemStorageTests
 {
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
     private readonly StyleMetadataFileSystemStorage _metadataStorage;
     private readonly StyleFileSystemStorageOptions _options;
 
@@ -43,7 +44,7 @@ public class StyleMetadataFileSystemStorageTests
         Assert.True(File.Exists(metadataPath));
 
         var metadataContentBeforeAdd = JsonSerializer.Serialize(metadata);
-        var metadataContentAfterAdd = await File.ReadAllTextAsync(metadataPath);
+        var metadataContentAfterAdd = await File.ReadAllTextAsync(metadataPath, cancellationToken);
         Assert.Equal(metadataContentBeforeAdd, metadataContentAfterAdd);
     }
 
