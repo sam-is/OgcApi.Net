@@ -14,4 +14,6 @@ public class OgcApiOptions
     public CollectionsOptions Collections { get; set; }
 
     public bool UseApiKeyAuthorization { get; set; }
+
+    public string OpenApiVersion { get; set; } = "3.1";
 }

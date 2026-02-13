@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using NetTopologySuite.Features;
 using OgcApi.Net.DataProviders;
 using System;
@@ -63,4 +64,13 @@ public static class Utils
         var featureHashString = feature.Geometry + string.Join(' ', feature.Attributes.GetNames()) + string.Join(' ', feature.Attributes.GetValues());
         return "\"" + featureHashString.GetHashCode() + "\"";
     }
+
+    public static OpenApiSpecVersion GetOpenApiSpecVersion(string version) => version switch
+    {
+        "2.0" => OpenApiSpecVersion.OpenApi2_0,
+        "3.0" => OpenApiSpecVersion.OpenApi3_0,
+        "3.1" => OpenApiSpecVersion.OpenApi3_1,
+        "3.2" => OpenApiSpecVersion.OpenApi3_2,
+        _ => throw new NotImplementedException($"OpenApi version {version} not valid. Valid version value: 2.0, 3.0, 3.1, 3.2")
+    };
 }

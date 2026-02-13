@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Extensions;
 using OgcApi.Net.Modules;
 using OgcApi.Net.OpenApi;
 using OgcApi.Net.Options;
@@ -12,6 +11,7 @@ using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OgcApi.Net.Controllers;
 
@@ -45,7 +45,7 @@ public class LandingPageController : ControllerBase
         {
             foreach (var failure in ex.Failures)
             {
-                _logger.LogError(failure);
+                _logger.LogError("{failure}", failure);
             }
             throw;
         }
@@ -58,7 +58,7 @@ public class LandingPageController : ControllerBase
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
-        _logger.LogTrace($"Get landing page with parameters {Request.QueryString}");
+        _logger.LogTrace("Get landing page with parameters {query}", Request.QueryString);
 
         List<Link> links;
         if (_apiOptions.LandingPage.Links == null ||
@@ -74,7 +74,7 @@ public class LandingPageController : ControllerBase
                     Type = "application/json",
                     Title = "The landing page"
                 },
-                
+
                 new Link
                 {
                     Href = _apiOptions.LandingPage.ApiDescriptionPage,
@@ -129,12 +129,13 @@ public class LandingPageController : ControllerBase
         };
     }
 
-    [HttpGet("swagger.json")]
-    [Produces("application/vnd.oai.openapi+json;version=3.0")]
+    [HttpGet("openapi.json")]
+    [Produces($"application/openapi+json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult GetOpenApiJson()
+    public async Task<ActionResult> GetOpenApiJson()
     {
-        return Content(_openApiGenerator.GetDocument(Utils.GetBaseUrl(Request, false)).SerializeAsJson(OpenApiSpecVersion.OpenApi3_0), "application/vnd.oai.openapi+json;version=3.0",
-            Encoding.UTF8);
+        var openApiVersion = Utils.GetOpenApiSpecVersion(_apiOptions.OpenApiVersion);
+        var openApi = await _openApiGenerator.GetDocument(Utils.GetBaseUrl(Request, false)).SerializeAsJsonAsync(openApiVersion);
+        return Content(openApi, $"application/openapi+json;version={_apiOptions.OpenApiVersion}", Encoding.UTF8);
     }
 }
