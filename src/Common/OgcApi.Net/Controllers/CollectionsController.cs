@@ -35,7 +35,7 @@ public class CollectionsController : ControllerBase
 
     public CollectionsController(IOptionsMonitor<OgcApiOptions> apiOptions, IServiceProvider serviceProvider, ILoggerFactory logger)
     {
-        if (apiOptions == null) throw new ArgumentNullException(nameof(apiOptions));
+        ArgumentNullException.ThrowIfNull(apiOptions);
 
         _apiOptions = apiOptions.CurrentValue;
         _serviceProvider = serviceProvider;
@@ -50,7 +50,7 @@ public class CollectionsController : ControllerBase
         {
             foreach (var failure in ex.Failures)
             {
-                _logger.LogError(failure);
+                _logger.LogError("{failure}", failure);
             }
             throw;
         }
@@ -815,7 +815,7 @@ public class CollectionsController : ControllerBase
                 await using var compressedStream = new MemoryStream();
                 await using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
 
-                tile.Write(compressor);
+                tile.Write(compressor, 1, 2);
                 compressor.Flush();
                 tileContent = compressedStream.ToArray();
             }

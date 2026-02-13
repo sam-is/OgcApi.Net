@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using OgcApi.Net.Options;
 
 namespace OgcApi.Net.OpenApi.Interfaces;

@@ -1,6 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
-using OgcApi.Net.OpenApi.Interfaces;
+﻿using Microsoft.OpenApi;
 using OgcApi.Net.Options;
+using IOpenApiExtension = OgcApi.Net.OpenApi.Interfaces.IOpenApiExtension;
 
 namespace OgcApi.Net.Styles.Extensions;
 
@@ -14,48 +14,47 @@ public class StylesOpenApiExtension : IOpenApiExtension
         var ogcStyleSchema = new OpenApiSchema
         {
             Title = "OgcStyle",
-            Properties =
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["id"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Style identifier",
                 },
                 ["title"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Style title"
                 },
                 ["links"] = new OpenApiSchema
                 {
-                    Type = "array",
-                    Items = new OpenApiSchema
-                    {
-                        Reference = new OpenApiReference { Id = "Link", Type = ReferenceType.Schema }
-                    }
+                    Type = JsonSchemaType.Array,
+                    Items = new OpenApiSchemaReference("Link")
                 },
             }
         };
+
+        document.Components ??= new OpenApiComponents();
+
+        document.Components.Schemas ??= new Dictionary<string, IOpenApiSchema>();
+
         document.Components.Schemas.Add("OgcStyleSchema", ogcStyleSchema);
 
         var ogcStylesSchema = new OpenApiSchema
         {
             Title = "OgcStyles",
-            Properties =
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["default"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Default style identifier"
                 },
                 ["styles"] = new OpenApiSchema
                 {
-                    Type = "array",
+                    Type = JsonSchemaType.Array,
                     Description = "Styles list",
-                    Items = new OpenApiSchema
-                    {
-                        Reference = new OpenApiReference {Id = "OgcStyleSchema", Type = ReferenceType.Schema }
-                    }
+                    Items = new OpenApiSchemaReference("OgcStyleSchema")
                 }
             }
         };
@@ -64,90 +63,90 @@ public class StylesOpenApiExtension : IOpenApiExtension
         var ogcStyleMetadata = new OpenApiSchema
         {
             Title = "Style metadata",
-            Properties =
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["id"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Style identifier"
                 },
                 ["title"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Title"
                 },
                 ["description"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Description"
                 },
                 ["keywords"] = new OpenApiSchema
                 {
-                    Type = "array",
+                    Type = JsonSchemaType.Array,
                     Description = "Keywords",
                     Items = new OpenApiSchema
                     {
-                        Type = "string"
+                        Type = JsonSchemaType.String
                     }
                 },
                 ["pointOfContact"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Point of Contact"
                 },
                 ["license"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "License"
                 },
                 ["created"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Created",
                     Format = "date-time"
                 },
                 ["updated"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Updated",
                     Format = "date-time"
                 },
                 ["scope"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Scope"
                 },
                 ["version"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Version"
                 },
             }
         };
         document.Components.Schemas.Add("OgcStyleMetadataSchema", ogcStyleMetadata);
 
-        var stylesheetAddParameters= new OpenApiSchema
+        var stylesheetAddParameters = new OpenApiSchema
         {
             Title = "StylesheetAddParameters",
             Description = "Parameters used to add new style for the collection",
-            Properties =
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["styleId"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Style identifier"
                 },
                 ["format"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Stylesheet format"
                 },
                 ["content"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Stylesheet content"
                 },
-                
+
             }
         };
         document.Components.Schemas.Add("StylesheetAddParametersSchema", stylesheetAddParameters);
@@ -156,11 +155,11 @@ public class StylesOpenApiExtension : IOpenApiExtension
         {
             Title = "DefaultStyle",
             Description = "Parameter used to update or retrieve default style for the collection",
-            Properties =
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["default"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "Default style identifier"
                 }
             }
@@ -171,14 +170,14 @@ public class StylesOpenApiExtension : IOpenApiExtension
         {
             document.Paths.Add($"/collections/{collection.Id}/styles", new OpenApiPathItem
             {
-                Operations = new Dictionary<OperationType, OpenApiOperation>
+                Operations = new Dictionary<HttpMethod, OpenApiOperation>
                 {
-                    [OperationType.Get] = new()
+                    [HttpMethod.Get] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title }
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Gets a list of available styles for the collection",
                         Description = "Returns styles for the collection",
                         Responses = new OpenApiResponses
@@ -186,14 +185,11 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, OpenApiMediaType>
+                                Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new()
+                                    ["application/json"] = new OpenApiMediaType()
                                     {
-                                        Schema = new OpenApiSchema
-                                        {
-                                            Reference = new OpenApiReference { Id = "OgcStylesSchema", Type = ReferenceType.Schema }
-                                        }
+                                        Schema = new OpenApiSchemaReference("OgcStyleSchema")
                                     }
                                 },
                             },
@@ -203,24 +199,21 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             },
                         }
                     },
-                    [OperationType.Post] = new()
+                    [HttpMethod.Post] = new()
                     {
-                        Tags =
-                        [
-                          new OpenApiTag { Name = collection.Title}  
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Adds new stylesheet for the collection",
                         Description = "Adds a new style to the styles storage if style does not exist.",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, OpenApiMediaType>
+                            Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new()
+                                ["application/json"] = new OpenApiMediaType()
                                 {
-                                    Schema = new OpenApiSchema
-                                    {
-                                        Reference = new OpenApiReference { Id = "StylesheetAddParametersSchema", Type = ReferenceType.Schema }
-                                    }
+                                    Schema = new OpenApiSchemaReference("StylesheetAddParametersSchema")
                                 }
                             }
                         },
@@ -240,23 +233,20 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             }
                         }
                     },
-                    [OperationType.Patch] = new()
+                    [HttpMethod.Patch] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title}
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Updates default style of the collection",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, OpenApiMediaType>
+                            Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/merge-patch+json"] = new()
+                                ["application/merge-patch+json"] = new OpenApiMediaType()
                                 {
-                                    Schema = new OpenApiSchema
-                                    {
-                                        Reference = new OpenApiReference { Id = "DefaultStyleSchema", Type = ReferenceType.Schema }
-                                    }
+                                    Schema = new OpenApiSchemaReference("DefaultStyleSchema")
                                 }
                             }
                         },
@@ -277,17 +267,18 @@ public class StylesOpenApiExtension : IOpenApiExtension
 
             document.Paths.Add($"/collections/{collection.Id}/styles/{{styleId}}", new OpenApiPathItem
             {
-                Operations = new Dictionary<OperationType, OpenApiOperation>
+                Operations = new Dictionary<HttpMethod, OpenApiOperation>
                 {
-                    [OperationType.Get] = new()
+                    [HttpMethod.Get] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title }
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Gets a style by its identifier",
                         Description = "Returns style info or a stylesheet if format provided",
-                        Parameters = [
+                        Parameters =
+                        [
                             new OpenApiParameter
                             {
                                 Name = "styleId",
@@ -296,7 +287,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = true,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             },
                             new OpenApiParameter
@@ -307,7 +298,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = false,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             },
                         ],
@@ -316,14 +307,11 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, OpenApiMediaType>
+                                Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new()
+                                    ["application/json"] = new OpenApiMediaType()
                                     {
-                                        Schema = new OpenApiSchema
-                                        {
-                                            Reference = new OpenApiReference { Id = "OgcStyleSchema", Type = ReferenceType.Schema }
-                                        }
+                                        Schema = new OpenApiSchemaReference("OgcStyleSchema")
                                     }
                                 },
                             },
@@ -337,23 +325,20 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             },
                         }
                     },
-                    [OperationType.Put] = new()
+                    [HttpMethod.Put] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title}
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Replaces existing stylesheet",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, OpenApiMediaType>
+                            Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new()
+                                ["application/json"] = new OpenApiMediaType()
                                 {
-                                    Schema = new OpenApiSchema
-                                    {
-                                        Reference = new OpenApiReference { Id = "StylesheetAddParametersSchema", Type = ReferenceType.Schema }
-                                    }
+                                    Schema = new OpenApiSchemaReference("StylesheetAddParametersSchema")
                                 }
                             }
                         },
@@ -373,14 +358,15 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             }
                         }
                     },
-                    [OperationType.Delete] = new()
+                    [HttpMethod.Delete] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title}
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Deletes existing style",
-                        Parameters = [
+                        Parameters =
+                        [
                             new OpenApiParameter
                             {
                                 Name = "styleId",
@@ -389,7 +375,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = true,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             },
                         ],
@@ -414,17 +400,18 @@ public class StylesOpenApiExtension : IOpenApiExtension
 
             document.Paths.Add($"/collections/{collection.Id}/styles/{{styleId}}/metadata", new OpenApiPathItem
             {
-                Operations = new Dictionary<OperationType, OpenApiOperation>
+                Operations = new Dictionary<HttpMethod, OpenApiOperation>
                 {
-                    [OperationType.Get] = new()
+                    [HttpMethod.Get] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title }
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Gets a metadata of the style",
                         Description = "Gets a metadata of the style",
-                        Parameters = [
+                        Parameters =
+                        [
                             new OpenApiParameter
                             {
                                 Name = "styleId",
@@ -433,7 +420,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = true,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             }
                         ],
@@ -442,14 +429,11 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, OpenApiMediaType>
+                                Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new()
+                                    ["application/json"] = new OpenApiMediaType()
                                     {
-                                        Schema = new OpenApiSchema
-                                        {
-                                            Reference = new OpenApiReference { Id = "OgcStyleMetadataSchema", Type = ReferenceType.Schema }
-                                        }
+                                        Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                     }
                                 },
                             },
@@ -459,14 +443,15 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             },
                         }
                     },
-                    [OperationType.Put] = new()
+                    [HttpMethod.Put] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title}
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Replaces existing metadata of the style with new metadata instance",
-                        Parameters = [
+                        Parameters =
+                        [
                             new OpenApiParameter
                             {
                                 Name = "styleId",
@@ -475,20 +460,17 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = true,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             },
                         ],
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, OpenApiMediaType>
+                            Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new()
+                                ["application/json"] = new OpenApiMediaType()
                                 {
-                                    Schema = new OpenApiSchema
-                                    {
-                                        Reference = new OpenApiReference { Id = "OgcStyleMetadataSchema", Type = ReferenceType.Schema }
-                                    }
+                                    Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                 }
                             }
                         },
@@ -504,14 +486,15 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             }
                         }
                     },
-                    [OperationType.Patch] = new()
+                    [HttpMethod.Patch] = new()
                     {
-                        Tags =
-                        [
-                            new OpenApiTag { Name = collection.Title}
-                        ],
+                        Tags = new HashSet<OpenApiTagReference>
+                        {
+                            new(collection.Title)
+                        },
                         Summary = "Updates existing metadata",
-                        Parameters = [
+                        Parameters =
+                        [
                             new OpenApiParameter
                             {
                                 Name = "styleId",
@@ -520,20 +503,17 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Required = true,
                                 Schema = new OpenApiSchema
                                 {
-                                    Type = "string",
+                                    Type = JsonSchemaType.String,
                                 }
                             },
                         ],
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, OpenApiMediaType>
+                            Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/merge-patch+json"] = new()
+                                ["application/merge-patch+json"] = new OpenApiMediaType()
                                 {
-                                    Schema = new OpenApiSchema
-                                    {
-                                        Reference = new OpenApiReference { Id = "OgcStyleMetadataSchema", Type = ReferenceType.Schema }
-                                    }
+                                    Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                 }
                             }
                         },
