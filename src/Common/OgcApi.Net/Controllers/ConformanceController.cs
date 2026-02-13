@@ -39,7 +39,7 @@ public class ConformanceController : ControllerBase
         {
             foreach (var failure in ex.Failures)
             {
-                _logger.LogError(failure);
+                _logger.LogError("{failure}", failure);
             }
             throw;
         }

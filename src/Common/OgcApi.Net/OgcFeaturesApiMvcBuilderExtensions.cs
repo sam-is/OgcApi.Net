@@ -11,7 +11,7 @@ public static class OgcFeaturesApiMvcBuilderExtensions
     public static IMvcBuilder AddOgcApiControllers(
         this IMvcBuilder mvcBuilder)
     {
-        if (mvcBuilder == null) throw new ArgumentNullException(nameof(mvcBuilder));
+        ArgumentNullException.ThrowIfNull(mvcBuilder);
 
         return mvcBuilder.AddJsonOptions(options =>
         {

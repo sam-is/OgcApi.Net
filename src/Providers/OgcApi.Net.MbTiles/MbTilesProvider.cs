@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using OgcApi.Net.Crs;
 using OgcApi.Net.DataProviders;
 using OgcApi.Net.Options;
-using OgcApi.Net.Options.Interfaces;
 using OgcApi.Net.Resources;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace OgcApi.Net.MbTiles;
 public class MbTilesProvider(ILogger<MbTilesProvider> logger, IOptionsMonitor<OgcApiOptions> options)
     : ITilesProvider, IPropertyMetadataProvider
 {
-    private readonly ICollectionsOptions _collectionsOptions = options.CurrentValue.Collections;
+    private readonly CollectionsOptions _collectionsOptions = options.CurrentValue.Collections;
 
     private static SqliteConnection GetDbConnection(string fileName)
     {

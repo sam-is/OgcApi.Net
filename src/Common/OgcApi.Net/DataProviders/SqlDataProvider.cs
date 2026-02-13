@@ -24,7 +24,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
 {
     public const int FeaturesMinimumLimit = 1;
 
-    public const int FeaturesMaximumLimit = 10000;
+    public const int FeaturesMaximumLimit = 10001;
 
     protected readonly ILogger Logger = logger;
 
@@ -161,7 +161,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         {
             var errorMessage =
                 $"The limit parameter must be between {FeaturesMinimumLimit} and {FeaturesMaximumLimit}";
-            Logger.LogError(errorMessage);
+            Logger.LogError("{errorMessage}", errorMessage);
             throw new ArgumentOutOfRangeException(nameof(limit), errorMessage);
         }
 
@@ -289,10 +289,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
 
     public string CreateFeature(string collectionId, IFeature feature, string apiKey = null)
     {
-        if (feature == null)
-        {
-            throw new ArgumentNullException(nameof(feature));
-        }
+        ArgumentNullException.ThrowIfNull(feature);
 
         if (feature.Geometry == null)
         {
@@ -340,10 +337,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
 
     public void UpdateFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
     {
-        if (feature == null)
-        {
-            throw new ArgumentNullException(nameof(feature));
-        }
+        ArgumentNullException.ThrowIfNull(feature);
 
         var collectionOptions = (CollectionOptions)CollectionsOptions.GetSourceById(collectionId);
         if (collectionOptions == null)
@@ -390,10 +384,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
 
     public void ReplaceFeature(string collectionId, string featureId, IFeature feature, string apiKey = null)
     {
-        if (feature == null)
-        {
-            throw new ArgumentNullException(nameof(feature));
-        }
+        ArgumentNullException.ThrowIfNull(feature);
 
         if (feature.Geometry == null)
         {
@@ -455,7 +446,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         if (collectionOptions == null)
         {
             Logger.LogTrace(
-                $"The source collection with ID = {collectionId} was not found in the provided options");
+                "The source collection with ID = {collectionId} was not found in the provided options", collectionId);
             throw new ArgumentException($"The source collection with ID = {collectionId} does not exists");
         }
 
@@ -463,7 +454,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         if (sourceOptions == null)
         {
             Logger.LogTrace(
-                $"The source collection with ID = {collectionId} was found, yet it contains no storage options");
+                "The source collection with ID = {collectionId} was found, yet it contains no storage options", collectionId);
             throw new ArgumentException($"The source collection with ID = {collectionId} has no storage options");
         }
 
@@ -562,7 +553,7 @@ public abstract class SqlDataProvider(ILogger logger, IOptionsMonitor<OgcApiOpti
         using var compressedStream = new MemoryStream();
         using var compressor = new GZipStream(compressedStream, CompressionMode.Compress, true);
 
-        vectorTile.Write(compressor, idAttributeName: sourceOptions.IdentifierColumn);
+        vectorTile.Write(compressor, 1, 2, idAttributeName: sourceOptions.IdentifierColumn);
         compressor.Flush();
 
         compressedStream.Seek(0, SeekOrigin.Begin);
