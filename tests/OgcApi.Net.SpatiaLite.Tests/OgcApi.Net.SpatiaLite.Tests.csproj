@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Linux only includes" Condition="$([System.OperatingSystem]::IsLinux()) ">
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.6" />
+    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11" />
   </ItemGroup>
 
   <ItemGroup>
