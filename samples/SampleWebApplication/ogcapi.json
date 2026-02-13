@@ -2,8 +2,8 @@
   "LandingPage": {
     "Title": "OGC API Sample Application",
     "Description": "OGC API Sample Application",
-    "ApiDocumentPage": "https://localhost/api/index.html",
-    "ApiDescriptionPage": "https://localhost/api/ogc/swagger.json",
+    "ApiDocumentPage": "https://localhost:5001/api/index.html",
+    "ApiDescriptionPage": "https://localhost:5001/api/ogc/openapi.json",
     "ContactName": "test",
     "ContactUrl": "http://example.com",
     "LicenseName": "test",

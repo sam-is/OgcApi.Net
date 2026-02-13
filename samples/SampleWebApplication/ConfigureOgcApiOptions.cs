@@ -56,5 +56,6 @@ public class ConfigureOgcApiOptions(IConfiguration configuration) : IConfigureOp
         options.Conformance = ogcApiOptions.Conformance;
         options.LandingPage = ogcApiOptions.LandingPage;
         options.UseApiKeyAuthorization = ogcApiOptions.UseApiKeyAuthorization;
+        options.OpenApiVersion = ogcApiOptions.OpenApiVersion;
     }
 }

@@ -10,6 +10,7 @@ using OgcApi.Net.PostGis;
 using OgcApi.Net.Schemas;
 using OgcApi.Net.SqlServer;
 using SampleWebApplication;
+using Scalar.AspNetCore;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,11 +45,9 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseSwaggerUI(swaggerOptions =>
-{
-    swaggerOptions.RoutePrefix = "api";
-    swaggerOptions.SwaggerEndpoint("ogc/swagger.json", "OGC API");
-});
+app.UseSwaggerUI(swaggerOptions => swaggerOptions.SwaggerEndpoint("/api/ogc/openapi.json", "OGC API"));
+
+app.MapScalarApiReference(options => options.WithOpenApiRoutePattern("api/ogc/openapi.json"));
 
 app.UseRouting();
 app.MapControllers();

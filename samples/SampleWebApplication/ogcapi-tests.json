@@ -3,7 +3,7 @@
     "Title": "OGC API Sample Application",
     "Description": "OGC API Sample Application",
     "ApiDocumentPage": "http://host.docker.internal:5000/api/index.html",
-    "ApiDescriptionPage": "http://host.docker.internal:5000/api/ogc/swagger.json",
+    "ApiDescriptionPage": "http://host.docker.internal:5000/api/ogc/openapi.json",
     "ContactName": "test",
     "ContactUrl": "http://example.com",
     "LicenseName": "test",
@@ -11,6 +11,7 @@
     "Version": "1.0.0"
   },
   "UseApiKeyAuthorization": true,
+  "OpenApiVersion": "3.0",
   "Collections": {
     "Items": [
       {

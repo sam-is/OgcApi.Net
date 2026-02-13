@@ -6,7 +6,8 @@ public static class TileAccess
 {
     public static bool TilesAccessDelegate(string collectionId, int tileMatrix, int tileRow, int tileCol, string apiKey) => (collectionId ?? "") switch
     {
-        "PolygonsWithApiKey" when (apiKey ?? "").Equals("qwerty") && tileMatrix is >= 0 and <= 7 =>
+        "MbTilesPolygonsWithApiKey" when !(apiKey ?? "").Equals("qwerty") => false,
+        "MbTilesPolygonsWithApiKey" when tileMatrix is >= 0 and <= 7 =>
             tileMatrix switch
             {
                 0 => tileRow == 0 && tileCol == 0,
@@ -25,7 +26,7 @@ public static class TileAccess
 
     public static bool FeatureAccessDelegate(string collectionId, IFeature feature, string apiKey) => (collectionId ?? "") switch
     {
-        "FeatureAccessData" => apiKey == "admin" ||
+        "MbtilesFeatureAccessData" => apiKey == "admin" ||
             apiKey == "value" && feature.Attributes.Exists("value") &&
             (feature.Attributes["value"] is long and > 1200 ||
             feature.Attributes["value"] is > 100.0) ||
