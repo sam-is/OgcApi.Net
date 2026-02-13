@@ -25,6 +25,7 @@
     ]
   },
   "UseApiKeyAuthorization": true,
+  "OpenApiVersion": "3.0",
   "Collections": {
     "Links": [
       {

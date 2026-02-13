@@ -50,6 +50,12 @@ public class ConfigurationDeserializationFacts(ConfigurationOptionsFixture fixtu
     }
 
     [Fact]
+    public void OpenApiVersionDeserialization()
+    {
+        Assert.Equal("3.0", fixture.Options.OpenApiVersion);
+    }
+
+    [Fact]
     public void CollectionsLinksDeserialization()
     {
         Assert.NotNull(fixture.Options.Collections);

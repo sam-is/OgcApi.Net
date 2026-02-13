@@ -18,10 +18,10 @@ public static class OptionsUtils
 
     public static readonly JsonSerializerOptions SerializerOptions = new()
     {
-        Converters = 
-        { 
-            new FeaturesSourceOptionsConverter(), 
-            new TilesSourceOptionsConverter() 
+        Converters =
+        {
+            new FeaturesSourceOptionsConverter(),
+            new TilesSourceOptionsConverter()
         },
         TypeInfoResolver = new DefaultJsonTypeInfoResolver
         {
@@ -70,6 +70,7 @@ public static class OptionsUtils
                 ]
             },
             UseApiKeyAuthorization = true,
+            OpenApiVersion = "3.0",
             Collections = new CollectionsOptions
             {
                 Links =
