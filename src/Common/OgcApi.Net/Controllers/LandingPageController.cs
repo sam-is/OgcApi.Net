@@ -54,7 +54,7 @@ public class LandingPageController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public LandingPage Get()
+    public ActionResult<LandingPage> Get()
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
@@ -121,18 +121,18 @@ public class LandingPageController : ControllerBase
             links = _apiOptions.LandingPage.Links;
         }
 
-        return new LandingPage
+        return Ok(new LandingPage
         {
             Title = _apiOptions.LandingPage.Title,
             Description = _apiOptions.LandingPage.Description,
             Links = links
-        };
+        });
     }
 
     [HttpGet("openapi.json")]
     [Produces($"application/openapi+json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetOpenApiJson()
+    public async Task<IActionResult> GetOpenApiJson()
     {
         var openApiVersion = Utils.GetOpenApiSpecVersion(_apiOptions.OpenApiVersion);
         var openApi = await _openApiGenerator.GetDocument(Utils.GetBaseUrl(Request, false)).SerializeAsJsonAsync(openApiVersion);

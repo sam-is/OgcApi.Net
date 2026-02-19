@@ -59,7 +59,7 @@ public class CollectionsController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public Collections Get()
+    public ActionResult<Collections> Get()
     {
         var baseUri = Utils.GetBaseUrl(Request);
 
@@ -97,11 +97,11 @@ public class CollectionsController : ControllerBase
             links = _apiOptions.Collections.Links;
         }
 
-        return new Collections
+        return Ok(new Collections
         {
             Links = links,
             Items = collections
-        };
+        });
     }
 
     private Collection GetCollectionMetadata(Uri uri, CollectionOptions collectionOptions)
@@ -208,7 +208,7 @@ public class CollectionsController : ControllerBase
         _logger.LogTrace("Get collection items with parameters {query}", Request.QueryString);
 
         var collectionOptions = _apiOptions.Collections.Items.Find(x => x.Id == collectionId);
-        if (collectionOptions is {Features: not null})
+        if (collectionOptions is { Features: not null })
         {
             var validParams = new List<string>
             {
@@ -286,7 +286,7 @@ public class CollectionsController : ControllerBase
             try
             {
                 Dictionary<string, string> propertyFilter = null;
-                if (properties is {Count: > 0})
+                if (properties is { Count: > 0 })
                 {
                     propertyFilter = Request.Query.Keys.Where(properties.Contains)
                         .ToDictionary(key => key, key => Request.Query[key].First());
@@ -301,14 +301,14 @@ public class CollectionsController : ControllerBase
                     dateTimeInterval.End,
                     apiKey,
                     propertyFilter);
-                
+
                 var nextPageExists = features.Count > limit;
-                
+
                 if (nextPageExists)
                 {
                     features.RemoveAt(limit);
                 }
-                
+
                 features.Transform(collectionOptions.Features.StorageCrs, crs);
 
                 features.Links =

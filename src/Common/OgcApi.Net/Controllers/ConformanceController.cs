@@ -48,15 +48,15 @@ public class ConformanceController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public Conformance Get()
+    public ActionResult<Conformance> Get()
     {
         _logger.LogTrace("Get conformance with parameters {queryString}", Request.QueryString);
 
         if (_apiOptions?.Conformance?.ConformsTo != null && _apiOptions.Conformance.ConformsTo.Count != 0)
-            return new Conformance
+            return Ok(new Conformance
             {
                 ConformsTo = _apiOptions.Conformance.ConformsTo
-            };
+            });
 
         var conformsTo = new List<Uri>();
 
@@ -78,9 +78,9 @@ public class ConformanceController : ControllerBase
         foreach (var linkExtension in _linksExtensions)
             conformsTo.AddRange(linkExtension.GetConformsTo());
 
-        return new Conformance
+        return Ok(new Conformance
         {
             ConformsTo = conformsTo
-        };
+        });
     }
 }

@@ -71,6 +71,6 @@ public static class Utils
         "3.0" => OpenApiSpecVersion.OpenApi3_0,
         "3.1" => OpenApiSpecVersion.OpenApi3_1,
         "3.2" => OpenApiSpecVersion.OpenApi3_2,
-        _ => throw new NotImplementedException($"OpenApi version {version} not valid. Valid version value: 2.0, 3.0, 3.1, 3.2")
+        _ => throw new NotImplementedException($"OpenApi version {version} is not valid. Valid version values are: 2.0, 3.0, 3.1, 3.2")
     };
 }

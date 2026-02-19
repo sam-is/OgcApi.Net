@@ -194,17 +194,17 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ["id"] = new OpenApiSchema()
                             {
                                 Type = JsonSchemaType.String,
-                                Description = "identifier of the collection used, for example, in URIs"
+                                Description = "An identifier of the collection used, for example, in URIs"
                             },
                             ["title"] = new OpenApiSchema()
                             {
                                 Type = JsonSchemaType.String,
-                                Description = "human readable title of the collection"
+                                Description = "A human-readable title of the collection"
                             },
                             ["description"] = new OpenApiSchema()
                             {
                                 Type = JsonSchemaType.String,
-                                Description = "a description of the features in the collection"
+                                Description = "A description of the features in the collection"
                             },
                             ["links"] = new OpenApiSchema()
                             {
@@ -321,12 +321,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ["itemType"] = new OpenApiSchema()
                             {
                                 Type = JsonSchemaType.String,
-                                Description = "indicator about the type of the items in the collection (the default value is 'feature')",
+                                Description = "An indicator about the type of the items in the collection (the default value is 'feature')",
                                 Default = "feature"
                             },
                             ["crs"] = new OpenApiSchema()
                             {
-                                Description = "the list of coordinate reference systems supported by the service",
+                                Description = "The list of coordinate reference systems supported by the service",
                                 Type = JsonSchemaType.Array,
                                 Items = new OpenApiSchema { Type = JsonSchemaType.String },
                                 Default = new JsonArray() { "http://www.opengis.net/def/crs/OGC/1.3/CRS84" }
