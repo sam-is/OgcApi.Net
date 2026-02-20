@@ -130,7 +130,7 @@ public class LandingPageController : ControllerBase
     }
 
     [HttpGet("openapi.json")]
-    [Produces($"application/openapi+json")]
+    [Produces("application/openapi+json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOpenApiJson()
     {

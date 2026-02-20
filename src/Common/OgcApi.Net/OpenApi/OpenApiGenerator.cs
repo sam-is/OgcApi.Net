@@ -58,16 +58,16 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                     Description = "Success",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchema
                                             {
                                                 Type = JsonSchemaType.Object,
                                                 Properties = new Dictionary<string, IOpenApiSchema>
                                                 {
-                                                    ["title"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                                                    ["description"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                                                    ["links"] = new OpenApiSchema()
+                                                    ["title"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                                                    ["description"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                                                    ["links"] = new OpenApiSchema
                                                     {
                                                         Type = JsonSchemaType.Array,
                                                         Items = new OpenApiSchemaReference("Link")
@@ -95,19 +95,19 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             },
                             Responses = new OpenApiResponses
                             {
-                                ["200"] = new OpenApiResponse()
+                                ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchema
                                             {
                                                 Type = JsonSchemaType.Object,
                                                 Properties = new Dictionary<string, IOpenApiSchema>
                                                 {
-                                                    ["conformsTo"] = new OpenApiSchema()
+                                                    ["conformsTo"] = new OpenApiSchema
                                                     {
                                                         Type = JsonSchemaType.Array,
                                                         Items = new OpenApiSchema { Type = JsonSchemaType.String }
@@ -122,7 +122,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         }
                     }
                 },
-                ["/collections"] = new OpenApiPathItem()
+                ["/collections"] = new OpenApiPathItem
                 {
                     Operations = new Dictionary<HttpMethod, OpenApiOperation>
                     {
@@ -135,24 +135,24 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             },
                             Responses = new OpenApiResponses
                             {
-                                ["200"] = new OpenApiResponse()
+                                ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchema
                                             {
                                                 Type = JsonSchemaType.Object,
                                                 Properties = new Dictionary<string, IOpenApiSchema>
                                                 {
-                                                    ["links"] = new OpenApiSchema()
+                                                    ["links"] = new OpenApiSchema
                                                     {
                                                         Type = JsonSchemaType.Array,
                                                         Items = new OpenApiSchemaReference("Link")
                                                     },
-                                                    ["collections"] = new OpenApiSchema()
+                                                    ["collections"] = new OpenApiSchema
                                                     {
                                                         Type = JsonSchemaType.Array,
                                                         Items = new OpenApiSchemaReference("Collection")
@@ -172,58 +172,58 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             {
                 Schemas = new Dictionary<string, IOpenApiSchema>
                 {
-                    ["Link"] = new OpenApiSchema()
+                    ["Link"] = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
                         Properties = new Dictionary<string, IOpenApiSchema>
                         {
-                            ["href"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                            ["rel"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                            ["type"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                            ["hreflang"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                            ["title"] = new OpenApiSchema() { Type = JsonSchemaType.String },
-                            ["length"] = new OpenApiSchema() { Type = JsonSchemaType.String },
+                            ["href"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                            ["rel"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                            ["type"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                            ["hreflang"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                            ["title"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                            ["length"] = new OpenApiSchema { Type = JsonSchemaType.String },
                         },
                         Required = new HashSet<string> { "href", "rel" }
                     },
-                    ["Collection"] = new OpenApiSchema()
+                    ["Collection"] = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
                         Properties = new Dictionary<string, IOpenApiSchema>
                         {
-                            ["id"] = new OpenApiSchema()
+                            ["id"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
                                 Description = "An identifier of the collection used, for example, in URIs"
                             },
-                            ["title"] = new OpenApiSchema()
+                            ["title"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
                                 Description = "A human-readable title of the collection"
                             },
-                            ["description"] = new OpenApiSchema()
+                            ["description"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
                                 Description = "A description of the features in the collection"
                             },
-                            ["links"] = new OpenApiSchema()
+                            ["links"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Array,
                                 Items = new OpenApiSchemaReference("Link")
                             },
-                            ["extent"] = new OpenApiSchema()
+                            ["extent"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Object,
                                 Description = "The extent of the features in the collection",
                                 Properties = new Dictionary<string, IOpenApiSchema>
                                 {
-                                    ["spatial"] = new OpenApiSchema()
+                                    ["spatial"] = new OpenApiSchema
                                     {
                                         Type = JsonSchemaType.Object,
                                         Description = "The spatial extent of the features in the collection",
                                         Properties = new Dictionary<string, IOpenApiSchema>
                                         {
-                                            ["bbox"] = new OpenApiSchema()
+                                            ["bbox"] = new OpenApiSchema
                                             {
                                                 Description = "One or more bounding boxes that describe the spatial extent of the dataset",
                                                 Type = JsonSchemaType.Array,
@@ -262,7 +262,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                                     }
                                                 }
                                             },
-                                            ["crs"] = new OpenApiSchema()
+                                            ["crs"] = new OpenApiSchema
                                             {
                                                 Description = "Coordinate reference system of the coordinates in the spatial extent\n" +
                                                               "(property `bbox`). The default reference system is WGS 84 longitude/latitude",
@@ -272,13 +272,13 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                             }
                                         }
                                     },
-                                    ["temporal"] = new OpenApiSchema()
+                                    ["temporal"] = new OpenApiSchema
                                     {
                                         Type = JsonSchemaType.Object,
                                         Description = "The temporal extent of the features in the collection",
                                         Properties = new Dictionary<string, IOpenApiSchema>
                                         {
-                                            ["interval"] = new OpenApiSchema()
+                                            ["interval"] = new OpenApiSchema
                                             {
                                                 Description = "One or more time intervals that describe the temporal extent of the dataset.\n" +
                                                               "The value `null` is supported and indicates an open time interval",
@@ -304,7 +304,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                                     }
                                                 }
                                             },
-                                            ["trs"] = new OpenApiSchema()
+                                            ["trs"] = new OpenApiSchema
                                             {
                                                 Description = "Coordinate reference system of the coordinates in the temporal extent\n" +
                                                               "(property `interval`). The default reference system is the Gregorian calendar.\n" +
@@ -318,78 +318,78 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                     }
                                 }
                             },
-                            ["itemType"] = new OpenApiSchema()
+                            ["itemType"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
                                 Description = "An indicator about the type of the items in the collection (the default value is 'feature')",
                                 Default = "feature"
                             },
-                            ["crs"] = new OpenApiSchema()
+                            ["crs"] = new OpenApiSchema
                             {
                                 Description = "The list of coordinate reference systems supported by the service",
                                 Type = JsonSchemaType.Array,
                                 Items = new OpenApiSchema { Type = JsonSchemaType.String },
-                                Default = new JsonArray() { "http://www.opengis.net/def/crs/OGC/1.3/CRS84" }
+                                Default = new JsonArray { "http://www.opengis.net/def/crs/OGC/1.3/CRS84" }
                             }
                         },
                         Required = new HashSet<string> { "id", "links" }
                     },
-                    ["ProblemDetails"] = new OpenApiSchema()
+                    ["ProblemDetails"] = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
                         Properties = new Dictionary<string, IOpenApiSchema>
                         {
-                            ["type"] = new OpenApiSchema()
+                            ["type"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String | JsonSchemaType.Null
                             },
-                            ["title"] = new OpenApiSchema()
+                            ["title"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String | JsonSchemaType.Null
                             },
-                            ["status"] = new OpenApiSchema()
+                            ["status"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Integer | JsonSchemaType.Null,
                                 Format = "int32"
                             },
-                            ["detail"] = new OpenApiSchema()
+                            ["detail"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String | JsonSchemaType.Null
                             },
-                            ["instance"] = new OpenApiSchema()
+                            ["instance"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String | JsonSchemaType.Null
                             }
                         }
                     },
-                    ["Tileset"] = new OpenApiSchema()
+                    ["Tileset"] = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
                         Properties = new Dictionary<string, IOpenApiSchema>
                         {
-                            ["title"] = new OpenApiSchema()
+                            ["title"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String
                             },
-                            ["tileMatrixSetURI"] = new OpenApiSchema()
+                            ["tileMatrixSetURI"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String
                             },
-                            ["crs"] = new OpenApiSchema()
+                            ["crs"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String
                             },
-                            ["dataType"] = new OpenApiSchema()
+                            ["dataType"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
                                 Enum = ["vector"]
                             },
-                            ["links"] = new OpenApiSchema()
+                            ["links"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Array,
                                 Items = new OpenApiSchemaReference("Link")
                             },
-                            ["tileMatrixSetLimits"] = new OpenApiSchema()
+                            ["tileMatrixSetLimits"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Array,
                                 Items = new OpenApiSchema
@@ -398,27 +398,27 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                     Type = JsonSchemaType.Object,
                                     Properties = new Dictionary<string, IOpenApiSchema>
                                     {
-                                        ["tileMatrix"] = new OpenApiSchema()
+                                        ["tileMatrix"] = new OpenApiSchema
                                         {
                                             Type = JsonSchemaType.Integer,
                                             Format = "int32"
                                         },
-                                        ["minTileRow"] = new OpenApiSchema()
+                                        ["minTileRow"] = new OpenApiSchema
                                         {
                                             Type = JsonSchemaType.Integer,
                                             Format = "int32"
                                         },
-                                        ["maxTileRow"] = new OpenApiSchema()
+                                        ["maxTileRow"] = new OpenApiSchema
                                         {
                                             Type = JsonSchemaType.Integer,
                                             Format = "int32"
                                         },
-                                        ["minTileCol"] = new OpenApiSchema()
+                                        ["minTileCol"] = new OpenApiSchema
                                         {
                                             Type = JsonSchemaType.Integer,
                                             Format = "int32"
                                         },
-                                        ["maxTileCol"] = new OpenApiSchema()
+                                        ["maxTileCol"] = new OpenApiSchema
                                         {
                                             Type = JsonSchemaType.Integer,
                                             Format = "int32"
@@ -449,23 +449,23 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         Description = collection.Description,
                         Responses = new OpenApiResponses
                         {
-                            ["200"] = new OpenApiResponse()
+                            ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("Collection")
                                     }
                                 }
                             },
-                            ["404"] = new OpenApiResponse()
+                            ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("ProblemDetails")
                                     }
@@ -504,12 +504,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Summary = "Provides a list of available tilesets for a resource",
                             Responses = new OpenApiResponses
                             {
-                                ["200"] = new OpenApiResponse()
+                                ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchema
                                             {
@@ -519,12 +519,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                         }
                                     }
                                 },
-                                ["404"] = new OpenApiResponse()
+                                ["404"] = new OpenApiResponse
                                 {
                                     Description = "Not Found",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchemaReference("ProblemDetails")
                                         }
@@ -548,7 +548,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Summary = "Retrieve the vector tile for the specified tile matrix, row, and column",
                             Parameters =
                             [
-                                new OpenApiParameter()
+                                new OpenApiParameter
                                 {
                                     Name = "tileMatrix",
                                     Description = "Identifier of the tile matrix (representing a zoom level, a.k.a. a scale) listed in the TileMatrixSet definition",
@@ -560,7 +560,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                         Format = "int32"
                                     }
                                 },
-                                new OpenApiParameter()
+                                new OpenApiParameter
                                 {
                                     Name = "tileRow",
                                     Description = "A non-negative integer between 0 and the MatrixHeight - 1. If there is a TileMatrixSetLimits the value is limited between MinTileRow and MaxTileRow",
@@ -572,7 +572,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                         Format = "int32"
                                     }
                                 },
-                                new OpenApiParameter()
+                                new OpenApiParameter
                                 {
                                     Name = "tileCol",
                                     Description = "A non-negative integer between 0 and the MatrixWidth - 1. If there is a TileMatrixSetLimits the value is limited between MinTileCol and MaxTileCol",
@@ -587,12 +587,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ],
                             Responses = new OpenApiResponses
                             {
-                                ["200"] = new OpenApiResponse()
+                                ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/vnd.mapbox-vector-tile"] = new OpenApiMediaType()
+                                        ["application/vnd.mapbox-vector-tile"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchema
                                             {
@@ -602,12 +602,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                         }
                                     }
                                 },
-                                ["404"] = new OpenApiResponse()
+                                ["404"] = new OpenApiResponse
                                 {
                                     Description = "Not Found",
                                     Content = new Dictionary<string, IOpenApiMediaType>
                                     {
-                                        ["application/json"] = new OpenApiMediaType()
+                                        ["application/json"] = new OpenApiMediaType
                                         {
                                             Schema = new OpenApiSchemaReference("ProblemDetails")
                                         }
@@ -631,7 +631,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 }
             });
 
-            openApiDocument.AddComponent("ApiKey", new OpenApiSecurityScheme()
+            openApiDocument.AddComponent("ApiKey", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.ApiKey,
                 In = ParameterLocation.Query,
@@ -654,28 +654,28 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "features" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema() { Enum = ["FeatureCollection"] },
-                ["features"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema { Enum = ["FeatureCollection"] },
+                ["features"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = GetFeatureSchema(collectionOptions)
                 },
-                ["links"] = new OpenApiSchema()
+                ["links"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchemaReference("Link")
                 },
-                ["timeStamp"] = new OpenApiSchema()
+                ["timeStamp"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Format = "date-time"
                 },
-                ["numberMatched"] = new OpenApiSchema()
+                ["numberMatched"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Integer,
                     Minimum = "0"
                 },
-                ["numberReturned"] = new OpenApiSchema()
+                ["numberReturned"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Integer,
                     Minimum = "0"
@@ -694,22 +694,22 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "geometry", "properties" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema() { Enum = ["Feature"] },
+                ["type"] = new OpenApiSchema { Enum = ["Feature"] },
                 ["geometry"] = GetGeometrySchema(collectionSourceOptions?.GeometryGeoJsonType),
-                ["properties"] = new OpenApiSchema()
+                ["properties"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Object | JsonSchemaType.Null,
                     Properties = collectionSourceOptions?.Properties?.ToDictionary(key => key, _ => new OpenApiSchema() as IOpenApiSchema)
                 },
-                ["id"] = new OpenApiSchema()
+                ["id"] = new OpenApiSchema
                 {
                     OneOf =
                     [
-                        new OpenApiSchema() { Type = JsonSchemaType.String },
-                        new OpenApiSchema() { Type = JsonSchemaType.Integer }
+                        new OpenApiSchema { Type = JsonSchemaType.String },
+                        new OpenApiSchema { Type = JsonSchemaType.Integer }
                     ]
                 },
-                ["links"] = new OpenApiSchema()
+                ["links"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchemaReference("Link")
@@ -761,12 +761,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["Point"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     MinItems = 2,
@@ -784,12 +784,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["MultiPoint"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema
@@ -811,12 +811,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["LineString"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     MinItems = 2,
@@ -839,12 +839,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["MultiLineString"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema
@@ -871,12 +871,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["Polygon"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema
@@ -903,12 +903,12 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
             Required = new HashSet<string> { "type", "coordinates" },
             Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["type"] = new OpenApiSchema()
+                ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Enum = ["MultiPolygon"]
                 },
-                ["coordinates"] = new OpenApiSchema()
+                ["coordinates"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema
@@ -945,7 +945,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 Description = $"Fetch the feature with id featureId in the feature collection with id {collection.Id}.",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "featureId",
                         Description = "Identifier of a feature",
@@ -953,7 +953,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         In = ParameterLocation.Path,
                         Schema = new OpenApiSchema { Type = JsonSchemaType.String }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "crs",
                         Description = "The coordinates of all geometry-valued properties in the response document will be presented in the requested CRS",
@@ -967,34 +967,34 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 Responses = new OpenApiResponses
                 {
-                    ["200"] = new OpenApiResponse()
+                    ["200"] = new OpenApiResponse
                     {
                         Description = "Success",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/geo+json"] = new OpenApiMediaType()
+                            ["application/geo+json"] = new OpenApiMediaType
                             {
                                 Schema = GetFeatureSchema(collection)
                             }
                         }
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
@@ -1016,7 +1016,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 Description = "Replace an existing resource",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "featureId",
                         Description = "Identifier of a feature to replace",
@@ -1024,7 +1024,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         In = ParameterLocation.Path,
                         Schema = new OpenApiSchema { Type = JsonSchemaType.String }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "crs",
                         Description = "The coordinates of all geometry-valued properties in the request document will be converted from the requested CRS",
@@ -1040,7 +1040,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 {
                     Content = new Dictionary<string, IOpenApiMediaType>
                     {
-                        ["application/geo+json"] = new OpenApiMediaType()
+                        ["application/geo+json"] = new OpenApiMediaType
                         {
                             Schema = GetFeatureSchema(collection)
                         }
@@ -1048,38 +1048,38 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 },
                 Responses = new OpenApiResponses
                 {
-                    ["200"] = new OpenApiResponse()
+                    ["200"] = new OpenApiResponse
                     {
                         Description = "Success"
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["401"] = new OpenApiResponse()
+                    ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
@@ -1101,7 +1101,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 Description = "Remove a resource from a collection",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "featureId",
                         Description = "Identifier of a feature to delete",
@@ -1112,38 +1112,38 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 Responses = new OpenApiResponses
                 {
-                    ["200"] = new OpenApiResponse()
+                    ["200"] = new OpenApiResponse
                     {
                         Description = "Success"
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["401"] = new OpenApiResponse()
+                    ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
@@ -1165,7 +1165,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 Description = "Modify an existing resource",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "featureId",
                         Description = "Identifier of a feature to update",
@@ -1173,7 +1173,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                         In = ParameterLocation.Path,
                         Schema = new OpenApiSchema { Type = JsonSchemaType.String }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "crs",
                         Description = "The coordinates of all geometry-valued properties in the request document will be converted from the requested CRS",
@@ -1189,7 +1189,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 {
                     Content = new Dictionary<string, IOpenApiMediaType>
                     {
-                        ["application/geo+json"] = new OpenApiMediaType()
+                        ["application/geo+json"] = new OpenApiMediaType
                         {
                             Schema = GetFeatureSchema(collection)
                         }
@@ -1197,38 +1197,38 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 },
                 Responses = new OpenApiResponses
                 {
-                    ["200"] = new OpenApiResponse()
+                    ["200"] = new OpenApiResponse
                     {
                         Description = "Success"
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["401"] = new OpenApiResponse()
+                    ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
@@ -1256,7 +1256,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                               "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema.",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "limit",
                         Description = "Limits the number of items that are presented in the response document",
@@ -1272,7 +1272,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Maximum = "10000"
                         }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "offset",
                         Description = "Offset for requesting objects. The resulting response will contain a link for the next features page",
@@ -1285,7 +1285,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Default = 0
                         }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "bbox",
                         Description = @"Only features that have a geometry that intersects the bounding box are selected.\n" +
@@ -1321,7 +1321,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             }
                         }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "bbox-crs",
                         Description = "Parameter may be used to assert the CRS used for the coordinate values of the bbox parameter. " +
@@ -1333,7 +1333,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Format = "uri"
                         }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "datetime",
                         Description = "Either a date-time or an interval, open or closed. Date and time expressions\n" +
@@ -1355,7 +1355,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             Type = JsonSchemaType.String
                         }
                     },
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "crs",
                         Description = "The coordinates of all geometry-valued properties in the response document will be presented in the requested CRS",
@@ -1370,34 +1370,34 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 Responses = new OpenApiResponses
                 {
-                    ["200"] = new OpenApiResponse()
+                    ["200"] = new OpenApiResponse
                     {
                         Description = "Success",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/geo+json"] = new OpenApiMediaType()
+                            ["application/geo+json"] = new OpenApiMediaType
                             {
                                 Schema = GetFeatureCollectionSchema(collection)
                             }
                         }
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
@@ -1419,7 +1419,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 Description = "Add a new resource to a collection",
                 Parameters =
                 [
-                    new OpenApiParameter()
+                    new OpenApiParameter
                     {
                         Name = "crs",
                         Description = "The coordinates of all geometry-valued properties in the request document will be converted from the requested CRS",
@@ -1435,7 +1435,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 {
                     Content = new Dictionary<string, IOpenApiMediaType>
                     {
-                        ["application/geo+json"] = new OpenApiMediaType()
+                        ["application/geo+json"] = new OpenApiMediaType
                         {
                             Schema = GetFeatureSchema(collection)
                         }
@@ -1443,7 +1443,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 },
                 Responses = new OpenApiResponses
                 {
-                    ["201"] = new OpenApiResponse()
+                    ["201"] = new OpenApiResponse
                     {
                         Description = "Success",
                         Headers = new Dictionary<string, IOpenApiHeader>
@@ -1451,34 +1451,34 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ["Location"] = new OpenApiHeader()
                         }
                     },
-                    ["400"] = new OpenApiResponse()
+                    ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["401"] = new OpenApiResponse()
+                    ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }
                         }
                     },
-                    ["404"] = new OpenApiResponse()
+                    ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
                         Content = new Dictionary<string, IOpenApiMediaType>
                         {
-                            ["application/json"] = new OpenApiMediaType()
+                            ["application/json"] = new OpenApiMediaType
                             {
                                 Schema = new OpenApiSchemaReference("ProblemDetails")
                             }

@@ -187,7 +187,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcStyleSchema")
                                     }
@@ -211,7 +211,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new OpenApiMediaType()
+                                ["application/json"] = new OpenApiMediaType
                                 {
                                     Schema = new OpenApiSchemaReference("StylesheetAddParametersSchema")
                                 }
@@ -244,7 +244,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/merge-patch+json"] = new OpenApiMediaType()
+                                ["application/merge-patch+json"] = new OpenApiMediaType
                                 {
                                     Schema = new OpenApiSchemaReference("DefaultStyleSchema")
                                 }
@@ -309,7 +309,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcStyleSchema")
                                     }
@@ -336,7 +336,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new OpenApiMediaType()
+                                ["application/json"] = new OpenApiMediaType
                                 {
                                     Schema = new OpenApiSchemaReference("StylesheetAddParametersSchema")
                                 }
@@ -431,7 +431,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                     }
@@ -468,7 +468,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/json"] = new OpenApiMediaType()
+                                ["application/json"] = new OpenApiMediaType
                                 {
                                     Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                 }
@@ -511,7 +511,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         {
                             Content = new Dictionary<string, IOpenApiMediaType>
                             {
-                                ["application/merge-patch+json"] = new OpenApiMediaType()
+                                ["application/merge-patch+json"] = new OpenApiMediaType
                                 {
                                     Schema = new OpenApiSchemaReference("OgcStyleMetadataSchema")
                                 }

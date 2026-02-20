@@ -11,7 +11,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
         var defaultSchema = new OpenApiSchema
         {
             Title = "Schema",
-            Properties = new Dictionary<string, IOpenApiSchema>()
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["$schema"] = new OpenApiSchema
                 {
@@ -58,7 +58,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                     AdditionalProperties = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
-                        Properties = new Dictionary<string, IOpenApiSchema>()
+                        Properties = new Dictionary<string, IOpenApiSchema>
                         {
                             ["type"] = new OpenApiSchema
                             {
@@ -121,7 +121,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcJsonSchema")
                                     }
@@ -132,7 +132,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Not Found",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("ProblemDetails")
                                     }
@@ -162,7 +162,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcJsonSchema")
                                     }
@@ -173,7 +173,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Not Found",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("ProblemDetails")
                                     }
@@ -203,7 +203,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Success",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("OgcJsonSchema")
                                     }
@@ -214,7 +214,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                                 Description = "Not Found",
                                 Content = new Dictionary<string, IOpenApiMediaType>
                                 {
-                                    ["application/json"] = new OpenApiMediaType()
+                                    ["application/json"] = new OpenApiMediaType
                                     {
                                         Schema = new OpenApiSchemaReference("ProblemDetails")
                                     }

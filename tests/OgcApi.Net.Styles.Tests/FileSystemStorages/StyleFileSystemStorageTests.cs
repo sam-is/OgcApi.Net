@@ -8,7 +8,7 @@ namespace OgcApi.Net.Styles.Tests.FileSystemStorages;
 [Collection("FileSystemStorageTests")]
 public sealed class StyleFileSystemStorageTests : IDisposable
 {
-    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+    private readonly CancellationToken _cancellationToken = TestContext.Current.CancellationToken;
     private readonly StyleFileSystemStorageOptions _options;
     private readonly StyleFileSystemStorage _styleFileSystemStorage;
 
@@ -96,7 +96,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
 
         var path = Path.Combine(_options.BaseDirectory, collectionId, newStyleId, expectedNewStylesheetName);
         var stylesheetExists = File.Exists(path);
-        var content = await File.ReadAllTextAsync(path, cancellationToken);
+        var content = await File.ReadAllTextAsync(path, _cancellationToken);
 
         Assert.True(stylesheetExists);
         Assert.Equal(newStyleContent, content);
@@ -124,7 +124,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
 
         var path = Path.Combine(_options.BaseDirectory, collectionId, styleId, expectedNewStylesheetName);
         var stylesheetExists = File.Exists(path);
-        var content = await File.ReadAllTextAsync(path, cancellationToken);
+        var content = await File.ReadAllTextAsync(path, _cancellationToken);
 
         Assert.True(stylesheetExists);
         Assert.Equal(newStyleContent, content);
@@ -204,7 +204,7 @@ public sealed class StyleFileSystemStorageTests : IDisposable
         await _styleFileSystemStorage.ReplaceStyle(collectionId, styleId, addStyleParameters);
 
         var stylePath = Path.Combine(_options.BaseDirectory, collectionId, styleId, "style.mapbox.json");
-        var newContent = await File.ReadAllTextAsync(stylePath, cancellationToken);
+        var newContent = await File.ReadAllTextAsync(stylePath, _cancellationToken);
         Assert.Equal(expectedContent, newContent);
     }
 

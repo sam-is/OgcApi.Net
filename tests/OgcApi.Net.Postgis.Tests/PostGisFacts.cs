@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -23,7 +22,7 @@ namespace OgcApi.Net.PostGis.Tests;
     Justification = "Fixture used only for side effects (database initialization); instance not accessed in tests")]
 public class PostGisFacts : IClassFixture<DatabaseFixture>
 {
-    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+    private readonly CancellationToken _cancellationToken = TestContext.Current.CancellationToken;
 
     [Fact]
     public void DatabaseCreation()
@@ -620,7 +619,7 @@ public class PostGisFacts : IClassFixture<DatabaseFixture>
         await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
 
         using var decompressedStream = new MemoryStream();
-        await decompressor.CopyToAsync(decompressedStream, cancellationToken);
+        await decompressor.CopyToAsync(decompressedStream, _cancellationToken);
 
         var reader = new MapboxTileReader();
         var tile = reader.Read(decompressedStream, new NetTopologySuite.IO.VectorTiles.Tiles.Tile(250, 1, 8));
