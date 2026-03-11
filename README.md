@@ -121,6 +121,17 @@ For more details about installation and configuration, see the [Installation Gui
 
 For a full setup guide, refer to the [API Configuration Documentation](https://sam-is.github.io/OgcApi.Net/configuration).
 
+### Compatibility Notice with Microsoft.AspNetCore.OpenApi
+
+There is a [known incompatibility](https://github.com/microsoft/OpenAPI.NET/blob/main/docs/upgrade-guide-3.md#integrations-with-aspnet-core) between `Microsoft.OpenApi` version 3+ and `Microsoft.AspNetCore.OpenApi` version 10+. Please choose the package version carefully:
+
+| Package Version | Microsoft.OpenApi Dependency | Compatibility |
+| :--- | :--- | :--- |
+| **3.0.0** (Recommended) | 2.7.0 | Compatible with **Microsoft.AspNetCore.OpenApi 10+** |
+| **2.0.0** | 3.3.1 | Incompatible with Microsoft.AspNetCore.OpenApi 10+ |
+
+ If you are using **Microsoft.AspNetCore.OpenApi 10+**, please use package version **3.0.0**.
+
 ## Contributing
 
 We welcome contributions from the community! Whether you're fixing bugs, improving documentation, or adding new features, your help is greatly appreciated.
