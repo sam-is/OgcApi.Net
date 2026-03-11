@@ -185,7 +185,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -209,7 +209,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         Description = "Adds a new style to the styles storage if style does not exist.",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, IOpenApiMediaType>
+                            Content = new Dictionary<string, OpenApiMediaType>
                             {
                                 ["application/json"] = new OpenApiMediaType
                                 {
@@ -242,7 +242,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         Summary = "Updates default style of the collection",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, IOpenApiMediaType>
+                            Content = new Dictionary<string, OpenApiMediaType>
                             {
                                 ["application/merge-patch+json"] = new OpenApiMediaType
                                 {
@@ -307,7 +307,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -334,7 +334,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         Summary = "Replaces existing stylesheet",
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, IOpenApiMediaType>
+                            Content = new Dictionary<string, OpenApiMediaType>
                             {
                                 ["application/json"] = new OpenApiMediaType
                                 {
@@ -429,7 +429,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -466,7 +466,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         ],
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, IOpenApiMediaType>
+                            Content = new Dictionary<string, OpenApiMediaType>
                             {
                                 ["application/json"] = new OpenApiMediaType
                                 {
@@ -509,7 +509,7 @@ public class StylesOpenApiExtension : IOpenApiExtension
                         ],
                         RequestBody = new OpenApiRequestBody
                         {
-                            Content = new Dictionary<string, IOpenApiMediaType>
+                            Content = new Dictionary<string, OpenApiMediaType>
                             {
                                 ["application/merge-patch+json"] = new OpenApiMediaType
                                 {

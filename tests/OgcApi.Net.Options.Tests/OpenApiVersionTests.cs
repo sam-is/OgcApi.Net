@@ -18,7 +18,6 @@ public class OpenApiVersionTests
     [InlineData("2.0", OpenApiSpecVersion.OpenApi2_0)]
     [InlineData("3.0", OpenApiSpecVersion.OpenApi3_0)]
     [InlineData("3.1", OpenApiSpecVersion.OpenApi3_1)]
-    [InlineData("3.2", OpenApiSpecVersion.OpenApi3_2)]
     public void MappingValidOpenApiVersion(string version, OpenApiSpecVersion expectedVersion)
     {
         var openApiVersion = Net.Utils.GetOpenApiSpecVersion(version);

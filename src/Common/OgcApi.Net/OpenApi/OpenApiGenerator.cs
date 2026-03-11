@@ -56,7 +56,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -98,7 +98,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -138,7 +138,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -452,7 +452,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -463,7 +463,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                             ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -507,7 +507,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -522,7 +522,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["404"] = new OpenApiResponse
                                 {
                                     Description = "Not Found",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -590,7 +590,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["200"] = new OpenApiResponse
                                 {
                                     Description = "Success",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/vnd.mapbox-vector-tile"] = new OpenApiMediaType
                                         {
@@ -605,7 +605,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                 ["404"] = new OpenApiResponse
                                 {
                                     Description = "Not Found",
-                                    Content = new Dictionary<string, IOpenApiMediaType>
+                                    Content = new Dictionary<string, OpenApiMediaType>
                                     {
                                         ["application/json"] = new OpenApiMediaType
                                         {
@@ -970,7 +970,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["200"] = new OpenApiResponse
                     {
                         Description = "Success",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/geo+json"] = new OpenApiMediaType
                             {
@@ -981,7 +981,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -992,7 +992,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1038,7 +1038,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 RequestBody = new OpenApiRequestBody
                 {
-                    Content = new Dictionary<string, IOpenApiMediaType>
+                    Content = new Dictionary<string, OpenApiMediaType>
                     {
                         ["application/geo+json"] = new OpenApiMediaType
                         {
@@ -1055,7 +1055,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1066,7 +1066,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1077,7 +1077,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1119,7 +1119,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1130,7 +1130,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1141,7 +1141,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1187,7 +1187,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 RequestBody = new OpenApiRequestBody
                 {
-                    Content = new Dictionary<string, IOpenApiMediaType>
+                    Content = new Dictionary<string, OpenApiMediaType>
                     {
                         ["application/geo+json"] = new OpenApiMediaType
                         {
@@ -1204,7 +1204,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1215,7 +1215,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1226,7 +1226,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1373,7 +1373,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["200"] = new OpenApiResponse
                     {
                         Description = "Success",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/geo+json"] = new OpenApiMediaType
                             {
@@ -1384,7 +1384,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1395,7 +1395,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1433,7 +1433,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                 ],
                 RequestBody = new OpenApiRequestBody
                 {
-                    Content = new Dictionary<string, IOpenApiMediaType>
+                    Content = new Dictionary<string, OpenApiMediaType>
                     {
                         ["application/geo+json"] = new OpenApiMediaType
                         {
@@ -1454,7 +1454,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["400"] = new OpenApiResponse
                     {
                         Description = "Bad Request",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1465,7 +1465,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["401"] = new OpenApiResponse
                     {
                         Description = "Unauthorized",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {
@@ -1476,7 +1476,7 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                     ["404"] = new OpenApiResponse
                     {
                         Description = "Not Found",
-                        Content = new Dictionary<string, IOpenApiMediaType>
+                        Content = new Dictionary<string, OpenApiMediaType>
                         {
                             ["application/json"] = new OpenApiMediaType
                             {

@@ -119,7 +119,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -130,7 +130,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -160,7 +160,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -171,7 +171,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -201,7 +201,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["200"] = new OpenApiResponse
                             {
                                 Description = "Success",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
@@ -212,7 +212,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["404"] = new OpenApiResponse
                             {
                                 Description = "Not Found",
-                                Content = new Dictionary<string, IOpenApiMediaType>
+                                Content = new Dictionary<string, OpenApiMediaType>
                                 {
                                     ["application/json"] = new OpenApiMediaType
                                     {
