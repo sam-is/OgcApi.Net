@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Windows only includes" Condition="$([System.OperatingSystem]::IsWindows())">
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.8" />
     <PackageReference Include="mod_spatialite" Version="4.3.0.1" />
   </ItemGroup>
 
