@@ -24,6 +24,14 @@
     <ProjectReference Include="..\..\src\Providers\OgcApi.Net.MbTiles\OgcApi.Net.MbTiles.csproj" />
   </ItemGroup>
 
+  <ItemGroup Label="Windows only includes" Condition="$([System.OperatingSystem]::IsWindows())">
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup Label="Linux only includes" Condition="$([System.OperatingSystem]::IsLinux()) ">
+    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="Data\data_12-02-2018.mbtiles">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
