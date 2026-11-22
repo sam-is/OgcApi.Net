@@ -127,7 +127,7 @@ There is a [known incompatibility](https://github.com/microsoft/OpenAPI.NET/blob
 
 | Package Version | Microsoft.OpenApi Dependency | Compatibility |
 | :--- | :--- | :--- |
-| **3.0.0** (Recommended) | 2.7.0 | Compatible with **Microsoft.AspNetCore.OpenApi 10+** |
+| **3.0.0** (Recommended) | 2.13.1 | Compatible with **Microsoft.AspNetCore.OpenApi 10+** |
 | **2.0.0** | 3.3.1 | Incompatible with Microsoft.AspNetCore.OpenApi 10+ |
 
  If you are using **Microsoft.AspNetCore.OpenApi 10+**, please use package version **3.0.0**.

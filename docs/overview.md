@@ -35,7 +35,7 @@ OpenAPI.NET v3.3.1 contains [breaking changes](https://github.com/microsoft/Open
 
 `OpenAPI.NET` v3.3.1 is [not compatible](https://github.com/microsoft/OpenAPI.NET/blob/main/docs/upgrade-guide-3.md#integrations-with-aspnet-core) with `Microsoft.AspNetCore.OpenApi` v10+.
 
-If your application uses `Microsoft.AspNetCore.OpenApi`, please use **OgcApi.Net v3.0.0**. This version depends on `OpenAPI.NET` v2.7.0, which maintains compatibility with `Microsoft.AspNetCore.OpenApi` v10+.
+If your application uses `Microsoft.AspNetCore.OpenApi`, please use **OgcApi.Net v3.0.0**. This version depends on `OpenAPI.NET` v2.13.1, which maintains compatibility with `Microsoft.AspNetCore.OpenApi` v10+.
 
 ### Version Compatibility
 
@@ -43,7 +43,7 @@ If your application uses `Microsoft.AspNetCore.OpenApi`, please use **OgcApi.Net
 | :--- | :--- | :--- |
 | **1.2.2** | 1.6.14 | Legacy version |
 | **2.0.0** | 3.3.1 | Not compatible with `Microsoft.AspNetCore.OpenApi` v10+ |
-| **3.0.0** | 2.7.0 | Compatible with `Microsoft.AspNetCore.OpenApi` v10+ |
+| **3.0.0** | 2.13.1 | Compatible with `Microsoft.AspNetCore.OpenApi` v10+ |
 
 The source code targets .NET 8 and .NET 10.
 

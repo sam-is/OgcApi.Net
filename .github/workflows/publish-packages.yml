@@ -10,18 +10,20 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          8.0.x
+          10.0.x
         source-url: https://api.nuget.org/v3/index.json 
       env:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
     - name: Restore dependencies
-      run: dotnet restore OgcApi.Net.sln    
+      run: dotnet restore OgcApi.Net.slnx    
     - name: Build
-      run: dotnet build -c Release --no-restore OgcApi.Net.sln
+      run: dotnet build -c Release --no-restore OgcApi.Net.slnx
     - name: Pack
       run: |
         mkdir artifacts 

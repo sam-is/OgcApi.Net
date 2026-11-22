@@ -256,10 +256,10 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                                     {
                                                         Type = JsonSchemaType.Number
                                                     },
-                                                    Example = new JsonArray
+                                                    Examples = [new JsonArray
                                                     {
                                                         -180, -90, 180, 90
-                                                    }
+                                                    }]
                                                 }
                                             },
                                             ["crs"] = new OpenApiSchema
@@ -296,11 +296,11 @@ public class OpenApiGenerator(IOptionsMonitor<OgcApiOptions> apiOptions, IEnumer
                                                     {
                                                         Type = JsonSchemaType.String | JsonSchemaType.Null,
                                                         Format = "date-time",
-                                                        Example = new JsonArray
+                                                        Examples = [new JsonArray
                                                         {
                                                             "2011-11-11T12:22:11Z",
                                                             null
-                                                        }
+                                                        }]
                                                     }
                                                 }
                                             },

@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/AppHost/AppHost.csproj" />
+    <Project Path="samples/SampleWebApplication/SampleWebApplication.csproj" />
+    <Project Path="samples/ServiceDefaults/ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="LICENSE" />
+    <File Path="NOTICES.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/OgcApi.Net/OgcApi.Net.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/Standards/">
+    <Project Path="src/Common/Standards/OgcApi.Net.Schemas/OgcApi.Net.Schemas.csproj" />
+    <Project Path="src/Common/Standards/OgcApi.Net.Styles/OgcApi.Net.Styles.csproj" />
+  </Folder>
+  <Folder Name="/src/Providers/">
+    <Project Path="src/Providers/OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj" />
+    <Project Path="src/Providers/OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj" />
+    <Project Path="src/Providers/OgcApi.Net.SpatiaLite/OgcApi.Net.SpatiaLite.csproj" />
+    <Project Path="src/Providers/OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OgcApi.Net.MbTiles.Tests/OgcApi.Net.MbTiles.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.Options.Tests/OgcApi.Net.Options.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.Postgis.Tests/OgcApi.Net.PostGis.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.Schemas.Tests/OgcApi.Net.Schemas.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.SpatiaLite.Tests/OgcApi.Net.SpatiaLite.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.SqlServer.Tests/OgcApi.Net.SqlServer.Tests.csproj" />
+    <Project Path="tests/OgcApi.Net.Styles.Tests/OgcApi.Net.Styles.Tests.csproj" />
+  </Folder>
+</Solution>
