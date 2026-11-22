@@ -5,6 +5,7 @@
     <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
     <UserSecretsId>f8618acf-d5b7-42cc-811e-4152448e89ab</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

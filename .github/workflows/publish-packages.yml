@@ -2,13 +2,22 @@ name: Publish nuget packages
 
 on:
   release:
-    types: [created]  
+    types: [created]
+
+permissions:
+  contents: read
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-   
+
+    permissions:
+      id-token: write # Required for NuGet trusted publishing (OIDC)
+
+    env:
+      VERSION: ${{ github.event.release.tag_name }}
+
     steps:
     - uses: actions/checkout@v6
     - name: Setup .NET
@@ -17,24 +26,24 @@ jobs:
         dotnet-version: |
           8.0.x
           10.0.x
-        source-url: https://api.nuget.org/v3/index.json 
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
+
     - name: Restore dependencies
-      run: dotnet restore OgcApi.Net.slnx    
+      run: dotnet restore OgcApi.Net.slnx
     - name: Build
-      run: dotnet build -c Release --no-restore OgcApi.Net.slnx
+      run: dotnet build -c Release --no-restore OgcApi.Net.slnx -p:ContinuousIntegrationBuild=true
     - name: Pack
       run: |
-        mkdir artifacts 
-        dotnet pack -c Release -o artifacts --no-restore src/Common/OgcApi.Net/OgcApi.Net.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.SqlServer/OgcApi.Net.SqlServer.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.PostGis/OgcApi.Net.PostGis.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.SpatiaLite/OgcApi.Net.SpatiaLite.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Providers/OgcApi.Net.MbTiles/OgcApi.Net.MbTiles.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Common/Standards/OgcApi.Net.Schemas/OgcApi.Net.Schemas.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-        dotnet pack -c Release -o artifacts --no-restore src/Common/Standards/OgcApi.Net.Styles/OgcApi.Net.Styles.csproj -p:PackageVersion=${{ github.event.release.tag_name }}
-    - name: Publish          
-      run: |        
-        dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
+        mkdir artifacts
+        dotnet pack OgcApi.Net.slnx -c Release -o artifacts --no-restore --no-build -p:PackageVersion=${VERSION#v} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+
+    - name: NuGet Login
+      id: login
+      uses: NuGet/login@v1
+      with:
+        user: ${{ vars.NUGET_USERNAME }}
+
+    - name: Publish
+      run: |
+        dotnet nuget push "./artifacts/*.nupkg" --skip-duplicate --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json
+        dotnet nuget push "./artifacts/*.snupkg" --skip-duplicate --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json
         rm -rf artifacts
