@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup Label="Windows only includes" Condition="$([System.OperatingSystem]::IsWindows())">
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup Label="Linux only includes" Condition="$([System.OperatingSystem]::IsLinux()) ">
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.14" />
   </ItemGroup>
 
   <ItemGroup>

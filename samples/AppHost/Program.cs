@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -24,7 +23,7 @@ var postgresDataBase = postgres.AddDatabase("ogc-api-samples-postgres", "OgcApiS
 
 var isTest = builder.Environment.IsEnvironment("Test");
 
-var webApplication = builder.AddProject<SampleWebApplication>("web-application")
+var webApplication = builder.AddDotnetProject("web-application", "../SampleWebApplication/SampleWebApplication.csproj")
     .WaitFor(sqlServerDataBase)
     .WaitFor(postgresDataBase)
     .WithReference(sqlServerDataBase, "SqlServerConnectionString")

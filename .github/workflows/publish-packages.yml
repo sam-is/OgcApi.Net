@@ -19,9 +19,9 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}        
     - name: Restore dependencies
-      run: dotnet restore OgcApi.Net.sln    
+      run: dotnet restore OgcApi.Net.slnx    
     - name: Build
-      run: dotnet build -c Release --no-restore OgcApi.Net.sln
+      run: dotnet build -c Release --no-restore OgcApi.Net.slnx
     - name: Pack
       run: |
         mkdir artifacts 

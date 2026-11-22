@@ -41,8 +41,8 @@ jobs:
           10.0.x
 
     - name: Restore dependencies
-      run: dotnet restore OgcApi.Net.sln
+      run: dotnet restore OgcApi.Net.slnx
     - name: Build
-      run: dotnet build --no-restore OgcApi.Net.sln
+      run: dotnet build --no-restore OgcApi.Net.slnx
     - name: Test
-      run: dotnet test --no-build --verbosity normal OgcApi.Net.sln
+      run: dotnet test --no-build --verbosity normal OgcApi.Net.slnx

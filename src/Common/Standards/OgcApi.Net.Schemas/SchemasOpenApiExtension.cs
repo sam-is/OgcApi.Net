@@ -17,7 +17,7 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                 {
                     Type = JsonSchemaType.String,
                     Description = "The URI of the JSON Schema that this schema conforms to",
-                    Example = "https://json-schema.org/draft/2020-12/schema",
+                    Examples = ["https://json-schema.org/draft/2020-12/schema"],
                     Default = "https://json-schema.org/draft/2020-12/schema",
                     Enum = ["https://json-schema.org/draft/2020-12/schema"]
                 },
@@ -25,13 +25,13 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                 {
                     Type = JsonSchemaType.String,
                     Description = "A unique identifier for the schema",
-                    Example = "https://example.com/ogc/api/ogc/collections/example/schema",
+                    Examples = ["https://example.com/ogc/api/ogc/collections/example/schema"],
                 },
                 ["type"] = new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
                     Description = "Type of the root element",
-                    Example = "object",
+                    Examples = ["object"],
                     Default = "object",
                     Enum = ["object"]
                 },
@@ -63,13 +63,13 @@ public class SchemasOpenApiExtension : IOpenApiExtension
                             ["type"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
-                                Example = "string",
+                                Examples = ["string"],
                                 Enum = ["string", "number", "integer", "boolean", "object", "array"]
                             },
                             ["format"] = new OpenApiSchema
                             {
                                 Type = JsonSchemaType.String,
-                                Example = "date-time"
+                                Examples = ["date-time"]
                             },
                             ["title"] = new OpenApiSchema
                             {
