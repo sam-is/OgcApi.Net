@@ -9,7 +9,7 @@ nav_order: 3
 ## Required Dependencies
 To use SpatiaLite, you will need to add additional NuGet package dependencies to your project:
 - For Windows: `Microsoft.Data.SQLite` and `mod_spatialite`.
-- For Linux and macOS: `SQLitePCLRaw.bundle_e_sqlite3`.
+- For Linux and macOS: `SQLitePCLRaw.bundle_sqlite3`.
 
 If you are deploying your application on Linux or macOS, it is recommended to install the SpatiaLite library on your operating system:
 - Debian/Ubuntu:

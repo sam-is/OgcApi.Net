@@ -74,7 +74,7 @@ If you are using the SpatiaLite provider, you will need to add additional depend
 
 - **Linux/macOS**:
   ```bash
-  dotnet add package SQLitePCLRaw.bundle_e_sqlite3
+  dotnet add package SQLitePCLRaw.bundle_sqlite3
   ```
 
 Additionally, if deploying to Linux or macOS, it is recommended to install the SpatiaLite library on your operating system:
