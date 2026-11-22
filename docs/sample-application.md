@@ -34,6 +34,7 @@ The sample application includes both Swagger UI (`/swagger`) and Scalar (`/scala
 To run the Aspire-based project, ensure the following:
 
 - **Docker** is installed and running on your machine.
+- The **Aspire CLI** is installed (see [get.aspire.dev](https://get.aspire.dev)); starting with Aspire 17 it is required to run C# AppHosts and provides the dashboard.
 - When switching launch profiles, make sure to clean up any existing database volumes to avoid conflicts.
 - In case of persistent database issues, delete the associated volumes manually.
 
